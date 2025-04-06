@@ -1,36 +1,54 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 import { IconSymbol } from '@/components/ui/IconSymbol';
+import TabBar from '@/components/TabBar';
+import CustomHeader from '@/components/CustomHeader';
 
 export default function TabLayout() {
   return (
     <Tabs
-      screenOptions={{
-        headerShown: false,
-        tabBarStyle: {
-          backgroundColor: '#fff',
-          borderTopWidth: 0,
-          height: 60,
-        },
-        tabBarActiveTintColor: 'black',
-        tabBarInactiveTintColor: 'gray',
-      }}
-    >
+   tabBar={props=><TabBar {...props}/>}
+    >   <Tabs.Screen
+        name="home"
+        options={{
+          title: 'Home',
+          header: () => <CustomHeader title="Home" />,
+
+        }}
+      /> 
+      <Tabs.Screen
+        name="helpTico"
+        options={{
+          title: 'HelpTicp',
+          header: () => <CustomHeader title="HelpTicp" />,
+        }}
+      />
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          title: 'Scanner',
+          header: () => <CustomHeader title="Scanner" />,
+
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="recipes"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: 'Recipes',
+          header: () => <CustomHeader title="Recipes" />,
+
         }}
       />
+       <Tabs.Screen
+        name="tips"
+        options={{
+          title: 'Tips',
+          header: () => <CustomHeader title="Tips" />,
+
+        }}
+      />
+     
     </Tabs>
   );
 }
