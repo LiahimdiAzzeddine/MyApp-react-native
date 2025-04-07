@@ -6,7 +6,7 @@ const Home = () => {
   return (
     <PageWrapper>
     <View>
-      <Text style={styles.text}>home</Text>
+      <Text style={styles.text}>Home</Text>
     </View>
     </PageWrapper>
   )
@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
 
     text: {
       fontSize: 18,
-      padding:10
+      padding:20
     },
   });
   

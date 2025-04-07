@@ -1,7 +1,5 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { Text, View } from 'react-native';
-import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBar from '@/components/TabBar';
 import CustomHeader from '@/components/CustomHeader';
 
@@ -20,8 +18,8 @@ export default function TabLayout() {
       <Tabs.Screen
         name="helpTico"
         options={{
-          title: 'HelpTicp',
-          header: () => <CustomHeader title="HelpTicp" />,
+          title: 'HelpTico',
+          header: () => <CustomHeader title="HelpTico" />,
         }}
       />
       <Tabs.Screen
@@ -45,7 +43,6 @@ export default function TabLayout() {
         options={{
           title: 'Tips',
           header: () => <CustomHeader title="Tips" />,
-
         }}
       />
      

@@ -5,14 +5,14 @@ import PageWrapper from '@/components/PageWrapper';
 const HelpTico = () => {
   return (
     <PageWrapper>
-    <Text style={styles.text}>Bienvenue sur l'écran d'accueil</Text>
+    <Text style={styles.text}>Help tico</Text>
  </PageWrapper>
   )
 }
 const styles = StyleSheet.create({
   text: {
     fontSize: 18,
-    padding:10
+    padding:20
   },
 });
 

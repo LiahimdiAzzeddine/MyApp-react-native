@@ -17,7 +17,6 @@ const PageWrapper = ({ children, style }: Props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    zIndex:100,
     backgroundColor: '#fff', // Fond blanc pour SafeAreaView
   },
   content: {

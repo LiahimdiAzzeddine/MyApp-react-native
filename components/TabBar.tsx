@@ -1,5 +1,4 @@
-import { View, TouchableOpacity, StyleSheet, Image, ImageStyle, Dimensions } from 'react-native';
-import { useLinkBuilder, useTheme } from '@react-navigation/native';
+import { View, TouchableOpacity, StyleSheet, Image, ImageStyle, Dimensions, ImageSourcePropType } from 'react-native';
 import React from 'react';
 
 interface TabBarProps {
@@ -8,59 +7,60 @@ interface TabBarProps {
   navigation: any;
 }
 
+// Define allowed route names
+type RouteName = 'home' | 'helpTico' | 'index' | 'recipes' | 'tips';
+
+// Image sources for active/inactive tabs
+const imageSources: Record<RouteName, { active: ImageSourcePropType; inactive: ImageSourcePropType }> = {
+  home: {
+    active: require('@/assets/icons/accueil_active.png'),
+    inactive: require('@/assets/icons/accueil_active.png'),
+  },
+  helpTico: {
+    active: require('@/assets/icons/help.png'),
+    inactive: require('@/assets/icons/help.png'),
+  },
+  index: {
+    active: require('@/assets/icons/scanner.png'),
+    inactive: require('@/assets/icons/scanner.png'),
+  },
+  recipes: {
+    active: require('@/assets/icons/recipes_active.png'),
+    inactive: require('@/assets/icons/recipes_active.png'),
+  },
+  tips: {
+    active: require('@/assets/icons/tips.png'),
+    inactive: require('@/assets/icons/tips.png'),
+  },
+};
+
 const TabBar = ({ state, descriptors, navigation }: TabBarProps) => {
-  const { colors } = useTheme();
-  const { buildHref } = useLinkBuilder();
   const screenWidth = Dimensions.get('window').width;
+  const standardSize = screenWidth * 0.15;
+
+  const iconSizes: Record<RouteName, ImageStyle> = {
+    home: { width: standardSize, height: standardSize, maxWidth: 63, maxHeight: 63 },
+    helpTico: { width: standardSize, height: standardSize, maxWidth: 63, maxHeight: 63 },
+    recipes: { width: standardSize, height: standardSize, maxWidth: 63, maxHeight: 63 },
+    tips: { width: standardSize, height: standardSize, maxWidth: 63, maxHeight: 63 },
+    index: { width: standardSize * 1.7, height: standardSize, maxWidth: 108, maxHeight: 108 },
+  };
 
   return (
     <View style={style.tabBar}>
-      {state.routes.map((route, index) => {
+      {state.routes.map((route: any, index: number) => {
         const { options } = descriptors[route.key];
         const isFocused = state.index === index;
 
-        // Define image sources for each tab (active and inactive)
-        const imageSources = {
-          home: {
-            active: require('@/assets/icons/accueil_active.png'),
-            inactive: require('@/assets/icons/accueil_active.png')
-          },
-          helpTico: {
-            active: require('@/assets/icons/help.png'),
-            inactive: require('@/assets/icons/help.png')
-          },
-          index: {
-            active: require('@/assets/icons/scanner.png'),
-            inactive: require('@/assets/icons/scanner.png')
-          },
-          recipes: {
-            active: require('@/assets/icons/recipes_active.png'),
-            inactive: require('@/assets/icons/recipes_active.png')
-          },
-          tips: {
-            active: require('@/assets/icons/tips.png'),
-            inactive: require('@/assets/icons/tips.png')
-          },
-        };
+        const routeName = route.name as RouteName;
 
-        // Taille standard pour toutes les icônes standard
-        const standardSize = screenWidth * 0.15; // Taille standard pour les icônes normales
-        
-        // Le scanner est plus large, mais reste au même niveau que les autres icônes
-        const iconSizes: Record<string, ImageStyle> = {
-          home: { width: standardSize, height: standardSize },
-          helpTico: { width: standardSize, height: standardSize },
-          recipes: { width: standardSize, height: standardSize },
-          tips: { width: standardSize, height: standardSize },
-          index: { width: standardSize * 1.7, height: standardSize }, // Plus large mais même hauteur
-        };
-
-        // Select the appropriate image based on focus state
-        const imageSource = route.name in imageSources 
-          ? (isFocused ? imageSources[route.name].active : imageSources[route.name].inactive)
+        const imageSource = routeName in imageSources
+          ? isFocused
+            ? imageSources[routeName].active
+            : imageSources[routeName].inactive
           : imageSources.home.active;
-        
-        const iconStyle = iconSizes[route.name] || { width: standardSize, height: standardSize };
+
+        const iconStyle = iconSizes[routeName] || { width: standardSize, height: standardSize };
 
         const onPress = () => {
           const event = navigation.emit({
@@ -88,14 +88,10 @@ const TabBar = ({ state, descriptors, navigation }: TabBarProps) => {
             testID={options.tabBarButtonTestID}
             onPress={onPress}
             onLongPress={onLongPress}
-            key={route.name}
+            key={route.key}
             style={style.tabBarItem}
           >
-            <Image
-              source={imageSource}
-              style={iconStyle}
-              resizeMode="contain"
-            />
+            <Image source={imageSource} style={iconStyle} resizeMode="contain" />
           </TouchableOpacity>
         );
       })}
@@ -107,16 +103,16 @@ const style = StyleSheet.create({
   tabBar: {
     flexDirection: 'row',
     backgroundColor: 'white',
-    justifyContent: 'space-evenly', // Distribution égale des éléments
-    alignItems: 'center', // Alignement vertical au centre
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
     paddingHorizontal: 5,
     paddingVertical: 10,
-    height: 85, // Hauteur uniforme pour la barre
+    height: 85,
   },
   tabBarItem: {
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 2, // Espacement horizontal pour chaque élément
+    paddingHorizontal: 2,
   },
 });
 

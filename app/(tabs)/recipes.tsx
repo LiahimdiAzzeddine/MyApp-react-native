@@ -5,7 +5,7 @@ import PageWrapper from '@/components/PageWrapper'
 const Recipes = () => {
   return (
     <PageWrapper>
-    <Text style={styles.text}>recipes</Text>
+    <Text style={styles.text}>Recipes</Text>
  </PageWrapper>
 
   )
@@ -13,7 +13,7 @@ const Recipes = () => {
 const styles = StyleSheet.create({
   text: {
     fontSize: 18,
-    padding:10
+    padding:20
   },
 });
 

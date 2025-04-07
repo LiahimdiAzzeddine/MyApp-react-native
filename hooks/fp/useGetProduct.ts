@@ -1,0 +1,43 @@
+import { useState, useCallback } from 'react';
+import axiosInstance from '../../api/axios';  
+import { Alert } from 'react-native';
+import { createProduct } from '@/utils/product';
+
+const useGetProduct = (ean: string) => {
+  const [productData, setProductData] = useState<any>(null); // Utilisation de 'any' pour la donnée de produit
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchProduct = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await axiosInstance.get(`/api/fiche-produit/product/ean/${ean}`);
+      
+      const data = response.data;
+      if (response.status === 200 && (data.OFFproduct != null || data.foodheaproduct != null)) {
+        const FormatedData=createProduct(ean,data);
+        setProductData(FormatedData);
+      } else {
+        setError('Erreur inattendue lors de la récupération du produit.');
+        setProductData(null);
+      }
+    } catch (err: any) {
+      if (err.response && err.response.status === 404) {
+        setError('Produit non trouvé.');
+        setProductData(null);
+      } else {
+        setError('Erreur lors de la récupération du produit.');
+        setProductData(null);
+      }
+      
+      Alert.alert('Erreur', error || 'Une erreur est survenue lors de la récupération des données.');
+    } finally {
+      setLoading(false);
+    }
+  }, [ean, error]);
+
+  return { productData, loading, error, fetchProduct, setProductData, setError };
+};
+
+export default useGetProduct;
