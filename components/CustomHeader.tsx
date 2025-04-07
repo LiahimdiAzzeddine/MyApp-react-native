@@ -4,11 +4,12 @@ import { View, Text, StyleSheet } from 'react-native';
 
 type Props = {
   title: string;
+  color?: string;
 };
 
-const CustomHeader = ({ title }: Props) => {
+const CustomHeader = ({ title, color = '#fff' }: Props) => {
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: color }]}>
       <Text style={styles.title}>{title}</Text>
     </View>
   );
@@ -17,7 +18,6 @@ const CustomHeader = ({ title }: Props) => {
 const styles = StyleSheet.create({
   container: {
     height: 40,
-    backgroundColor: '#fff',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -25,7 +25,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     color: '#333',
-    margin:"auto"
   },
 });
 

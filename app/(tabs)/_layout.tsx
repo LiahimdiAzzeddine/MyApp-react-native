@@ -19,7 +19,7 @@ export default function TabLayout() {
         name="helpTico"
         options={{
           title: 'HelpTico',
-          header: () => <CustomHeader title="HelpTico" />,
+          header: () => <CustomHeader color="#e1f5f5" title="HelpTico" />,
         }}
       />
       <Tabs.Screen

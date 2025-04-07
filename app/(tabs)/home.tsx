@@ -12,7 +12,6 @@ const Home = () => {
   )
 }
 const styles = StyleSheet.create({
-
     text: {
       fontSize: 18,
       padding:20

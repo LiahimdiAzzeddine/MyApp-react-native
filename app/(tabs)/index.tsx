@@ -72,8 +72,8 @@ export default function Scanner() {
   };
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <PageWrapper>
+    <GestureHandlerRootView style={styles.root}>
+ 
         <View style={styles.container}>
           <CameraView
             style={styles.camera}
@@ -119,7 +119,7 @@ export default function Scanner() {
             </View>
           </CameraView>
         </View>
-      </PageWrapper>
+     
       <ScannerBottomSheet
         bottomSheetRef={bottomSheetRef}
         index={bottomSheetIndex}
@@ -138,13 +138,19 @@ export default function Scanner() {
 }
 
 const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+    backgroundColor: 'white',
+    paddingHorizontal:5,
+
+  },
   container: {
     flex: 1,
     justifyContent: "center",
   },
   camera: {
     flex: 1,
-    borderRadius: 39,
+    borderRadius: 40,
     overflow: "hidden",
     borderWidth: 1,
     borderColor: "#fff",
