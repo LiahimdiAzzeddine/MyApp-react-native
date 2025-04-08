@@ -29,7 +29,7 @@ const HelpTiCO = () => {
   };
 
   return (
-    <View style={styles.root}><View style={styles.container}>
+    <SafeAreaView style={styles.root}><View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         
           <View style={styles.headerImageContainer}>
@@ -77,7 +77,7 @@ const HelpTiCO = () => {
           </View>
         
       </ScrollView></View>
-    </View>
+    </SafeAreaView>
   );
 };
 

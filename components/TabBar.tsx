@@ -109,11 +109,13 @@ const style = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 5,
     paddingVertical: 10,
+    maxHeight:100
   },
   tabBarItem: {
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 2,
+    
   },
 });
 

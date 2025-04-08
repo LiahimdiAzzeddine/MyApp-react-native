@@ -9,7 +9,7 @@ type Props = {
 const CustomHeader = ({ title, color = '#fff' }: Props) => {
   return (
     <SafeAreaView style={[styles.safeArea, { backgroundColor: color }]}>
-      <View style={styles.container}>
+      <View style={[styles.container, { backgroundColor: color }]}>
         <Text style={styles.title}>{title}</Text>
       </View>
     </SafeAreaView>

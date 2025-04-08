@@ -21,7 +21,7 @@ export default function Scanner() {
   const [isScanning, setIsScanning] = useState<boolean>(true);
   const [bottomSheetIndex, setBottomSheetIndex] = useState<number>(-1);
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const snapPoints = useMemo(() => ["50%", "100%"], []);
+  const snapPoints = useMemo(() => ["35%", "50%", "100%"], []);
 
   if (!permission) return <View />;
   if (!permission.granted) {
@@ -57,7 +57,7 @@ export default function Scanner() {
     setScannedBarcode(data);
     setIsScanning(false);
     // Ouvrir au premier point
-    setBottomSheetIndex(0);
+    setBottomSheetIndex(1);
   };
 
   const resetScanner = () => {
@@ -72,6 +72,7 @@ export default function Scanner() {
   };
 
   return (
+    
     <GestureHandlerRootView style={styles.root}>
  
         <View style={styles.container}>
@@ -142,6 +143,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
     paddingHorizontal:5,
+
   },
   container: {
     flex: 1,
