@@ -1,5 +1,6 @@
 import { View, TouchableOpacity, StyleSheet, Image, ImageStyle, Dimensions, ImageSourcePropType } from 'react-native';
 import React from 'react';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface TabBarProps {
   state: any;
@@ -37,6 +38,7 @@ const imageSources: Record<RouteName, { active: ImageSourcePropType; inactive: I
 const TabBar = ({ state, descriptors, navigation }: TabBarProps) => {
   const screenWidth = Dimensions.get('window').width;
   const standardSize = screenWidth * 0.15;
+  const insets = useSafeAreaInsets();
 
   const iconSizes: Record<RouteName, ImageStyle> = {
     home: { width: standardSize, height: standardSize, maxWidth: 63, maxHeight: 63 },
@@ -47,7 +49,7 @@ const TabBar = ({ state, descriptors, navigation }: TabBarProps) => {
   };
 
   return (
-    <View style={style.tabBar}>
+    <View style={[style.tabBar, { paddingBottom: insets.bottom }]}>
       {state.routes.map((route: any, index: number) => {
         const { options } = descriptors[route.key];
         const isFocused = state.index === index;
@@ -107,7 +109,6 @@ const style = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 5,
     paddingVertical: 10,
-    height: 85,
   },
   tabBarItem: {
     justifyContent: 'center',

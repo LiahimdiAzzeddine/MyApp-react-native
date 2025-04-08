@@ -1,6 +1,5 @@
-// components/CustomHeader.tsx
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
 
 type Props = {
   title: string;
@@ -9,13 +8,18 @@ type Props = {
 
 const CustomHeader = ({ title, color = '#fff' }: Props) => {
   return (
-    <View style={[styles.container, { backgroundColor: color }]}>
-      <Text style={styles.title}>{title}</Text>
-    </View>
+    <SafeAreaView style={[styles.safeArea, { backgroundColor: color }]}>
+      <View style={styles.container}>
+        <Text style={styles.title}>{title}</Text>
+      </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 0,
+  },
   container: {
     height: 40,
     justifyContent: 'center',

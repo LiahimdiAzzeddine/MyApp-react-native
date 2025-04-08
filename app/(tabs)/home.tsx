@@ -1,20 +1,29 @@
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, SafeAreaView } from 'react-native'
 import React from 'react'
-import PageWrapper from '@/components/PageWrapper'
 
 const Home = () => {
   return (
-    <PageWrapper>
+    <View style={styles.root}>
+      <View style={styles.container}>
     <View>
       <Text style={styles.text}>Home</Text>
-    </View>
-    </PageWrapper>
+      </View>
+    </View></View>
   )
 }
 const styles = StyleSheet.create({
     text: {
       fontSize: 18,
       padding:20
+    },
+    root: {
+      flex: 1,
+      backgroundColor: 'white',
+    },
+    container: {
+      flex: 1,
+      backgroundColor: '#c7f0d9',
+      borderRadius: 40,
     },
   });
   
