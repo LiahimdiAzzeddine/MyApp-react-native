@@ -26,6 +26,7 @@ export default function Scanner() {
   if (!permission) return <View />;
   if (!permission.granted) {
     return (
+      <View style={styles.root}>
       <View style={styles.container}>
         <Text style={styles.message}>
           Nous avons besoin de votre autorisation pour utiliser la caméra
@@ -33,7 +34,7 @@ export default function Scanner() {
         <View style={styles.BtnAutorisation}>
           <Button onPress={requestPermission} title="Autoriser la caméra" />
         </View>
-      </View>
+      </View></View>
     );
   }
 
@@ -72,9 +73,7 @@ export default function Scanner() {
   };
 
   return (
-    
     <GestureHandlerRootView style={styles.root}>
- 
         <View style={styles.container}>
           <CameraView
             style={styles.camera}
@@ -148,13 +147,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
-  },
-  camera: {
-    flex: 1,
     borderRadius: 40,
     overflow: "hidden",
     borderWidth: 1,
-    borderColor: "#fff",
+    borderColor: "white",
+    
+  },
+  camera: {
+    flex: 1,
+    overflow: "hidden",
+    borderColor: "white",
   },
   overlay: {
     flex: 1,

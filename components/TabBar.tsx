@@ -49,7 +49,7 @@ const TabBar = ({ state, descriptors, navigation }: TabBarProps) => {
   };
 
   return (
-    <View style={[style.tabBar, { paddingBottom: insets.bottom }]}>
+    <View style={[style.tabBar, { paddingBottom: insets.bottom?insets.bottom :10 }]}>
       {state.routes.map((route: any, index: number) => {
         const { options } = descriptors[route.key];
         const isFocused = state.index === index;
@@ -108,7 +108,7 @@ const style = StyleSheet.create({
     justifyContent: 'space-evenly',
     alignItems: 'center',
     paddingHorizontal: 5,
-    paddingVertical: 10,
+    paddingTop: 10,
     maxHeight:100
   },
   tabBarItem: {
