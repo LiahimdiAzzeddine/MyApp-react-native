@@ -142,14 +142,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
     paddingHorizontal:5,
-
   },
   container: {
     flex: 1,
     justifyContent: "center",
-    borderRadius: 40,
+    borderRadius: 35,
     overflow: "hidden",
     borderWidth: 1,
+    
     borderColor: "white",
     
   },

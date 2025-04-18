@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, StatusBar, Platform } from 'react-native';
 
 type Props = {
   title: string;
@@ -9,6 +9,10 @@ type Props = {
 const CustomHeader = ({ title, color = '#fff' }: Props) => {
   return (
     <SafeAreaView style={[styles.safeArea, { backgroundColor: color }]}>
+      <StatusBar
+        backgroundColor={color}
+        barStyle="dark-content"
+      />
       <View style={[styles.container, { backgroundColor: color }]}>
         <Text style={styles.title}>{title}</Text>
       </View>
@@ -18,7 +22,7 @@ const CustomHeader = ({ title, color = '#fff' }: Props) => {
 
 const styles = StyleSheet.create({
   safeArea: {
-    flex: 0,
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   container: {
     height: 40,

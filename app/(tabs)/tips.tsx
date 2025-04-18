@@ -1,7 +1,14 @@
 import { View, Text, StyleSheet, SafeAreaView } from 'react-native'
-import React from 'react'
+import React, { useContext } from 'react'
+import { AuthContext } from '@/context/AuthContext';
+import { Redirect } from 'expo-router';
 
 const Tips = () => {
+  const { userToken } = useContext(AuthContext);
+
+  if (!userToken) {
+    return <Redirect href="/(auth)/login" />;
+  }
   return (
     <View style={styles.root}>
       <View style={styles.container}>

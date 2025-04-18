@@ -1,25 +1,45 @@
-import { View, TouchableOpacity, StyleSheet, Image, ImageStyle, Dimensions, ImageSourcePropType } from 'react-native';
-import React from 'react';
+import { View, TouchableOpacity, StyleSheet, Image, ImageStyle, Dimensions, ImageSourcePropType, Alert } from 'react-native';
+import React, { useContext, memo, useCallback, useMemo } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { AuthContext } from '@/context/AuthContext';
+import { useRouter } from 'expo-router';
 
+// Types bien définis
 interface TabBarProps {
-  state: any;
+  state: {
+    routes: Array<{
+      key: string;
+      name: RouteName;
+    }>;
+    index: number;
+  };
   descriptors: any;
-  navigation: any;
 }
 
-// Define allowed route names
 type RouteName = 'home' | 'helpTico' | 'index' | 'recipes' | 'tips';
 
-// Image sources for active/inactive tabs
-const imageSources: Record<RouteName, { active: ImageSourcePropType; inactive: ImageSourcePropType }> = {
+// Constantes extraites en dehors du composant
+const routePaths = {
+  home: '/home',
+  helpTico: '/helpTico',
+  recipes: '/recipes',
+  tips: '/tips',
+  index: '/',
+} as const;
+
+
+const getRoutePath = (routeName: RouteName) => {
+  return routePaths[routeName];
+};
+// Préchargement des images en dehors du composant
+const IMAGE_SOURCES: Record<RouteName, { active: ImageSourcePropType; inactive: ImageSourcePropType }> = {
   home: {
     active: require('@/assets/icons/accueil_active.png'),
-    inactive: require('@/assets/icons/accueil_active.png'),
+    inactive: require('@/assets/icons/accueil_inactive.png'),
   },
   helpTico: {
     active: require('@/assets/icons/help.png'),
-    inactive: require('@/assets/icons/help.png'),
+    inactive: require('@/assets/icons/help_inactive.png'),
   },
   index: {
     active: require('@/assets/icons/scanner.png'),
@@ -27,81 +47,131 @@ const imageSources: Record<RouteName, { active: ImageSourcePropType; inactive: I
   },
   recipes: {
     active: require('@/assets/icons/recipes_active.png'),
-    inactive: require('@/assets/icons/recipes_active.png'),
+    inactive: require('@/assets/icons/recipes_inactive.png'),
   },
   tips: {
     active: require('@/assets/icons/tips.png'),
-    inactive: require('@/assets/icons/tips.png'),
+    inactive: require('@/assets/icons/tips_inactive.png'),
   },
 };
 
-const TabBar = ({ state, descriptors, navigation }: TabBarProps) => {
+// Composant d'élément de tab extrait et mémorisé
+interface TabBarItemProps {
+  route: {
+    key: string;
+    name: RouteName;
+  };
+  isFocused: boolean;
+  isAuthenticated: boolean;
+  iconStyle: ImageStyle;
+  standardSize: number;
+  onPress: () => void;
+}
+
+const TabBarItem = memo(({ route, isFocused, isAuthenticated, iconStyle, onPress }: TabBarItemProps) => {
+  const routeName = route.name;
+  const shouldBlockAccess = !isAuthenticated && routeName !== 'index';
+  
+  const imageSource = useMemo(() => {
+    if (routeName in IMAGE_SOURCES) {
+      return !shouldBlockAccess
+        ? IMAGE_SOURCES[routeName].active
+        : IMAGE_SOURCES[routeName].inactive;
+    }
+    return IMAGE_SOURCES.home.active;
+  }, [routeName, shouldBlockAccess]);
+
+  return (
+    <TouchableOpacity
+      key={route.key}
+      accessibilityState={isFocused ? { selected: true } : {}}
+      onPress={onPress}
+      style={styles.tabBarItem}
+    >
+      <Image source={imageSource} style={iconStyle} resizeMode="contain" />
+    </TouchableOpacity>
+  );
+});
+
+// Composant principal optimisé
+const TabBar = ({ state, descriptors }: TabBarProps) => {
   const screenWidth = Dimensions.get('window').width;
   const standardSize = screenWidth * 0.15;
   const insets = useSafeAreaInsets();
+  const { userInfo } = useContext(AuthContext);
+  const isAuthenticated = !!userInfo;
+  const router = useRouter();
 
-  const iconSizes: Record<RouteName, ImageStyle> = {
+  // Mémoisation des tailles d'icônes
+  const iconSizes = useMemo<Record<RouteName, ImageStyle>>(() => ({
     home: { width: standardSize, height: standardSize, maxWidth: 63, maxHeight: 63 },
     helpTico: { width: standardSize, height: standardSize, maxWidth: 63, maxHeight: 63 },
     recipes: { width: standardSize, height: standardSize, maxWidth: 63, maxHeight: 63 },
     tips: { width: standardSize, height: standardSize, maxWidth: 63, maxHeight: 63 },
     index: { width: standardSize * 1.7, height: standardSize, maxWidth: 108, maxHeight: 108 },
-  };
+  }), [standardSize]);
+
+  const showLoginAlert = useCallback(() => {
+    Alert.alert(
+      'Connexion requise',
+      'Vous devez être connecté pour accéder à cette section.',
+      [
+        {
+          text: 'Se connecter',
+          onPress: () => router.push('/login'),
+        },
+        {
+          text: 'Annuler',
+          style: 'cancel',
+        },
+      ],
+      { cancelable: true }
+    );
+  }, [router]);
+
+  const getIconStyle = useCallback((routeName: RouteName) => {
+    return iconSizes[routeName] || { width: standardSize, height: standardSize };
+  }, [iconSizes, standardSize]);
+
+  const handleTabPress = useCallback((routeName: RouteName, shouldBlockAccess: boolean) => {
+    if (shouldBlockAccess) {
+      showLoginAlert();
+    } else {
+      router.push(getRoutePath(routeName));
+    }
+  }, [router, showLoginAlert]);
+
+  const containerStyle = useMemo(() => [
+    styles.tabBar, 
+    { paddingBottom: insets.bottom ? insets.bottom : 10 }
+  ], [insets.bottom]);
 
   return (
-    <View style={[style.tabBar, { paddingBottom: insets.bottom?insets.bottom :10 }]}>
-      {state.routes.map((route: any, index: number) => {
-        const { options } = descriptors[route.key];
-        const isFocused = state.index === index;
-
+    <View style={containerStyle}>
+      {state.routes.map((route, index) => {
         const routeName = route.name as RouteName;
-
-        const imageSource = routeName in imageSources
-          ? isFocused
-            ? imageSources[routeName].active
-            : imageSources[routeName].inactive
-          : imageSources.home.active;
-
-        const iconStyle = iconSizes[routeName] || { width: standardSize, height: standardSize };
-
-        const onPress = () => {
-          const event = navigation.emit({
-            type: 'tabPress',
-            target: route.key,
-            canPreventDefault: true,
-          });
-
-          if (!isFocused && !event.defaultPrevented) {
-            navigation.navigate(route.name, route.params);
-          }
-        };
-
-        const onLongPress = () => {
-          navigation.emit({
-            type: 'tabLongPress',
-            target: route.key,
-          });
-        };
+        const isFocused = state.index === index;
+        const shouldBlockAccess = !isAuthenticated && routeName !== 'index';
+        const iconStyle = getIconStyle(routeName);
 
         return (
-          <TouchableOpacity
-            accessibilityState={isFocused ? { selected: true } : {}}
-            accessibilityLabel={options.tabBarAccessibilityLabel}
-            testID={options.tabBarButtonTestID}
-            onPress={onPress}
-            onLongPress={onLongPress}
+          <TabBarItem
             key={route.key}
-            style={style.tabBarItem}
-          >
-            <Image source={imageSource} style={iconStyle} resizeMode="contain" />
-          </TouchableOpacity>
+            route={route}
+            isFocused={isFocused}
+            isAuthenticated={isAuthenticated}
+            iconStyle={iconStyle}
+            standardSize={standardSize}
+            onPress={() => handleTabPress(routeName, shouldBlockAccess)}
+          />
         );
       })}
     </View>
   );
 };
 
-const style = StyleSheet.create({
+// Styles externalisés
+const styles = StyleSheet.create({
   tabBar: {
     flexDirection: 'row',
     backgroundColor: 'white',
@@ -109,14 +179,13 @@ const style = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 5,
     paddingTop: 10,
-    maxHeight:100
+    maxHeight: 100,
   },
   tabBarItem: {
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 2,
-    
   },
 });
 
-export default TabBar;
+export default memo(TabBar);

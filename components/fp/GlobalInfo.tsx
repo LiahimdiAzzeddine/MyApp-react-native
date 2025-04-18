@@ -27,7 +27,6 @@ const GlobalInfo: React.FC<GlobalInfoProps> = (props) => {
   };
   
   const handleImageError = () => {
-    console.log("Erreur de chargement de l'image");
     setImageLoading(false);
   };
 

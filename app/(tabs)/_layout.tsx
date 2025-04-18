@@ -1,51 +1,47 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
-import TabBar from '@/components/TabBar';
-import CustomHeader from '@/components/CustomHeader';
+import { Tabs } from "expo-router";
+import TabBar from "@/components/TabBar";
+import CustomHeader from "@/components/CustomHeader";
+import ScanHeader from "@/components/headers/ScanHeader";
 
 export default function TabLayout() {
   return (
-    <Tabs
-   tabBar={props=><TabBar {...props}/>}
-    >   <Tabs.Screen
+    <Tabs tabBar={(props) => <TabBar {...props} />}>
+      {" "}
+      <Tabs.Screen
         name="home"
         options={{
-          title: 'Home',
+          title: "Home",
           header: () => <CustomHeader title="Home" />,
-
         }}
-      /> 
+      />
       <Tabs.Screen
         name="helpTico"
         options={{
-          title: 'HelpTico',
-          header: () => <CustomHeader color="#e1f5f5" title="HelpTico" />,
+          title: "HelpTico",
+          header: () => <CustomHeader title="HelpTico" />,
         }}
       />
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Scanner',
-          header: () => <CustomHeader title="Scanner" />,
-
+          title: "Scanner",
+          header: () => <ScanHeader />,
         }}
       />
       <Tabs.Screen
         name="recipes"
         options={{
-          title: 'Recipes',
+          title: "Recipes",
           header: () => <CustomHeader title="Recipes" />,
-
         }}
       />
-       <Tabs.Screen
+      <Tabs.Screen
         name="tips"
         options={{
-          title: 'Tips',
+          title: "Tips",
           header: () => <CustomHeader title="Tips" />,
         }}
       />
-     
     </Tabs>
   );
 }
