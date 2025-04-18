@@ -1,15 +1,6 @@
+import { calculateTotalTime, generateImageUrl, Recipe } from '@/types/recipe';
 import React from 'react';
 import { View, Text, Image, ImageBackground, TouchableOpacity, StyleSheet } from 'react-native';
-
-type Recipe = {
-  title: string;
-  image?: string;
-  difficulte?: string;
-  timecook?: string;
-  timerest?: string;
-  timebake?: string;
-  totalTime?: string;
-};
 
 type Props = {
   recipe: Recipe;
@@ -23,20 +14,19 @@ const Item: React.FC<Props> = ({ recipe, index, length, OpenFb }) => {
 
   return (
     <View key={index}>
-      <TouchableOpacity style={styles.container} onPress={() => OpenFb(recipe)}>
+      <TouchableOpacity style={styles.container} onPress={() => OpenFb(recipe)} className='px-6'>
         {/* Image produit avec fond */}
         <ImageBackground
           source={require('@/assets/images/recipes/productBg.png')}
           style={styles.imageBg}
           imageStyle={styles.imageBgStyle}
+          className='border-red-500 border-2'
         >
           <Image
-            source={{ uri: recipe.image || '' }}
+            source={{ uri: generateImageUrl(recipe.id, recipe.image_name) || '' }}
             defaultSource={require('@/assets/images/recipes/64.png')}
             style={styles.image}
-            onError={() => {
-              // handle image fallback manually if needed
-            }}
+            
           />
         </ImageBackground>
 
@@ -44,14 +34,13 @@ const Item: React.FC<Props> = ({ recipe, index, length, OpenFb }) => {
         <View style={styles.details}>
           <Text style={styles.title}>{recipe.title}</Text>
           <Text style={styles.subtitle}>
-            {recipe.difficulte && `${recipe.difficulte} | `}
             {(recipe.timecook || recipe.timerest || recipe.timebake) &&
-              `Temps total : ${recipe.totalTime}`}
+              `Temps total : ${calculateTotalTime(recipe.timecook,recipe.timerest,recipe.timebake)}`}
           </Text>
         </View>
 
         {/* Bouton flèche */}
-        <Image source={require('@/assets/images/recipes/recipeFlecheold.png')} style={styles.arrow} />
+        <Image source={require('@/assets/images/recipes/recipeFleche.png')} style={styles.arrow} />
       </TouchableOpacity>
 
       {/* Séparateur */}

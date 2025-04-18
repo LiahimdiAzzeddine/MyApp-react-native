@@ -1,7 +1,7 @@
 import { Tabs } from "expo-router";
-import TabBar from "@/components/TabBar";
 import CustomHeader from "@/components/CustomHeader";
 import ScanHeader from "@/components/headers/ScanHeader";
+import TabBar from "@/components/TabBar";
 
 export default function TabLayout() {
   return (

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from '@/api/axios'; // adapte ce chemin selon ton projet
+import axios from '@/api/axios'; 
 import { Recipe, UseRecipesLastResult } from '@/types/recipe';
 
 

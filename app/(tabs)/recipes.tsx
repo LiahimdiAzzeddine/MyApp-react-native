@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, SafeAreaView, TextInput, Button, ScrollView, ActivityIndicator, Modal, TouchableOpacity } from "react-native";
-import { Ionicons } from '@expo/vector-icons'; // Utiliser Ionicons pour les icônes
+import { Ionicons } from '@expo/vector-icons'; 
 import { useTheme } from '@react-navigation/native';
 import useRecipesLast from '@/hooks/recipes/useRecipesLast';
-import Item from "@/components/ui/ItemRecipe";
+import Item from "@/components/recipes/ItemRecipe";
 import LoadingState from "@/components/recipes/LoadingState";
 import EmptyState from "@/components/recipes/EmptyState";
 import ErrorState from "@/components/recipes/ErrorState";
 import RecipeDetails from "@/components/recipes/RecipeDetails";
+
 const Recipes = () => {
   const { colors } = useTheme();
   const [searchTerm, setSearchTerm] = useState("");
@@ -53,13 +54,14 @@ const Recipes = () => {
           value={searchTerm}
           onChangeText={handleSearch}
         />
+        {/** 
         <TouchableOpacity onPress={() => handleSearch(searchTerm)}>
           <Ionicons name="search-outline" size={24} color={colors.primary} />
-        </TouchableOpacity>
+        </TouchableOpacity>*/}
       </View>
 
       {/* Liste des recettes */}
-      <ScrollView style={styles.recipeList}>
+      <ScrollView style={styles.recipeList} >
         {loading ? (
           <LoadingState />
         ) : error ? (
@@ -159,6 +161,8 @@ const styles = StyleSheet.create({
   },
   recipeList: {
     flex: 1,
+    backgroundColor:"white",
+    
   },
   pagination: {
     flexDirection: 'row',

@@ -122,6 +122,8 @@ const styles = StyleSheet.create({
     width: '80%',
     maxWidth: 300,
     alignItems: 'center',
+    justifyContent:'center',
+    flex:1,
     gap: 15,
   },
 
