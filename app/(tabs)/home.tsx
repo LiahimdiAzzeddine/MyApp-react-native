@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { getUserInfo } from '@/utils/authStorage';
 
 import {
   View,
@@ -7,19 +6,18 @@ import {
   StyleSheet,
   SafeAreaView,
   ScrollView,
-  TouchableOpacity,
   ImageBackground,
   Image,
 } from 'react-native';
 import { AuthContext } from '@/context/AuthContext';
 import CustomButton from '@/components/ui/CustomButton';
 import { useTheme } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 
 const Home = () => {
   const { userInfo } = useContext(AuthContext);
   const { colors } = useTheme();
-
-
+  const router = useRouter();
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -35,7 +33,7 @@ const Home = () => {
               resizeMode="contain"
               style={styles.imageBackground}
             >
-              {userInfo?.username && <Text style={styles.greeting}>Bonjour {userInfo?.username} !</Text>}
+              {userInfo?.username && <Text style={styles.greeting} className='text-2.5xl'>Bonjour {userInfo?.username} !</Text>}
               <Image
                 source={require('@/assets/images/hands.png')}
                 style={styles.handsImage}
@@ -47,15 +45,15 @@ const Home = () => {
           {/* Boutons */}
           <View style={styles.buttonsContainer}>
             {[
-              { title: 'La mission de TiCO' },
-              { title: 'Historique de scan' },
-              { title: 'Produits à consulter' },
-              { title: 'Suivi de mes demandes' },
+              { title: 'La mission de TiCO', route: 'hometab/mission' },
+              { title: 'Historique de scan', route: '/hometab' },
+              { title: 'Produits à consulter', route: 'hometab/details' },
+              { title: 'Suivi de mes demandes', route: '/hometab' },
             ].map((btn, idx) => (
               <CustomButton
               key={idx}
                   title={btn.title}
-                  onPress={()=>{console.log()}}
+                  onPress={() => router.push(btn.route)}
                   accessibilityLabel="Bouton pour partager TiCO"
                   accessibilityHint="Ouvre les options de partage pour l'application TiCO"
                   style={{
@@ -97,7 +95,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   imageBackground: {
-    width: 260,
+    width: 275,
     height: 250,
     alignItems: 'center',
     justifyContent: 'flex-start',
@@ -106,8 +104,7 @@ const styles = StyleSheet.create({
   },
   greeting: {
     position: 'absolute',
-    top: '26%',
-    fontSize: 22,
+    top: '25%',
     color: '#4E986D',
     fontWeight: 'bold',
     textAlign: 'center',

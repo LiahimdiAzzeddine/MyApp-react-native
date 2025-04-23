@@ -18,7 +18,6 @@ import { AuthProvider } from "@/context/AuthContext";
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
@@ -48,18 +47,19 @@ export default function RootLayout() {
       value={colorScheme === "dark" ? CustomDarkTheme : LightTheme}
     >
       <AuthProvider>
-        <Stack>   
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />      
-            <Stack.Screen name="(auth)" options={{ headerShown: false }}  />
-            <Stack.Screen
-        name="settings"
-        options={{
-          title: 'Paramètres',
-          animation:"fade",
-          headerShown: true,
-        }}
-      />
-            <Stack.Screen name="+not-found" />
+        <Stack>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="hometab" options={{ headerShown: false }} />
+          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="settings"
+            options={{
+              title: "Paramètres",
+              animation: "fade",
+              headerShown: true,
+            }}
+          />
+          <Stack.Screen name="+not-found" />
         </Stack>
         <StatusBar style="auto" />
       </AuthProvider>

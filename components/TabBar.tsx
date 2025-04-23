@@ -3,6 +3,7 @@ import React, { useContext, memo, useCallback, useMemo } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AuthContext } from '@/context/AuthContext';
 import { useRouter } from 'expo-router';
+import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 
 // Types bien définis
 interface TabBarProps {
@@ -17,6 +18,7 @@ interface TabBarProps {
 }
 
 type RouteName = 'home' | 'helpTico' | 'index' | 'recipes' | 'tips';
+const visibleRoutes = ["home", "helpTico", "index", "recipes", "tips"];
 
 // Constantes extraites en dehors du composant
 const routePaths = {
@@ -94,7 +96,7 @@ const TabBarItem = memo(({ route, isFocused, isAuthenticated, iconStyle, onPress
 });
 
 // Composant principal optimisé
-const TabBar = ({ state, descriptors }: TabBarProps) => {
+const TabBar = ({ state }: BottomTabBarProps) => {
   const screenWidth = Dimensions.get('window').width;
   const standardSize = screenWidth * 0.15;
   const insets = useSafeAreaInsets();
@@ -148,7 +150,7 @@ const TabBar = ({ state, descriptors }: TabBarProps) => {
 
   return (
     <View style={containerStyle}>
-      {state.routes.map((route, index) => {
+      {state.routes.filter((route) => visibleRoutes.includes(route.name)).map((route, index) => {
         const routeName = route.name as RouteName;
         const isFocused = state.index === index;
         const shouldBlockAccess = !isAuthenticated && routeName !== 'index';
@@ -157,7 +159,7 @@ const TabBar = ({ state, descriptors }: TabBarProps) => {
         return (
           <TabBarItem
             key={route.key}
-            route={route}
+            route={route as { key: string; name: RouteName }}
             isFocused={isFocused}
             isAuthenticated={isAuthenticated}
             iconStyle={iconStyle}
