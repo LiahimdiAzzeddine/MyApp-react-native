@@ -48,7 +48,7 @@ const Home = () => {
               { title: 'La mission de TiCO', route: 'hometab/mission' },
               { title: 'Historique de scan', route: '/hometab' },
               { title: 'Produits à consulter', route: 'hometab/details' },
-              { title: 'Suivi de mes demandes', route: '/hometab' },
+              { title: 'Suivi de mes demandes', route: '/hometab/demands' },
             ].map((btn, idx) => (
               <CustomButton
               key={idx}

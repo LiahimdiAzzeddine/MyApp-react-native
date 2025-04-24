@@ -16,6 +16,6 @@ export interface RolePermission {
     id: number;
     username: string;
     email: string;
+    status: number,
     role: Role;
   }
-  

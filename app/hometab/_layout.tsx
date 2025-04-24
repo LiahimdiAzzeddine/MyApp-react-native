@@ -1,14 +1,12 @@
-import { Stack } from 'expo-router'
+import { Stack } from "expo-router";
 
 export default function _layout() {
   return (
     <Stack>
-      <Stack.Screen
-        name="mission"
-      />
-      <Stack.Screen
-        name="details"
-      />
+      <Stack.Screen name="mission"  />
+      <Stack.Screen name="demands" />
+      <Stack.Screen name="details" />
+      <Stack.Screen name="demandDetail"  />
     </Stack>
-  )
+  );
 }
