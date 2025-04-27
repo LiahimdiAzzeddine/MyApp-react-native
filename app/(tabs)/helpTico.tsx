@@ -11,6 +11,7 @@ import {
   Share,
   ScrollView,
 } from "react-native";
+import {styles} from "./style"
 
 const apiUrl = "https://tico.foodhea.com";
 
@@ -64,33 +65,15 @@ const HelpTico = () => {
         >
           {/* Header */}
           <View
-            style={{
-              width: "100%",
-              alignItems: "center",
-              padding: 10,
-            }}
+           style={styles.header}
           >
             <ImageBackground
               source={require("@/assets/images/tico_intro.png")}
               resizeMode="contain"
-              style={{
-                width: 270,
-                height: 270,
-                alignItems: "center",
-                justifyContent: "flex-start",
-                marginLeft: "auto",
-                marginRight: "auto",
-              }}
+              style={styles.imageBackground}
             >
               <Text
-                style={{
-                  marginTop: 45,
-                  fontFamily: "ClashDisplayBold",
-                  textAlign: "center", // equivalent to text-center
-                  color: "#1e3a8a", // replace with custom blue if needed
-                  marginLeft: "auto",
-                  marginRight: "auto",
-                }}
+             style={styles.greetinghelp}
                 className="leading-clash text-2xl"
               >
                 Vous avez le pouvoir{"\n"}de changer les choses
@@ -99,9 +82,9 @@ const HelpTico = () => {
                 source={require("@/assets/images/helpHands.png")}
                 style={{
                   position: "absolute",
-                  bottom: 40,
-                  width: 170,
-                  height: 130,
+                  bottom: 30,
+                  width: 160,
+                  height: 110,
                 }}
                 resizeMode="contain"
               />
@@ -109,7 +92,7 @@ const HelpTico = () => {
           </View>
 
           {/* Content Section */}
-          <View className="px-4 py-4 items-center justify-center w-full">
+          <View style={styles.buttonsContainer} className="w-full">
             {/* Bloc 1 : Partage */}
             <View className="items-center w-full max-w-sm pb-6">
               <Text
@@ -130,7 +113,7 @@ const HelpTico = () => {
                   style={{
                     position: "absolute",
                     top: -8,
-                    left: "11%",
+                    left: "10%",
                     width: 32,
                     height: 32,
                     resizeMode: "contain",
@@ -174,7 +157,7 @@ const HelpTico = () => {
                   style={{
                     position: "absolute",
                     top: -8,
-                    right: "11%",
+                    right: "10%",
                     width: 32,
                     height: 32,
                     resizeMode: "contain",

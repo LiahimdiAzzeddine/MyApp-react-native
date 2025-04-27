@@ -6,7 +6,7 @@ export default function _layout() {
       <Stack.Screen name="mission"  />
       <Stack.Screen name="demands" />
       <Stack.Screen name="details" />
-      <Stack.Screen name="demandDetail"  />
+      <Stack.Screen name="demandDetail"/>
     </Stack>
   );
 }

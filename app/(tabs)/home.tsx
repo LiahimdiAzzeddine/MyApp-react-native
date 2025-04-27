@@ -1,9 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
-
+import {styles} from "./style"
 import {
   View,
   Text,
-  StyleSheet,
   SafeAreaView,
   ScrollView,
   ImageBackground,
@@ -33,7 +32,7 @@ const Home = () => {
               resizeMode="contain"
               style={styles.imageBackground}
             >
-              {userInfo?.username && <Text style={styles.greeting} className='text-2.5xl'>Bonjour {userInfo?.username} !</Text>}
+              {userInfo?.username && <Text style={styles.greeting} className='text-2xl'>Bonjour {userInfo?.username} !</Text>}
               <Image
                 source={require('@/assets/images/hands.png')}
                 style={styles.handsImage}
@@ -43,7 +42,7 @@ const Home = () => {
           </View>
 
           {/* Boutons */}
-          <View style={styles.buttonsContainer}>
+          <View style={styles.buttonsContainer} className='w-[80%]'>
             {[
               { title: 'La mission de TiCO', route: 'hometab/mission' },
               { title: 'Historique de scan', route: '/hometab' },
@@ -53,7 +52,7 @@ const Home = () => {
               <CustomButton
               key={idx}
                   title={btn.title}
-                  onPress={() => router.push(btn.route)}
+                  onPress={() => router.push(btn.route as any)}
                   accessibilityLabel="Bouton pour partager TiCO"
                   accessibilityHint="Ouvre les options de partage pour l'application TiCO"
                   style={{
@@ -71,59 +70,5 @@ const Home = () => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: '#ffffff',
-  },
-  headerContainer: {
-    flex: 1,
-    backgroundColor: '#c7f0d9',
-    borderBottomLeftRadius: 40,
-    borderBottomRightRadius: 40,
-    overflow: 'hidden',
-  },
-  scrollContent: {
-    flexGrow: 1,
-    paddingBottom: 30,
-    alignItems: 'center',
-  },
-  header: {
-    width: '100%',
-    alignItems: 'center',
-    padding: 10,
-  },
-  imageBackground: {
-    width: 275,
-    height: 250,
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    marginLeft: 'auto',
-    marginRight: 'auto',
-  },
-  greeting: {
-    position: 'absolute',
-    top: '25%',
-    color: '#4E986D',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  handsImage: {
-    position: 'absolute',
-    bottom: 40,
-    width: 230,
-    height: 100,
-  },
-  buttonsContainer: {
-    width: '80%',
-    maxWidth: 300,
-    alignItems: 'center',
-    justifyContent:'center',
-    flex:1,
-    gap: 15,
-  },
-
-});
 
 export default Home;

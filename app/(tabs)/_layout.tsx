@@ -2,9 +2,11 @@ import { Tabs } from "expo-router";
 import CustomHeader from "@/components/CustomHeader";
 import ScanHeader from "@/components/headers/ScanHeader";
 import TabBar from "@/components/TabBar";
+import { ScannerBottomSheetProvider } from "@/context/ScannerBottomSheetContext";
 
 export default function TabLayout() {
   return (
+
     <Tabs tabBar={(props) => <TabBar {...props} />} >
       <Tabs.Screen
         name="home"

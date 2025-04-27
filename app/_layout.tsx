@@ -9,11 +9,13 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import "react-native-reanimated";
 import "../global.css";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { StatusBar } from "expo-status-bar";
 import { CustomDarkTheme, LightTheme } from "@/utils/themeOptions";
 import { AuthProvider } from "@/context/AuthContext";
+import { ScannerBottomSheetProvider } from "@/context/ScannerBottomSheetContext";
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
@@ -47,6 +49,8 @@ export default function RootLayout() {
       value={colorScheme === "dark" ? CustomDarkTheme : LightTheme}
     >
       <AuthProvider>
+      <GestureHandlerRootView style={{flex:1}}>
+
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="hometab" options={{ headerShown: false,animation: 'none' }} />
@@ -60,7 +64,7 @@ export default function RootLayout() {
             }}
           />
           <Stack.Screen name="+not-found" />
-        </Stack>
+        </Stack></GestureHandlerRootView>
         <StatusBar style="auto" />
       </AuthProvider>
     </ThemeProvider>
