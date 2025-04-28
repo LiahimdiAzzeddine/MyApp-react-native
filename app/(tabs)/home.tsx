@@ -45,8 +45,8 @@ const Home = () => {
           <View style={styles.buttonsContainer} className='w-[80%]'>
             {[
               { title: 'La mission de TiCO', route: 'hometab/mission' },
-              { title: 'Historique de scan', route: '/hometab' },
-              { title: 'Produits à consulter', route: 'hometab/details' },
+              { title: 'Historique de scan', route: '/hometab/history' },
+              { title: 'Produits à consulter', route: 'hometab/laterProducts' },
               { title: 'Suivi de mes demandes', route: '/hometab/demands' },
             ].map((btn, idx) => (
               <CustomButton

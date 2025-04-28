@@ -93,12 +93,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     maxWidth: 96,
-    maxHeight: 80,
+    maxHeight: 120,
   },
   productImage: {
-    width: 96,
-    height: 80,
-    resizeMode: 'cover',
+    width: 100,
+    height: 100,
+    resizeMode: 'center',
   },
   productInfo: {
     justifyContent: 'space-around',

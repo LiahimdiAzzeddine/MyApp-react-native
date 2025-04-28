@@ -4,13 +4,14 @@ import {
   useCameraPermissions,
   FlashMode,
 } from "expo-camera";
-import React, { useMemo, useRef, useState, useCallback } from "react";
+import React, { useMemo, useRef, useState, useCallback, useContext } from "react";
 import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import BottomSheet from "@gorhom/bottom-sheet";
 import ScannerBottomSheet from "@/components/ScannerBottomSheet";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {styles} from "./style"
+import { AuthContext } from "@/context/AuthContext";
 
 export default function Scanner() {
   // États
@@ -20,6 +21,8 @@ export default function Scanner() {
   const [flashMode, setFlashMode] = useState<FlashMode>("off");
   const [isScanning, setIsScanning] = useState(true);
   const [bottomSheetIndex, setBottomSheetIndex] = useState(-1);
+    const { userInfo } = useContext(AuthContext);
+  
   
   // Refs
   const bottomSheetRef = useRef<BottomSheet>(null);
@@ -129,8 +132,7 @@ export default function Scanner() {
         snapPoints={snapPoints}
         barcode={scannedBarcode}
         onClose={resetScanner}
-        onIndexChange={handleSheetIndexChange}
-      />
+        onIndexChange={handleSheetIndexChange} isAuthenticated={userInfo?true:false}      />
     </View>
   );
 }

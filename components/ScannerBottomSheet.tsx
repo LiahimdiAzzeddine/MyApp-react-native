@@ -7,6 +7,7 @@ import ModalHeader from './fp/ModalHeader';
 import { addProduct } from '@/utils/storage';  // Fonction d'ajout à l'historique
 import { addLaterProduct } from '@/utils/storage'; // Fonction d'ajout "plus tard"
 import NetInfo from '@react-native-community/netinfo';  // Importation de NetInfo
+import TransparencyScale from './fp/TransparencyScale';
 
 interface ScannerBottomSheetProps {
   bottomSheetRef: React.RefObject<BottomSheet>;
@@ -80,12 +81,16 @@ export default function ScannerBottomSheet({
         ) : isOnline ? (
           // Si l'utilisateur est en ligne
           productData ? (
+            <>
+            <TransparencyScale currentPosition={0} setCurrentPosition={function (position: number): void {
+                  throw new Error('Function not implemented.');
+                } }          />
             <GlobalInfo 
               ImageSrc={productData.image} 
               Name={productData.name} 
               Brand={productData.trademark} 
               Transparent={0} 
-            />
+            /></>
           ) : (
             <Text style={styles.modalText}>Aucun produit trouvé pour ce code-barres.</Text>
           )

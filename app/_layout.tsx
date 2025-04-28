@@ -32,6 +32,7 @@ export default function RootLayout() {
     ArchivoExtraBold: require("../assets/fonts/Archivo-ExtraBold.otf"),
     ArchivoBoldItalic: require("../assets/fonts/Archivo-BoldItalic.otf"),
     ArchivoLight: require("../assets/fonts/Archivo-Light.otf"),
+    ArchivoItalic:require("../assets/fonts/Archivo-Italic.otf"),
   });
 
   useEffect(() => {
