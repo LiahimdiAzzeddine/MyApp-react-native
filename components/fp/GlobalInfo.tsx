@@ -5,10 +5,10 @@ import { Ionicons } from "@expo/vector-icons";
 const productDeffaultImg = require('@/assets/images/defaults/500x400.png'); 
 
 interface GlobalInfoProps {
-  ImageSrc?: string;
-  Name: string;
-  Brand: string;
-  Transparent: number;
+  ImageSrc?: string |null;
+  Name: string |null;
+  Brand: string |null;
+  Transparent: number |null;
 }
 
 const GlobalInfo: React.FC<GlobalInfoProps> = (props) => {
@@ -106,17 +106,18 @@ const styles = StyleSheet.create({
   },
   productName: {
     fontSize: 20,
-    fontWeight: 'bold',
     color: '#0f548d',
+    fontFamily:'ArchivoBold',
   },
   productBrand: {
     fontSize: 14,
     color: '#42a29a',
+    fontFamily:'ArchivoBold',
   },
   productTransparency: {
     fontSize: 14,
     color: '#42a29a',
-    fontWeight: 'bold',
+    fontFamily:'ArchivoBold',
   },
   modalContainer: {
     flex: 1,

@@ -2,9 +2,10 @@ import { useState, useCallback } from 'react';
 import axiosInstance from '../../api/axios';  
 import { Alert } from 'react-native';
 import { createProduct } from '@/utils/product';
+import { Product } from '@/types/product';
 
 const useGetProduct = (ean: string) => {
-  const [productData, setProductData] = useState<any>(null); // Utilisation de 'any' pour la donnée de produit
+  const [productData, setProductData] = useState<Product|null>(null); // Utilisation de 'any' pour la donnée de produit
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -17,7 +18,7 @@ const useGetProduct = (ean: string) => {
       const data = response.data;
       if (response.status === 200 && (data.OFFproduct != null || data.foodheaproduct != null)) {
         const FormatedData=createProduct(ean,data);
-        setProductData(FormatedData);
+        setProductData(FormatedData as Product);
       } else {
         setError('Erreur inattendue lors de la récupération du produit.');
         setProductData(null);

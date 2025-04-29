@@ -39,10 +39,11 @@ export const styles = StyleSheet.create({
     },
     greetinghelp: {
         position: 'absolute',
-        top: '22%',
+        top:50,
         color: '#1e3a8a',
         fontWeight: 'bold',
         textAlign: 'center',
+        width:"100%"
       },
     handsImage: {
       position: 'absolute',

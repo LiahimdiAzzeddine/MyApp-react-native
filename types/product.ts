@@ -40,6 +40,7 @@ export interface Additif {
   }
   
   export interface Product {
+    commentaire: any;
     isFoodheaProduct: boolean;
     image: string | null;
     name: string | null;

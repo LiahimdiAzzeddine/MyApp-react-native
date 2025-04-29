@@ -13,10 +13,13 @@ export interface Ingredient {
     etape5?: string;
     etape6?: string;
   }
-  
+ 
   export interface Recipe {
     manager: any;
     id: number;
+    difficulte: string;
+    totalTime: string;
+    regimes: string[];
     errmsg: string | null;
     created: string;
     createdby: number;

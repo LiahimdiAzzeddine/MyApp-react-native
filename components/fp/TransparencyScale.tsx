@@ -39,12 +39,10 @@ const WhiteModal = ({
 
 type TransparencyScaleProps = {
   currentPosition: number;
-  setCurrentPosition: (position: number) => void;
 };
 
 const TransparencyScale: React.FC<TransparencyScaleProps> = ({ 
   currentPosition, 
-  setCurrentPosition 
 }) => {
   const positions = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
   const [showModalTransparency, setShowModalTransparency] = useState(false);
@@ -54,9 +52,7 @@ const TransparencyScale: React.FC<TransparencyScaleProps> = ({
   const indicateur100Image = require('@/assets/images/fp/indicateur100.png');
   const scaleImage = require('@/assets/images/fp/scale-image.png');
 
-  const handlePositionChange = (index: number) => {
-    setCurrentPosition(index);
-  };
+  
 
   const getIndicatorStyle = (index: number) => {
     const baseSize = index !== 11 ? 25 : 14;
@@ -101,7 +97,6 @@ const TransparencyScale: React.FC<TransparencyScaleProps> = ({
               <TouchableOpacity
                 key={index}
                 style={styles.positionTouchable}
-                onPress={() => handlePositionChange(index + 1)}
               >
                 {currentPosition === (index + 1) && (
                   <Image

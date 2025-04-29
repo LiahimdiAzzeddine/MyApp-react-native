@@ -8,6 +8,11 @@ import { addProduct } from '@/utils/storage';  // Fonction d'ajout à l'historiq
 import { addLaterProduct } from '@/utils/storage'; // Fonction d'ajout "plus tard"
 import NetInfo from '@react-native-community/netinfo';  // Importation de NetInfo
 import TransparencyScale from './fp/TransparencyScale';
+import Encourager from './fp/Encourager';
+import { useGlobalContext } from '@/context/GlobalFpContext';
+import InfoSection from './fp/InfoSection';
+import ProductDetailsAccordion from './fp/ProductDetailsAccordion';
+import { ScrollView } from 'react-native-gesture-handler';
 
 interface ScannerBottomSheetProps {
   bottomSheetRef: React.RefObject<BottomSheet>;
@@ -31,6 +36,7 @@ export default function ScannerBottomSheet({
   // Gestion de l'état de la connexion
   const [isOnline, setIsOnline] = useState<boolean>(true);  // Par défaut, on considère que l'utilisateur est en ligne
   const { productData, loading, error, fetchProduct } = useGetProduct(barcode || '');
+  const { setHasRequested, hasRequested, isCourager, setIsCourager } = useGlobalContext();
 
   useEffect(() => {
     // Écoute des changements de l'état de la connexion réseau
@@ -51,6 +57,9 @@ export default function ScannerBottomSheet({
     // Si l'utilisateur est connecté et que nous avons des données de produit, on l'ajoute à l'historique automatiquement
     if (isAuthenticated && productData) {
       addProduct(productData);
+      if (productData.alreadyRequest !== undefined) {
+        setHasRequested(productData.alreadyRequest);
+      }
     }
   }, [isAuthenticated, productData]); // Effectue l'ajout quand l'utilisateur est connecté et qu'on a des données de produit
 
@@ -81,16 +90,19 @@ export default function ScannerBottomSheet({
         ) : isOnline ? (
           // Si l'utilisateur est en ligne
           productData ? (
-            <>
-            <TransparencyScale currentPosition={0} setCurrentPosition={function (position: number): void {
-                  throw new Error('Function not implemented.');
-                } }          />
+            <ScrollView  >
+            <View style={{paddingHorizontal:10}}>
+            <TransparencyScale currentPosition={productData.transparency_scale}   />
             <GlobalInfo 
               ImageSrc={productData.image} 
               Name={productData.name} 
               Brand={productData.trademark} 
-              Transparent={0} 
-            /></>
+              Transparent={productData.transparency_scale} 
+            />
+            <Encourager product={productData}/></View>
+            <InfoSection product={productData}/>
+            <ProductDetailsAccordion product={productData}/>
+            </ScrollView>
           ) : (
             <Text style={styles.modalText}>Aucun produit trouvé pour ce code-barres.</Text>
           )
@@ -116,7 +128,6 @@ export default function ScannerBottomSheet({
 const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
-    paddingHorizontal: 10,
     paddingTop: 0,
     marginTop: 0,
     alignItems: 'center',

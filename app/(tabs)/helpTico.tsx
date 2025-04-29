@@ -83,8 +83,9 @@ const HelpTico = () => {
                 style={{
                   position: "absolute",
                   bottom: 30,
-                  width: 160,
-                  height: 110,
+                  width: 200,
+                  height: 120,
+                  top:110
                 }}
                 resizeMode="contain"
               />

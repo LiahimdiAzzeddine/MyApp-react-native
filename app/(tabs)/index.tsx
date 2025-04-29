@@ -12,6 +12,7 @@ import ScannerBottomSheet from "@/components/ScannerBottomSheet";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {styles} from "./style"
 import { AuthContext } from "@/context/AuthContext";
+import { GlobalFpProvider } from "@/context/GlobalFpContext";
 
 export default function Scanner() {
   // États
@@ -125,6 +126,7 @@ export default function Scanner() {
           </View>
         </CameraView>
       </View>
+      <GlobalFpProvider>
      
       <ScannerBottomSheet
         bottomSheetRef={bottomSheetRef}
@@ -133,6 +135,7 @@ export default function Scanner() {
         barcode={scannedBarcode}
         onClose={resetScanner}
         onIndexChange={handleSheetIndexChange} isAuthenticated={userInfo?true:false}      />
+        </GlobalFpProvider>
     </View>
   );
 }
