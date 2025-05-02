@@ -16,7 +16,7 @@ const Item = ({ tip, index, length, OpenTip }: ItemProps) => {
     return null;
   }
 
-  const imageSrc = tip.category.image_url ? { uri: tip.category.image_url } : require('@/assets/images/recipes/64.png');
+  const imageSrc = tip.category.image_url ? { uri: 'https://'+tip.category.image_url } : require('@/assets/images/recipes/64.png');
 
   return (
     <View key={index} style={styles.itemContainer}>
@@ -29,9 +29,10 @@ const Item = ({ tip, index, length, OpenTip }: ItemProps) => {
         {/* Détails du conseil */}
         <View style={styles.detailsContainer}>
           <Text style={styles.title}>{tip.titre}</Text>
+          {/**
           <Text style={styles.details}>
             {tip.details ? tip.details.substring(0, 50) + '...' : ''}
-          </Text>
+          </Text> */}
         </View>
 
         {/* Flèche */}
@@ -74,7 +75,7 @@ const styles = StyleSheet.create({
   },
   title: {
     color: '#FF9E2C',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 4,
   },

@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, ActivityIndicator, Button, Alert } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native'; // Pour la navigation
 import useRecipeById from '@/hooks/recipes/useRecipeById';
-import RecipeDetails from './RecipeDetails';
+import RecipeDetails from '@/components/recipes/RecipeDetails';
 import ErrorMessage from '@/components/recipes/ErrorMessage';
 
 const Recipe: React.FC = () => {
@@ -31,7 +31,7 @@ const Recipe: React.FC = () => {
         <ErrorMessage
           message={error || "No recipe found"}
           onClose={() => goToPage("Tab3")} // Remplacez Tab3 par le nom de la page à rediriger
-        />
+          icon={''}        />
       </View>
     );
   }

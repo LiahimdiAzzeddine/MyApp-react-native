@@ -1,69 +1,123 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, ActivityIndicator, StyleSheet, Image } from 'react-native';
-import { getAllLaterProducts } from '@/utils/storage'; // Ton getAllLaterProducts ici
+import React, { useEffect, useState, useCallback } from 'react';
+import { View, Text, FlatList, ActivityIndicator, StyleSheet, Image, Alert } from 'react-native';
+import { deleteProductFromLater, getAllLaterProducts } from '@/utils/storage';
 import { Product } from '@/types/product';
+import RenderHeader from '@/components/history/renderHeader';
+import LaterItem from '@/components/later/LaterItem';
+import SkeletonLoader from '@/components/history/SkeletonLoader';
+import { useRouter } from 'expo-router';
+import EmptyLater from '@/components/later/EmptyLater';
 
 export default function LaterProducts() {
   const [laterProducts, setLaterProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+    const router = useRouter();
 
-  useEffect(() => {
-    async function fetchLaterProducts() {
-      try {
-        const products = await getAllLaterProducts();
-        setLaterProducts(products);
-      } catch (error) {
-        console.error('Erreur lors du chargement des produits "plus tard" :', error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
+  // Création d'un handleOpenProduct avec useCallback pour éviter les re-renders inutiles
+  const handleOpenProduct = useCallback(async (product: Product) => {
+    await deleteProductFromLater(product.gtin);
     fetchLaterProducts();
+    router.push({
+      pathname: '/fp/productDetailsScreen',
+      params: {
+        gtin: product.gtin.toString(),
+        search: 'true',
+      },
+    });
+  }, []);
+    
+  
+
+  const handleDeleteProduct = useCallback(async (gtin: string) => {
+    try {
+      // Mettre à jour l'état localement sans recharger toute la liste
+      setLaterProducts(prevProducts => prevProducts.filter(product => product.gtin !== gtin));
+      
+      const result = await deleteProductFromLater(gtin);
+      
+      // Notification à l'utilisateur
+      Alert.alert("Suppression", result);
+    } catch (error) {
+      console.error('Erreur lors de la suppression :', error);
+      Alert.alert("Erreur", "La suppression a échoué");
+      
+      fetchLaterProducts();
+    }
   }, []);
 
-  if (loading) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color="#FF9800" />
-      </View>
-    );
-  }
+  // Extraire la fonction de récupération des produits pour pouvoir l'appeler dans handleDeleteProduct
+  const fetchLaterProducts = useCallback(async () => {
+    try {
+      setLoading(true);
+      const products = await getAllLaterProducts();
+      setLaterProducts(products);
+    } catch (error) {
+      console.error('Erreur lors du chargement des produits "plus tard" :', error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
-  if (laterProducts.length === 0) {
-    return (
-      <View style={styles.center}>
-        <Text style={styles.emptyText}>Aucun produit sauvegardé pour plus tard.</Text>
-      </View>
-    );
-  }
+  // useEffect pour charger les produits au montage du composant
+  useEffect(() => {
+    fetchLaterProducts();
+  }, []); // Dépendance vide pour exécuter uniquement au montage
 
-  const renderItem = ({ item }: { item: Product }) => (
-    <View style={styles.productContainer}>
-      {item.image ? (
-        <Image source={{ uri: item.image }} style={styles.productImage} />
-      ) : (
-        <View style={[styles.productImage, styles.placeholder]} />
+  const renderItem = ({ item, index }: { item: Product, index: number }) => (
+    <>
+      <LaterItem
+        product={item}
+        onOpenFb={() => handleOpenProduct(item)}
+        onDelete={() => handleDeleteProduct(item.gtin)}
+      />
+      {index < laterProducts.length - 1 && (
+        <View style={styles.separator} />
       )}
-      <View style={styles.productInfo}>
-        <Text style={styles.productName}>{item.name || 'Nom inconnu'}</Text>
-        <Text style={styles.productBrand}>{item.trademark || 'Marque inconnue'}</Text>
-        <Text style={styles.productGtin}>GTIN: {item.gtin}</Text>
-      </View>
-    </View>
+    </>
   );
 
+  // Afficher le loader pendant le chargement
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <RenderHeader title="Produits à consulter" />
+        <SkeletonLoader />
+      </View>
+    );
+  }
+
+  // Afficher un message si aucun produit n'est sauvegardé
+  if (laterProducts.length === 0) {
+    return (
+      <View style={styles.container}>
+        <RenderHeader title="Produits à consulter" />
+          <EmptyLater
+                title="Aucun produit sauvegardé" 
+                description="Hors ligne ? Scanner des produits pour les consulter plus tard"
+              />   
+      </View>
+    );
+  }
+
+  // Afficher la liste des produits
   return (
-    <FlatList
-      data={laterProducts}
-      keyExtractor={(item) => item.gtin}
-      renderItem={renderItem}
-      contentContainerStyle={styles.listContent}
-    />
+    <View style={styles.container}>
+      <RenderHeader title="Produits à consulter" />
+      <FlatList
+        data={laterProducts}
+        keyExtractor={(item) => item.gtin}
+        renderItem={renderItem}
+        contentContainerStyle={styles.listContent}
+      />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
   center: {
     flex: 1,
     justifyContent: 'center',
@@ -117,5 +171,10 @@ const styles = StyleSheet.create({
   productGtin: {
     fontSize: 12,
     color: '#999',
+  },
+  separator: {
+    height: 1,
+    backgroundColor: '#16a34a',
+    marginHorizontal: 10,
   },
 });

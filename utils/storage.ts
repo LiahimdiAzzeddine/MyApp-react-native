@@ -209,7 +209,7 @@ export const getLaterProduct = async (gtin: string): Promise<Product> => {
  * @param {string} gtin - GTIN du produit à supprimer
  * @returns {Promise<void>}
  */
-export const deleteProductFromLater = async (gtin: string): Promise<void> => {
+export const deleteProductFromLater = async (gtin: string): Promise<string> => {
   try {
     await initStorage();
     
@@ -222,7 +222,7 @@ export const deleteProductFromLater = async (gtin: string): Promise<void> => {
     
     // Sauvegarde la liste mise à jour
     await AsyncStorage.setItem(LATER_PRODUCTS_KEY, JSON.stringify(newLaterProducts));
-    console.log(`Produit avec GTIN ${gtin} supprimé avec succès de la liste "à voir plus tard".`);
+    return(`Produit avec GTIN ${gtin} supprimé avec succès de la liste "à voir plus tard".`);
   } catch (error) {
     console.error(`Erreur lors de la suppression du produit avec GTIN ${gtin}:`, error);
     throw error;

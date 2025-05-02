@@ -54,7 +54,10 @@ export default function RootLayout() {
 
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="hometab" options={{ headerShown: false,animation: 'none' }} />
+          <Stack.Screen name="hometab" options={{ headerShown: false,animation:'fade' }} />
+          <Stack.Screen name="recipetab" options={{ headerShown: false,animation: 'fade' }} />
+          <Stack.Screen name="tiptab" options={{ headerShown: false,animation: 'fade' }} />
+          <Stack.Screen name="fp" options={{ headerShown: false,animation: 'fade' }} />
           <Stack.Screen name="(auth)" options={{ headerShown: false }} />
           <Stack.Screen
             name="settings"

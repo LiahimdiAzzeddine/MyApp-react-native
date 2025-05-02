@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useRoute } from '@react-navigation/native';
 import useDemandDetails from '@/hooks/demand/useDemandDetails';
 import { View, Text, ScrollView, ActivityIndicator, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
 import GreenLineWithPoint from '@/components/demands/GreenLineWithPoint';
-import { Ionicons } from '@expo/vector-icons';
 import { Share } from 'react-native';
 
 const DemandDetail = () => {

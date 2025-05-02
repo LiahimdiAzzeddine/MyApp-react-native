@@ -12,14 +12,14 @@ export default function TabLayout() {
         name="home"
         options={{
           title: "Home",
-          header: () => <CustomHeader title="Home" />,
+          header: () => <CustomHeader  color="#c7f0d9" image='vx' back={false}/>,
         }}
       />
       <Tabs.Screen
         name="helpTico"
         options={{
           title: "HelpTico",
-          header: () => <CustomHeader title="HelpTico" />,
+          header: () => <CustomHeader color="#e1f5f5" image='bx' back={false} />,
         }}
       />
       <Tabs.Screen
@@ -33,14 +33,14 @@ export default function TabLayout() {
         name="recipes"
         options={{
           title: "Recipes",
-          header: () => <CustomHeader title="Recipes" />,
+          header: () => <CustomHeader />,
         }}
       />
       <Tabs.Screen
         name="tips"
         options={{
           title: "Tips",
-          header: () => <CustomHeader title="Tips" />,
+          header: () => <CustomHeader/>,
         }}
       />
     </Tabs>

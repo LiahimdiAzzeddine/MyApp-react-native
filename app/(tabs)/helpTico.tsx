@@ -54,7 +54,7 @@ const HelpTico = () => {
 
   return (
     <SafeAreaView className="flex-1 bg-white">
-      <View className="flex-1 bg-tab2-bg rounded-b-[40px] overflow-hidden">
+      <View className="flex-1 bg-tab2-bg rounded-b-[40px] overflow-hidden px-6">
         <ScrollView
           contentContainerStyle={{
             flexGrow: 1,
@@ -74,6 +74,7 @@ const HelpTico = () => {
             >
               <Text
              style={styles.greetinghelp}
+             
                 className="leading-clash text-2xl"
               >
                 Vous avez le pouvoir{"\n"}de changer les choses
@@ -83,8 +84,8 @@ const HelpTico = () => {
                 style={{
                   position: "absolute",
                   bottom: 30,
-                  width: 200,
-                  height: 120,
+                  width: 220,
+                  height: 110,
                   top:110
                 }}
                 resizeMode="contain"
@@ -97,7 +98,7 @@ const HelpTico = () => {
             {/* Bloc 1 : Partage */}
             <View className="items-center w-full max-w-sm pb-6">
               <Text
-                className="text-center mb-3 leading-archivo text-custom-blue text-base"
+                className="text-center mb-3 leading-archivo text-custom-blue text-base w-screen"
                 style={{
                   fontFamily: "ArchivoLight",
                 }}
@@ -139,7 +140,7 @@ const HelpTico = () => {
             <View className="items-center w-full max-w-sm pb-8">
               
               <Text
-                className="text-center mb-3 leading-archivo text-custom-blue text-base"
+                className="text-center mb-3 leading-archivo text-custom-blue text-base w-screen"
                 style={{ fontFamily: "ArchivoLight" }}
               >
                 Soutenir le développement de
@@ -180,7 +181,11 @@ const HelpTico = () => {
             </View>
 
             {/* Remerciement */}
-            <Text className="text-center leading-archivo text-custom-blue font-medium mt-4 mb-2 text-base">
+            <Text 
+            style={{
+              fontFamily: "ArchivoLight",
+            }}
+            className="text-center leading-archivo text-custom-blue font-medium mt-4 mb-2 text-base w-screen">
               Merci d'être acteur du changement !
             </Text>
           </View>

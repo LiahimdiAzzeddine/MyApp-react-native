@@ -31,19 +31,24 @@ export const styles = StyleSheet.create({
       marginRight: 'auto',
     },
     greeting: {
+      fontFamily: "ClashDisplayBold",
       position: 'absolute',
-      top: '25%',
+      top: 70,
+      left:10,
       color: '#4E986D',
-      fontWeight: 'bold',
       textAlign: 'center',
+      width:280,
+      alignItems:"center",
+      justifyContent:"center"
     },
     greetinghelp: {
+      fontFamily: "ClashDisplayBold",
         position: 'absolute',
         top:50,
+        left:10,
         color: '#1e3a8a',
-        fontWeight: 'bold',
         textAlign: 'center',
-        width:"100%"
+        width:"100%", 
       },
     handsImage: {
       position: 'absolute',

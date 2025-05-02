@@ -69,8 +69,8 @@ export function ScannerBottomSheetProvider({ children }: ScannerBottomSheetProvi
                 snapPoints={snapPoints}
                 barcode={barcode}
                 onClose={resetScanner}
-                onIndexChange={handleIndexChange}
-            />
+                onIndexChange={handleIndexChange} 
+                isAuthenticated={false}            />
         </ScannerBottomSheetContext.Provider>
     );
 }

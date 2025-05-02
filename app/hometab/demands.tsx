@@ -22,7 +22,7 @@ export default function Demands() {
   if (error) return <Text>{error}</Text>;
 
   return (
-    <ScrollView className="p-4">
+    <ScrollView className="p-4 bg-white">
       {requests.map((req, index) => (
         <Demand
           key={req.id}

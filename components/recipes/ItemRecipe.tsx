@@ -6,15 +6,15 @@ type Props = {
   recipe: Recipe;
   index: number;
   length: number;
-  OpenFb: (recipe: Recipe) => void;
+  onPress: (recipe: Recipe) => void;
 };
 
-const Item: React.FC<Props> = ({ recipe, index, length, OpenFb }) => {
+const Item: React.FC<Props> = ({ recipe, index, length, onPress }) => {
   if (!recipe) return null;
 
   return (
     <View key={index}>
-      <TouchableOpacity style={styles.container} onPress={() => OpenFb(recipe)} className='px-6'>
+      <TouchableOpacity style={styles.container} onPress={() => onPress(recipe)} className='px-6'>
         {/* Image produit avec fond */}
         <ImageBackground
           source={require('@/assets/images/recipes/productBg.png')}

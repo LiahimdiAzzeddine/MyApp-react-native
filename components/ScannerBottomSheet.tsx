@@ -2,17 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { Text, StyleSheet, ActivityIndicator, View, Alert, TouchableOpacity } from 'react-native';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import useGetProduct from '@/hooks/fp/useGetProduct';
-import GlobalInfo from './fp/GlobalInfo';
 import ModalHeader from './fp/ModalHeader';
 import { addProduct } from '@/utils/storage';  // Fonction d'ajout à l'historique
 import { addLaterProduct } from '@/utils/storage'; // Fonction d'ajout "plus tard"
 import NetInfo from '@react-native-community/netinfo';  // Importation de NetInfo
-import TransparencyScale from './fp/TransparencyScale';
-import Encourager from './fp/Encourager';
 import { useGlobalContext } from '@/context/GlobalFpContext';
-import InfoSection from './fp/InfoSection';
-import ProductDetailsAccordion from './fp/ProductDetailsAccordion';
-import { ScrollView } from 'react-native-gesture-handler';
+import ProductSkeletonLoader from './fp/ProductSkeletonLoader';
+import ProductDetailsView from './fp/ProductDetailsView';
 
 interface ScannerBottomSheetProps {
   bottomSheetRef: React.RefObject<BottomSheet>;
@@ -86,23 +82,11 @@ export default function ScannerBottomSheet({
         <ModalHeader goToPage={onClose} /> 
 
         {loading ? (
-          <ActivityIndicator size="large" color="#2196F3" />
+         <ProductSkeletonLoader />
         ) : isOnline ? (
           // Si l'utilisateur est en ligne
           productData ? (
-            <ScrollView  >
-            <View style={{paddingHorizontal:10}}>
-            <TransparencyScale currentPosition={productData.transparency_scale}   />
-            <GlobalInfo 
-              ImageSrc={productData.image} 
-              Name={productData.name} 
-              Brand={productData.trademark} 
-              Transparent={productData.transparency_scale} 
-            />
-            <Encourager product={productData}/></View>
-            <InfoSection product={productData}/>
-            <ProductDetailsAccordion product={productData}/>
-            </ScrollView>
+            <ProductDetailsView productData={productData} />
           ) : (
             <Text style={styles.modalText}>Aucun produit trouvé pour ce code-barres.</Text>
           )
