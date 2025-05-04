@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
   },
   separator: {
     height: 1,
-    backgroundColor: '#16a34a',
+    backgroundColor: '#c7f0d8',
     marginHorizontal: 10,
   },
 });

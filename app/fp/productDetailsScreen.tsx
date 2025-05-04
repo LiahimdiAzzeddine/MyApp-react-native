@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { Product } from '@/types/product';
 import ProductDetailsView from '@/components/fp/ProductDetailsView';
-import { getProductByBarcode } from '@/utils/storage';
-import { GlobalFpProvider } from '@/context/GlobalFpContext';
+import { addProduct, getProductByBarcode } from '@/utils/storage';
+import { GlobalFpProvider, useGlobalContext } from '@/context/GlobalFpContext';
 import ProductSkeletonLoader from '@/components/fp/ProductSkeletonLoader';
 import NetInfo from '@react-native-community/netinfo'; // à importer si pas déjà fait
 import useGetProduct from '@/hooks/fp/useGetProduct';
+import { AuthContext } from '@/context/AuthContext';
 
 type RouteParams = {
   ProductDetails: {
@@ -18,6 +19,8 @@ type RouteParams = {
 const ProductDetailsScreen = () => {
   const { params } = useRoute<RouteProp<RouteParams, 'ProductDetails'>>();
   const [isOnline, setIsOnline] = useState<boolean>(true);
+  const { userInfo, logout } = useContext(AuthContext);
+    const isAuthenticated = !!userInfo;
 
   const { gtin, search } = params;
 
@@ -61,6 +64,13 @@ const ProductDetailsScreen = () => {
   const isLoading = search === 'true' ? loading : localLoading;
   const product = search === 'true' ? productData : localProduct;
 
+   useEffect(() => {
+      // Si l'utilisateur est connecté et que nous avons des données de produit, on l'ajoute à l'historique automatiquement
+      if (isAuthenticated && productData) {
+        addProduct(productData);
+        
+      }
+    }, [productData]);
   return (
     <GlobalFpProvider>
       {isLoading ? (

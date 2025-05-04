@@ -5,10 +5,12 @@ import {
   Image,
   TouchableOpacity,
   ActivityIndicator,
+  ImageBackground,
 } from "react-native";
 import { Link, useRouter } from "expo-router";
 import { DemandType, formatDate } from "@/types/Demand";
-
+import styles from "../history/style";
+const productBg = require('@/assets/images/recipes/productBg.png'); 
 type DemandeProps = {
   demande: DemandType;
   index: number;
@@ -50,45 +52,35 @@ const Demand = ({ demande, incrementInsistCount, press }: DemandeProps) => {
   };
 
   return (
-    <View style={{ paddingVertical: 8 }}>
+    <View style={styles.itemContainer}>
       <TouchableOpacity
         style={{ flexDirection: "row", alignItems: "center" }}
         onPress={() => {
           press(demandeState.id);
         }}
       >
-        <View
-          style={{
-            width: 64,
-            height: 64,
-            marginRight: 16,
-            borderRadius: 8,
-            justifyContent: "center",
-            alignItems: "center",
-            overflow: "hidden",
-          }}
-        >
-          <Image
-            source={
-              demandeState.image
-                ? {
-                    uri: `https://images.openfoodfacts.org/images/products/${demandeState.image}`,
-                  }
-                : require("@/assets/images/demands/NoPicture.png")
-            }
-            style={{ width: 56, height: 56, borderRadius: 8 }}
-            resizeMode="cover"
-          />
-        </View>
+        <ImageBackground source={productBg} resizeMode="contain" style={styles.imageBackground} >
+        <Image
+           source={
+            demandeState.image
+              ? {
+                  uri: `https://images.openfoodfacts.org/images/products/${demandeState.image}`,
+                }
+              : require("@/assets/images/demands/NoPicture.png")
+          }
+          style={styles.productImage}
+           resizeMode="contain"
+        />
+      </ImageBackground>
 
         <View style={{ flex: 1 }}>
-          <Text style={{ fontSize: 12, fontStyle: "italic", color: "#14532d" }}>
+          <Text className="text-custom-green-text text-s ArchivoLight leading-archivo italic">
             {formatDate(demandeState.created_at)}
           </Text>
-          <Text style={{ fontWeight: "bold", color: "#14532d" }}>
+          <Text className="text-custom-green-text leading-archivo ArchivoExtraBold text-sm">
             {demandeState.titre}
           </Text>
-          <Text style={{ fontSize: 12, fontStyle: "italic", color: "#14532d" }}>
+          <Text className="text-custom-green-text text-s ArchivoLight leading-archivo italic">
             {demandeState.marque}
           </Text>
         </View>
@@ -98,10 +90,16 @@ const Demand = ({ demande, incrementInsistCount, press }: DemandeProps) => {
             onPress={handleIncrement}
             disabled={loading}
             style={{
-              padding: 8,
+              padding: 6,
               justifyContent: "center",
               alignItems: "center",
+              shadowRadius:10,
+              backgroundColor: '#fff', 
+              borderRadius: 8,
+              borderColor:'#42a199',
+              borderWidth:1
             }}
+
           >
             {loading ? (
               <ActivityIndicator size="small" color="#3b82f6" />

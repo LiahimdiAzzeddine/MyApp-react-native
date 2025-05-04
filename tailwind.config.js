@@ -37,6 +37,7 @@ module.exports = {
         archivo: 1.2,
       },
       fontSize: {
+        s:8,
         xs: 12,
         sm: 14,
         base: 16,
