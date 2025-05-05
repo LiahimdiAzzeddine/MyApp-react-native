@@ -1,18 +1,30 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Ionicons } from '@expo/vector-icons'; // ou 'react-native-vector-icons/Ionicons'
+import { Ionicons } from '@expo/vector-icons';
 
-const EmptyState: React.FC = () => {
+type EmptyStateProps = {
+  title?: string;
+  iconName?: keyof typeof Ionicons.glyphMap;
+  iconColor?: string;
+  textColor?: string;
+};
+
+const EmptyState: React.FC<EmptyStateProps> = ({
+  title = 'Aucun Recette pour le moment',
+  iconName = 'search-circle',
+  iconColor = '#f44336',
+  textColor = '#f88379',
+}) => {
   return (
     <View style={styles.container}>
-      <Ionicons name="search-circle" size={64} color="#f44336" />
+      <Ionicons name={iconName} size={64} color={iconColor} />
 
-      <Text style={styles.title}>
-        Aucun Recette pour le moment
+      <Text style={[styles.title, { color: textColor }]}>
+        {title}
       </Text>
 
       <Text style={styles.subtitle}>
-        {/* Tu peux ajouter un message ici si besoin */}
+        {/* Message secondaire facultatif */}
       </Text>
     </View>
   );
@@ -29,13 +41,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: '600',
-    color: '#f88379', // text-custom-red-clear
-    fontFamily: 'Archivo-Light', // si tu utilises cette police
+    fontFamily: 'Archivo-Light',
     marginVertical: 8,
     textAlign: 'center',
   },
   subtitle: {
-    color: '#6B7280', // Tailwind text-gray-500
+    color: '#6B7280',
     maxWidth: 300,
     textAlign: 'center',
   },

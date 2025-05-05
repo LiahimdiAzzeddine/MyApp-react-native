@@ -6,11 +6,12 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   ImageBackground,
+  Alert,
 } from "react-native";
 import { Link, useRouter } from "expo-router";
 import { DemandType, formatDate } from "@/types/Demand";
 import styles from "../history/style";
-const productBg = require('@/assets/images/recipes/productBg.png'); 
+const productBg = require("@/assets/images/recipes/productBg.png");
 type DemandeProps = {
   demande: DemandType;
   index: number;
@@ -37,20 +38,23 @@ const Demand = ({ demande, incrementInsistCount, press }: DemandeProps) => {
         30) ||
     demandeState.insist_count === 0 ||
     demandeState.insist_count === null;
-
   const handleIncrement = async () => {
     if (loading) return;
     setLoading(true);
     setError(null);
     try {
       await incrementInsistCount(demandeState.id, setDemandeState);
-    } catch {
+      Alert.alert("Succès", "Votre demande d'insistance a bien été envoyée.");
+    } catch (error) {
       setError("Erreur lors de l'incrémentation.");
+      Alert.alert(
+        "Erreur",
+        "Une erreur est survenue lors de l'envoi de la demande. Veuillez réessayer."
+      );
     } finally {
       setLoading(false);
     }
   };
-
   return (
     <View style={styles.itemContainer}>
       <TouchableOpacity
@@ -59,19 +63,23 @@ const Demand = ({ demande, incrementInsistCount, press }: DemandeProps) => {
           press(demandeState.id);
         }}
       >
-        <ImageBackground source={productBg} resizeMode="contain" style={styles.imageBackground} >
-        <Image
-           source={
-            demandeState.image
-              ? {
-                  uri: `https://images.openfoodfacts.org/images/products/${demandeState.image}`,
-                }
-              : require("@/assets/images/demands/NoPicture.png")
-          }
-          style={styles.productImage}
-           resizeMode="contain"
-        />
-      </ImageBackground>
+        <ImageBackground
+          source={productBg}
+          resizeMode="contain"
+          style={styles.imageBackground}
+        >
+          <Image
+            source={
+              demandeState.image
+                ? {
+                    uri: `https://images.openfoodfacts.org/images/products/${demandeState.image}`,
+                  }
+                : require("@/assets/images/demands/NoPicture.png")
+            }
+            style={styles.productImage}
+            resizeMode="contain"
+          />
+        </ImageBackground>
 
         <View style={{ flex: 1 }}>
           <Text className="text-custom-green-text text-s ArchivoLight leading-archivo italic">
@@ -93,16 +101,24 @@ const Demand = ({ demande, incrementInsistCount, press }: DemandeProps) => {
               padding: 6,
               justifyContent: "center",
               alignItems: "center",
-              shadowRadius:10,
-              backgroundColor: '#fff', 
+              backgroundColor: "#fff",
               borderRadius: 8,
-              borderColor:'#42a199',
-              borderWidth:1
+              borderColor: "#42a199",
+              borderWidth: 1,
+              // Ombre pour iOS
+              shadowColor: "#000",
+              shadowOffset: { width: 0, height: 4 },
+              shadowOpacity: 0.25,
+              shadowRadius: 4,
+              elevation: 8,
             }}
-
           >
             {loading ? (
-              <ActivityIndicator size="small" color="#3b82f6" />
+              <ActivityIndicator
+                size="small"
+                color="#3b82f6"
+                style={{ width: 40, height: 40 }}
+              />
             ) : (
               <Image
                 source={require("@/assets/images/demands/addOutline.png")}

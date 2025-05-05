@@ -19,8 +19,8 @@ const Item = ({ tip, index, length, OpenTip }: ItemProps) => {
   const imageSrc = tip.category.image_url ? { uri: 'https://'+tip.category.image_url } : require('@/assets/images/recipes/64.png');
 
   return (
-    <View key={index} style={styles.itemContainer}>
-      <TouchableOpacity style={styles.itemContent} onPress={() => OpenTip(tip)}>
+    <View key={index} >
+      <TouchableOpacity style={styles.itemContainer} onPress={() => OpenTip(tip)}>
         {/* Image du conseil */}
         <View style={styles.imageContainer}>
           <Image source={imageSrc} style={styles.image} />
@@ -28,16 +28,15 @@ const Item = ({ tip, index, length, OpenTip }: ItemProps) => {
 
         {/* Détails du conseil */}
         <View style={styles.detailsContainer}>
-          <Text style={styles.title}>{tip.titre}</Text>
-          {/**
+          <Text style={styles.title} className='ArchivoExtraBold'>{tip.titre}</Text>
           <Text style={styles.details}>
             {tip.details ? tip.details.substring(0, 50) + '...' : ''}
-          </Text> */}
+          </Text>
         </View>
 
         {/* Flèche */}
         <TouchableOpacity onPress={() => OpenTip(tip)}>
-          <Image source={require('@/assets/images/tips/elementFleche.png')} style={styles.arrowIcon} />
+          <Image source={require('@/assets/images/tips/elementFleche.png')} style={styles.arrowIcon}  resizeMode="contain" />
         </TouchableOpacity>
       </TouchableOpacity>
 
@@ -48,14 +47,13 @@ const Item = ({ tip, index, length, OpenTip }: ItemProps) => {
 };
 
 const styles = StyleSheet.create({
+
   itemContainer: {
-    marginBottom: 16,
-  },
-  itemContent: {
     flexDirection: 'row',
-    paddingVertical: 16,
-    paddingHorizontal: 12,
     alignItems: 'center',
+    paddingTop: 12,
+    paddingBottom:10,
+    paddingHorizontal: 12,
   },
   imageContainer: {
     width: 80,
@@ -64,19 +62,21 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     overflow: 'hidden',
     backgroundColor: '#f3f3f3',
+    resizeMode: 'cover',
   },
+
   image: {
     width: '100%',
     height: '100%',
     objectFit: 'cover',
   },
+  
   detailsContainer: {
     flex: 1,
   },
   title: {
     color: '#FF9E2C',
     fontSize: 16,
-    fontWeight: 'bold',
     marginBottom: 4,
   },
   details: {
@@ -88,10 +88,9 @@ const styles = StyleSheet.create({
     marginLeft: 16,
   },
   separator: {
-    width: '100%',
     height: 1,
     backgroundColor: '#FF9E2C',
-    marginTop: 16,
+    marginHorizontal: 10,
   },
 });
 
