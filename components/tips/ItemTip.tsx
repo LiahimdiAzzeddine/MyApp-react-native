@@ -1,6 +1,7 @@
 import { Tip } from '@/types/tip';
 import React from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, useWindowDimensions } from 'react-native';
+import RenderHtml from 'react-native-render-html';
 
 
 
@@ -12,11 +13,15 @@ interface ItemProps {
 }
 
 const Item = ({ tip, index, length, OpenTip }: ItemProps) => {
+  const stripHtml = (html:any) => {
+    return html.replace(/<[^>]*>?/gm, '');
+  };
   if (!tip) {
     return null;
   }
 
   const imageSrc = tip.category.image_url ? { uri: 'https://'+tip.category.image_url } : require('@/assets/images/recipes/64.png');
+  const { width } = useWindowDimensions();
 
   return (
     <View key={index} >
@@ -28,14 +33,15 @@ const Item = ({ tip, index, length, OpenTip }: ItemProps) => {
 
         {/* Détails du conseil */}
         <View style={styles.detailsContainer}>
-          <Text style={styles.title} className='ArchivoExtraBold'>{tip.titre}</Text>
-          <Text style={styles.details}>
-            {tip.details ? tip.details.substring(0, 50) + '...' : ''}
+          <Text style={styles.title} className="leading-archivo ArchivoExtraBold" >{tip.titre}</Text>
+          <Text style={styles.details} className='leading-archivo Archivo'>
+          {tip.details ? stripHtml(tip.details).substring(0, 50) + '...' : ''}
           </Text>
         </View>
 
         {/* Flèche */}
-        <TouchableOpacity onPress={() => OpenTip(tip)}>
+        <TouchableOpacity onPress={() => OpenTip(tip)}
+          >
           <Image source={require('@/assets/images/tips/elementFleche.png')} style={styles.arrowIcon}  resizeMode="contain" />
         </TouchableOpacity>
       </TouchableOpacity>
@@ -76,11 +82,12 @@ const styles = StyleSheet.create({
   },
   title: {
     color: '#FF9E2C',
-    fontSize: 16,
+    fontSize: 14,
     marginBottom: 4,
   },
   details: {
     color: '#4A90E2',
+    fontSize: 13,
   },
   arrowIcon: {
     width: 40,

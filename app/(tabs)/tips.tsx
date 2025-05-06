@@ -29,7 +29,7 @@ const Tips = () => {
   const [showModal, setShowModal] = useState(false);
   const router = useRouter();
 
-  const { tips, loading, error } = useLastTips(page, 100, ["4"]);
+  const { tips, loading, error } = useLastTips(page, 100, ['4']);
 
   if (!userToken) return <Redirect href="/(auth)/login" />;
 

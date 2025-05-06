@@ -1,21 +1,27 @@
 import React, { useState } from "react";
 import {
-  View, Text, StyleSheet, SafeAreaView, TextInput,
-  ScrollView, TouchableOpacity
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  TextInput,
+  ScrollView,
+  TouchableOpacity,
 } from "react-native";
-import { Ionicons } from '@expo/vector-icons';
-import { useTheme } from '@react-navigation/native';
-import useRecipesLast from '@/hooks/recipes/useRecipesLast';
+import { Ionicons } from "@expo/vector-icons";
+import { useTheme } from "@react-navigation/native";
+import useRecipesLast from "@/hooks/recipes/useRecipesLast";
 import Item from "@/components/recipes/ItemRecipe";
 import LoadingState from "@/components/recipes/LoadingState";
 import EmptyState from "@/components/recipes/EmptyState";
 import ErrorState from "@/components/recipes/ErrorState";
 import { useRouter } from "expo-router";
+import RenderHeaderTab from "@/components/ui/renderHeader";
 
 const Recipes = () => {
   const { colors } = useTheme();
-    const router = useRouter();
-  
+  const router = useRouter();
+  const backgroundImage = require("@/assets/images/recipes/background.png");
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -42,14 +48,17 @@ const Recipes = () => {
   };
 
   const goToAddRecipe = () => {
-    router.push("/recipetab/suggestRecipe");
+    router.push("/suggestRecipe");
   };
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
-      <View style={[styles.header, { backgroundColor: colors.card }]}>
-        <Text style={[styles.title, { color: colors.text }]}>Tit'recettes</Text>
-      </View>
+    <SafeAreaView className="flex-1 bg-white">
+      {/* Header */}
+      <RenderHeaderTab
+        title="Tit'recettes"
+        titleColor="#c32721"
+        backgroundImage={backgroundImage}
+      />
 
       <View style={styles.searchContainer}>
         <TextInput
@@ -70,8 +79,14 @@ const Recipes = () => {
         ) : error ? (
           <ErrorState message={error} />
         ) : paginatedRecipes.length > 0 ? (
-          paginatedRecipes.map((recipe: any) => (
-            <Item key={recipe.id} recipe={recipe} onPress={() => goToRecipeDetails(recipe)} />
+          paginatedRecipes.map((recipe: any, index: number) => (
+            <Item
+              key={recipe.id}
+              recipe={recipe}
+              index={index}
+              length={paginatedRecipes.length}
+              onPress={() => goToRecipeDetails(recipe)}
+            />
           ))
         ) : (
           <EmptyState />
@@ -84,7 +99,11 @@ const Recipes = () => {
             onPress={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
             disabled={currentPage === 1}
           >
-            <Text style={[styles.pageBtn, currentPage === 1 && styles.disabled]}>◀</Text>
+            <Text
+              style={[styles.pageBtn, currentPage === 1 && styles.disabled]}
+            >
+              ◀
+            </Text>
           </TouchableOpacity>
 
           <Text style={[styles.pageText, { color: colors.text }]}>
@@ -92,15 +111,27 @@ const Recipes = () => {
           </Text>
 
           <TouchableOpacity
-            onPress={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+            onPress={() =>
+              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+            }
             disabled={currentPage === totalPages}
           >
-            <Text style={[styles.pageBtn, currentPage === totalPages && styles.disabled]}>▶</Text>
+            <Text
+              style={[
+                styles.pageBtn,
+                currentPage === totalPages && styles.disabled,
+              ]}
+            >
+              ▶
+            </Text>
           </TouchableOpacity>
         </View>
       )}
 
-      <TouchableOpacity style={[styles.addButton, { backgroundColor: colors.primary }]} onPress={goToAddRecipe}>
+      <TouchableOpacity
+        style={[styles.addButton, { backgroundColor: colors.primary }]}
+        onPress={goToAddRecipe}
+      >
         <Text style={styles.addButtonText}>Proposer une recette</Text>
       </TouchableOpacity>
     </SafeAreaView>
@@ -109,12 +140,11 @@ const Recipes = () => {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  header: { padding: 20, alignItems: 'center' },
-  title: { fontSize: 26, fontWeight: 'bold' },
+
   searchContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     padding: 10,
-    alignItems: 'center',
+    alignItems: "center",
     gap: 10,
   },
   searchInput: {
@@ -124,26 +154,26 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 10,
   },
-  recipeList: { flex: 1 },
+  recipeList: { flex: 1,padding:10 },
   pagination: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
     gap: 10,
     paddingVertical: 10,
   },
   pageText: { fontSize: 16 },
-  pageBtn: { fontSize: 20, color: '#007AFF' },
-  disabled: { color: '#ccc' },
+  pageBtn: { fontSize: 20, color: "#007AFF" },
+  disabled: { color: "#ccc" },
   addButton: {
     margin: 15,
     padding: 15,
     borderRadius: 10,
-    alignItems: 'center',
+    alignItems: "center",
   },
   addButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
+    color: "#fff",
+    fontWeight: "bold",
   },
 });
 

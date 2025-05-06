@@ -6,7 +6,6 @@ import { ScannerBottomSheetProvider } from "@/context/ScannerBottomSheetContext"
 
 export default function TabLayout() {
   return (
-
     <Tabs tabBar={(props) => <TabBar {...props} />} >
       <Tabs.Screen
         name="home"
@@ -33,7 +32,7 @@ export default function TabLayout() {
         name="recipes"
         options={{
           title: "Recipes",
-          header: () => <CustomHeader />,
+          header: () => <CustomHeader image="rf" />,
         }}
       />
       <Tabs.Screen
@@ -41,7 +40,9 @@ export default function TabLayout() {
         options={{
           title: "Tips",
           header: () => <CustomHeader image="of"/>,
+          tabBarStyle: { display: 'none' },
         }}
+        
       />
     </Tabs>
   );

@@ -149,7 +149,7 @@ const TabBar = ({ state }: BottomTabBarProps) => {
   ], [insets.bottom]);
 
   return (
-    <View style={containerStyle}>
+    <View style={[containerStyle,{display:(state.index==4 || state.index==3)?'none':"flex"}]}>
       {state.routes.filter((route) => visibleRoutes.includes(route.name)).map((route, index) => {
         const routeName = route.name as RouteName;
         const isFocused = state.index === index;
