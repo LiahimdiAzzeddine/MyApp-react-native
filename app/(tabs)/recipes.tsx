@@ -129,10 +129,10 @@ const Recipes = () => {
       )}
 
       <TouchableOpacity
-        style={[styles.addButton, { backgroundColor: colors.primary }]}
+        className="bg-custom-red rounded-md py-2 px-4 mb-6 m-auto"
         onPress={goToAddRecipe}
       >
-        <Text style={styles.addButtonText}>Proposer une recette</Text>
+        <Text className="text-base text-white">Proposer une recette</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
@@ -171,10 +171,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: "center",
   },
-  addButtonText: {
-    color: "#fff",
-    fontWeight: "bold",
-  },
+
 });
 
 export default Recipes;
