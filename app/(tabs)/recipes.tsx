@@ -48,7 +48,7 @@ const Recipes = () => {
   };
 
   const goToAddRecipe = () => {
-    router.push("/suggestRecipe");
+    router.push("/recipetab/suggestrecipe");
   };
 
   return (

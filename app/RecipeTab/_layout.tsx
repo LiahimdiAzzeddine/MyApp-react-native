@@ -6,11 +6,11 @@ export default function _layout() {
   return (
     <Stack
       screenOptions={{
-        header: (props) => <CustomHeader title="Recettes"/>,
+        header: (props) => <CustomHeader />,
       }}
     >
       <Stack.Screen name="recipe" />
-      <Stack.Screen name="suggestRecipe" />
+      <Stack.Screen name="suggestrecipe" />
     </Stack>
   );
 }

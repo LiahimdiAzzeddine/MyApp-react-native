@@ -35,7 +35,7 @@ interface RecipeValues {
 
 
 
-const SuggestRecipe: React.FC = () => {
+const Suggestrecipe: React.FC = () => {
   const { handleSubmit, loading, error, success } = useSuggestRecipe();
   const [stepInput, setStepInput] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
@@ -736,4 +736,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SuggestRecipe;
+export default Suggestrecipe;

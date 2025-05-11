@@ -10,17 +10,23 @@ const BX = require('@/assets/images/headers/bx.png');
 const flecheRecette = require('@/assets/images/headers/fleche.png');
 const OF = require('@/assets/images/headers/OFleche.png');
 const VF = require('@/assets/images/headers/vf.png');
+const FilterConseils = require('@/assets/images/tips/FILTRE_CONSEILS.png');
+const FilterRecettes = require("@/assets/images/recipes/FILTRE_RECETTES.png");
 
 type Props = {
   color?: string;
   image?: 'x' | 'rf' | 'bf' | 'bx' | 'of' | 'vf' | 'vx';
   back?: boolean;
+  isRecipes?:boolean;
+  isTips?:boolean;
 };
 
 const CustomHeader = ({
   color = '#fff',
   image,
-  back=true
+  back=true,
+   isRecipes = false,
+  isTips = false,
 }: Props) => {
   const router = useRouter();
 
@@ -47,6 +53,28 @@ const CustomHeader = ({
         </TouchableOpacity>
 
         <View style={styles.ticoContainer}>
+         {isRecipes && (
+            <TouchableOpacity style={styles.iconButton}>
+              <Image
+                source={FilterRecettes}
+                style={styles.filter}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
+          )}
+
+          {isTips && (
+            <TouchableOpacity style={styles.iconButton}
+              onPress={() => router.push('/tiptab/tipSettings')}
+            >
+              <Image
+                source={FilterConseils}
+                style={styles.filter}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
+          )}
+           
           <TouchableOpacity style={styles.iconButton}>
             <Image source={Tico} style={styles.ticoImage} resizeMode="contain" />
           </TouchableOpacity>
@@ -78,11 +106,15 @@ const styles = StyleSheet.create({
   },
   ticoContainer: {
     flexDirection: 'row',
-    alignItems: 'flex-end',
+    alignItems: 'center',
   },
   ticoImage: {
     height: 24,
     width: 70,
+  },
+   filter: {
+    height: 33,
+    width: 50,
   },
 });
 

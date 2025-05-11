@@ -1,7 +1,17 @@
-import React from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions, ScrollView,Share } from 'react-native';
-import { WebView } from 'react-native-webview';
-import Constants from 'expo-constants';
+import React from "react";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  Dimensions,
+  ScrollView,
+  Share,
+  ImageBackground,
+} from "react-native";
+import { WebView } from "react-native-webview";
+import Constants from "expo-constants";
 
 // TypeScript interfaces
 interface Category {
@@ -19,7 +29,7 @@ interface TipProps {
   };
 }
 
-const apiUrl = Constants.expoConfig?.extra?.BACKEND_URL || '';
+const apiUrl = Constants.expoConfig?.extra?.BACKEND_URL || "";
 
 const TipDetails: React.FC<TipProps> = ({ tip }) => {
   const { id, title, details } = tip;
@@ -36,19 +46,25 @@ const TipDetails: React.FC<TipProps> = ({ tip }) => {
         url: deepLink, // Le deep link sera utilisé comme URL
       });
     } catch (error) {
-      console.error('Erreur lors du partage', error);
+      console.error("Erreur lors du partage", error);
     }
   };
 
   return (
     <View style={styles.container}>
       {/* Contenu principal */}
-      <ScrollView style={styles.scrollView}>
+      <View style={styles.scrollView}>
         <View style={styles.mainContent}>
           {/* Section Titre et Image */}
           <View style={styles.headerSection}>
-            <View style={styles.imageContainer}>
-              <Text style={styles.title}>{title}</Text>
+            <ImageBackground
+              source={require("@/assets/images/tips/bgImage.png")}
+              resizeMode="contain"
+              style={styles.imageContainer}
+            >
+              <View style={styles.titleWrapper}>
+                <Text style={styles.title}>{title}</Text>
+              </View>
               <View style={styles.imageWrapper}>
                 <Image
                   source={{ uri: tip?.category?.image }}
@@ -56,36 +72,35 @@ const TipDetails: React.FC<TipProps> = ({ tip }) => {
                   resizeMode="cover"
                 />
               </View>
-            </View>
+            </ImageBackground>
           </View>
 
           {/* Section Détails */}
-          <View style={styles.detailsSection}>
+          <ScrollView style={styles.detailsSection}>
             <Text style={styles.categoryTitle}>
               {tip?.category?.name || "Notre ti'conseil"}
             </Text>
             {/* Utilisation de WebView pour afficher le contenu HTML */}
             <WebView
-              originWhitelist={['*']}
-              source={{ html: `<html><head><meta name="viewport" content="width=device-width, initial-scale=1.0"><style>body { font-family: Arial, sans-serif; color: #0F548D; line-height: 1.5; padding: 0; margin: 0; }</style></head><body>${details}</body></html>` }}
+              originWhitelist={["*"]}
+              source={{
+                html: `<html><head><meta name="viewport" content="width=device-width, initial-scale=1.0"><style>body { font-family: Arial, sans-serif; color: #0F548D; line-height: 1.5; padding: 0; margin: 0; }</style></head><body>${details}</body></html>`,
+              }}
               style={styles.webView}
               scrollEnabled={false}
               onNavigationStateChange={(event) => {
-                if (event.url !== 'about:blank') {
+                if (event.url !== "about:blank") {
                   // Gérer les liens externes si nécessaire
                 }
               }}
             />
-          </View>
+          </ScrollView>
         </View>
-      </ScrollView>
+      </View>
 
       {/* Section Bouton */}
       <View style={styles.buttonSection}>
-        <TouchableOpacity
-          onPress={shareTip}
-          style={styles.shareButton}
-        >
+        <TouchableOpacity onPress={shareTip} style={styles.shareButton}>
           <Text style={styles.shareButtonText}>Partager autour de moi</Text>
         </TouchableOpacity>
       </View>
@@ -93,99 +108,103 @@ const TipDetails: React.FC<TipProps> = ({ tip }) => {
   );
 };
 
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   scrollView: {
     flex: 1,
+    backgroundColor: "#ffeda3",
   },
   mainContent: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderBottomLeftRadius: 32,
     borderBottomRightRadius: 32,
     paddingBottom: 32,
   },
   headerSection: {
-    backgroundColor: '#FF9F1C', // custom-orange
+    backgroundColor: "#ffeda3", // custom-orange
     paddingHorizontal: 16,
     paddingTop: 16,
     paddingBottom: 16,
     borderBottomLeftRadius: 32,
     borderBottomRightRadius: 32,
-    width: '100%',
-    minHeight: '35%',
-    justifyContent: 'flex-end',
+    width: "100%",
+    minHeight: "35%",
+    justifyContent: "flex-end",
   },
   imageContainer: {
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    alignItems: "center",
+    justifyContent: "space-between",
     minHeight: 240,
-    gap: 4,
   },
   title: {
-    minHeight: 56,
-    textAlign: 'center',
-    color: '#0F548D', // custom-blue
-    fontSize: 24,
-    fontWeight: 'bold',
-    paddingVertical: 8,
-    fontFamily: 'System', // Vous devrez importer votre police personnalisée
+    textAlign: "center",
+    color: "#0F548D",
+    fontSize: 22,
+    fontFamily: "ClashDisplayBold",
   },
+
+  titleWrapper: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    paddingBottom: 5,
+  },
+
   imageWrapper: {
-    width: '100%',
-    flexDirection: 'column',
-    justifyContent: 'flex-end',
-    alignItems: 'flex-end',
-    paddingRight: 20,
-    paddingBottom: 20,
+    width: "100%",
+    flexDirection: "column",
+    justifyContent: "flex-end",
+    alignItems: "flex-end",
+    paddingRight: 10,
+    paddingBottom: 10,
   },
   categoryImage: {
-    width: '43%',
-    height: 150,
+    width: 135,
+    height: 135,
     borderRadius: 16,
-    borderWidth: 2,
-    borderColor: '#FF6B35', // custom-text-orange
+    borderWidth: 1,
+    borderColor: "#FF8200",
   },
   detailsSection: {
     paddingHorizontal: 24,
     paddingTop: 24,
   },
   categoryTitle: {
-    color: '#FF6B35', // custom-text-orange
+    color: "#FF6B35", // custom-text-orange
     fontSize: 20,
-    fontWeight: '900',
     paddingBottom: 12,
-    fontFamily: 'System', // Remplacer par ArchivoExtraBold
+    fontFamily: "ArchivoExtraBold",
   },
   webView: {
-    width: '100%',
+    width: "100%",
     height: 300, // Hauteur fixe ou dynamique selon vos besoins
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
   },
   buttonSection: {
-    width: '100%',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
+    width: "100%",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
     paddingVertical: 24,
+    backgroundColor: "#ffeda3",
   },
   shareButton: {
-    backgroundColor: '#FF6B35', // custom-text-orange
+    backgroundColor: "#FF6B35", // custom-text-orange
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 8,
   },
   shareButtonText: {
-    color: 'white',
+    color: "white",
     fontSize: 18,
-    fontWeight: '700',
-    fontFamily: 'System', // Remplacer par ArchivoBold
+    fontFamily: "ArchivoBold",
   },
 });
 

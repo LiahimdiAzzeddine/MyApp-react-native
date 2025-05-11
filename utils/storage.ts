@@ -6,6 +6,106 @@ const PRODUCTS_KEY = '@MyTiCoApp:products';
 const LATER_PRODUCTS_KEY = '@MyTiCoApp:laterProducts';
 const MAX_PRODUCTS = 100;
 
+// ✅ Type générique pour stocker les préférences utilisateur
+type Preferences = Record<string, any>;
+
+// ✅ Enregistre si c’est la première visite
+export const setFirstVisit = async (isFirstVisit: boolean): Promise<void> => {
+  try {
+    await AsyncStorage.setItem('firstVisit', JSON.stringify(isFirstVisit));
+  } catch (error) {
+    console.error("Erreur lors de l'enregistrement de la première visite :", error);
+  }
+};
+
+// ✅ Récupère l’état de première visite
+export const getFirstVisit = async (): Promise<boolean | null> => {
+  try {
+    const value = await AsyncStorage.getItem('firstVisit');
+    return value !== null ? JSON.parse(value) : null;
+  } catch (error) {
+    console.error("Erreur lors de la récupération de la première visite :", error);
+    return null;
+  }
+};
+
+// ✅ Enregistre les préférences utilisateur
+export const storePreferences = async (
+  userId: string,
+  values: Preferences
+): Promise<void> => {
+  if (!userId) {
+    console.error("Utilisateur non connecté.");
+    return;
+  }
+
+  try {
+    const key = `user_preferences_${userId}`;
+    await AsyncStorage.setItem(key, JSON.stringify(values));
+    console.log("Préférences sauvegardées avec succès.");
+  } catch (error) {
+    console.error("Erreur lors de la sauvegarde des préférences :", error);
+  }
+};
+
+// ✅ Récupère les préférences utilisateur
+export const getPreferences = async (
+  userId: string
+): Promise<Preferences | null> => {
+  if (!userId) {
+    console.error("Utilisateur non connecté.");
+    return null;
+  }
+
+  try {
+    const key = `user_preferences_${userId}`;
+    const value = await AsyncStorage.getItem(key);
+    return value ? JSON.parse(value) : null;
+  } catch (error) {
+    console.error("Erreur lors du chargement des préférences :", error);
+    return null;
+  }
+};
+
+// ✅ Enregistre les préférences des astuces (Set<string>)
+export const storeTipPreferences = async (
+  userId: number,
+  selectedTips: Set<number>
+): Promise<void> => {
+  if (!userId) {
+    console.error("Utilisateur non connecté.");
+    return;
+  }
+
+  try {
+    const key = `user_tip_preferences_${userId}`;
+    await AsyncStorage.setItem(key, JSON.stringify(Array.from(selectedTips)));
+    console.log("Préférences des astuces sauvegardées avec succès.");
+  } catch (error) {
+    console.error("Erreur lors de la sauvegarde des préférences des astuces :", error);
+  }
+};
+
+// ✅ Récupère les préférences des astuces
+export const getTipPreferences = async (
+  userId: number
+): Promise<Set<number>> => {
+  if (!userId) {
+    console.error("Utilisateur non connecté.");
+    return new Set();
+  }
+
+  try {
+    const key = `user_tip_preferences_${userId}`;
+    const value = await AsyncStorage.getItem(key);
+    return value ? new Set(JSON.parse(value)) : new Set();
+  } catch (error) {
+    console.error("Erreur lors du chargement des préférences des astuces :", error);
+    return new Set();
+  }
+};
+
+
 /**
  * Initialise le stockage si nécessaire
  * @returns {Promise<void>}
