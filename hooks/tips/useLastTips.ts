@@ -6,7 +6,7 @@ import { Tip, UseLastTipsResult } from '@/types/tip';
 const useLastTips = (
     page = 1,
     limit = 10,
-    tipPreferences: string[] = []
+    tipPreferences: number[] = []
   ): UseLastTipsResult => {
     const [tips, setTips] = useState<Tip[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
@@ -27,6 +27,7 @@ const useLastTips = (
               preferences: tipPreferences,
             },
           });
+            
   
           if (isMounted) {
             console.log("🚀 ~ fetchLastTips ~ response.data:", response.data)
