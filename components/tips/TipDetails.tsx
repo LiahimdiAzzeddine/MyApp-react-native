@@ -151,10 +151,9 @@ const styles = StyleSheet.create({
 
   titleWrapper: {
     flex: 1,
-    justifyContent: "center",
+    justifyContent: "flex-end",
     alignItems: "center",
-    width: "100%",
-    paddingBottom: 5,
+    paddingBottom: 15,
   },
 
   imageWrapper: {

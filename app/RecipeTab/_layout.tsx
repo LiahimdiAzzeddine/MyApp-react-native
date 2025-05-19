@@ -7,7 +7,7 @@ export default function _layout() {
       <Stack.Screen
         name="recipe"
         options={{
-          header: (props) => <CustomHeader />,
+          header: (props) => <CustomHeader image="rf" color="#fad4ce" />,
         }}
       />
       <Stack.Screen

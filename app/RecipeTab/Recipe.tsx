@@ -1,44 +1,42 @@
-import React from 'react';
-import { View, Text, ActivityIndicator, Button, Alert } from 'react-native';
-import { useRoute, useNavigation } from '@react-navigation/native'; // Pour la navigation
+import React, { useEffect } from 'react';
+import { View, ActivityIndicator } from 'react-native';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import useRecipeById from '@/hooks/recipes/useRecipeById';
 import RecipeDetails from '@/components/recipes/RecipeDetails';
 import ErrorMessage from '@/components/recipes/ErrorMessage';
 
 const Recipe: React.FC = () => {
-  const route = useRoute();
-  const navigation = useNavigation();
-  const { id } = route.params as { id: number }; // Récupère l'id depuis les paramètres de la route
-  const { recipe, loading, error } = useRecipeById(id);
-  const recipeForme = recipe ?recipe: {};
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const recipeId = parseInt(id, 10);
+  const router = useRouter();
+
+  const { recipe, loading, error } = useRecipeById(recipeId);
   
-  const goToPage = (path: string) => {
-    navigation.navigate(path); // Utilisation de la navigation dans React Native
-  };
+  useEffect(()=>{
+console.log("🚀 ~ recipe:", recipe)
+  },[recipe])
 
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <ActivityIndicator size="large" color="#0000ff" />
       </View>
     );
   }
 
-  // Gestion des erreurs de chargement
   if (error || !recipe) {
     return (
       <View style={{ padding: 16 }}>
         <ErrorMessage
           message={error || "No recipe found"}
-          onClose={() => goToPage("Tab3")} // Remplacez Tab3 par le nom de la page à rediriger
-          icon={''}        />
+          onClose={() => router.replace('/')}
+          icon=""
+        />
       </View>
     );
   }
 
-  return (
-    <RecipeDetails recipe={recipeForme} />
-  );
+  return <RecipeDetails recipe={recipe} custom={false} />;
 };
 
 export default Recipe;
