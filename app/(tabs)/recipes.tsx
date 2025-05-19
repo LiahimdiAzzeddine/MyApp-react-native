@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   View,
   Text,
@@ -7,16 +7,19 @@ import {
   TextInput,
   ScrollView,
   TouchableOpacity,
+  Image,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "@react-navigation/native";
 import useRecipesLast from "@/hooks/recipes/useRecipesLast";
 import Item from "@/components/recipes/ItemRecipe";
-import LoadingState from "@/components/recipes/LoadingState";
+import LoadingState from "@/components/tips/LoadingState";
 import EmptyState from "@/components/recipes/EmptyState";
 import ErrorState from "@/components/recipes/ErrorState";
 import { useRouter } from "expo-router";
 import RenderHeaderTab from "@/components/ui/renderHeader";
+import { AppContext } from "@/context/AppContext";
+const Search = require("@/assets/images/recipes/search.png");
 
 const Recipes = () => {
   const { colors } = useTheme();
@@ -24,6 +27,11 @@ const Recipes = () => {
   const backgroundImage = require("@/assets/images/recipes/background.png");
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const context = useContext(AppContext);
+  if (!context) {
+    throw new Error("AppContext must be used within a AppProvider");
+  }
+  const { searchRecipes } = context;
 
   const itemsPerPage = 10;
   const { recipes, loading, error } = useRecipesLast(null, null, searchTerm);
@@ -43,7 +51,7 @@ const Recipes = () => {
   const goToRecipeDetails = (recipe: any) => {
     router.push({
       pathname: "/recipetab/recipe",
-      params: { id: recipe.id.toString() }, // Assurez-vous que c'est une string
+      params: { id: recipe.id.toString() }, 
     });
   };
 
@@ -52,109 +60,127 @@ const Recipes = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
-      {/* Header */}
-      <RenderHeaderTab
-        title="Tit'recettes"
-        titleColor="#c32721"
-        backgroundImage={backgroundImage}
-      />
-
-      <View style={styles.searchContainer}>
-        <TextInput
-          style={[styles.searchInput, { borderColor: colors.border }]}
-          placeholder="Rechercher une recette..."
-          placeholderTextColor={colors.text}
-          value={searchTerm}
-          onChangeText={handleSearch}
+    <SafeAreaView className="flex-1 bg-[#fdf2f0]">
+      <View style={styles.Radius}>
+        {/* Header */}
+        <RenderHeaderTab
+          title="Tit'recettes"
+          titleColor="#c32721"
+          backgroundImage={backgroundImage}
         />
-        <TouchableOpacity onPress={() => handleSearch(searchTerm)}>
-          <Ionicons name="search" size={24} color={colors.primary} />
+        {searchRecipes && (
+          <View style={styles.searchContainer}>
+            <Image
+              source={Search}
+              style={{ width: 45, height: 43 }}
+              resizeMode="contain"
+            />
+            <TextInput
+              style={[styles.searchInput]}
+              placeholder="Rechercher une recette..."
+              placeholderTextColor={colors.text}
+              value={searchTerm}
+              onChangeText={handleSearch}
+            />
+          </View>
+        )}
+
+        <ScrollView style={styles.recipeList}>
+          {loading ? (
+            <LoadingState />
+          ) : error ? (
+            <ErrorState message={error} />
+          ) : paginatedRecipes.length > 0 ? (
+            paginatedRecipes.map((recipe: any, index: number) => (
+              <Item
+                key={recipe.id}
+                recipe={recipe}
+                index={index}
+                length={paginatedRecipes.length}
+                onPress={() => goToRecipeDetails(recipe)}
+              />
+            ))
+          ) : (
+            <EmptyState />
+          )}
+        </ScrollView>
+      </View>
+      <View className="bg-[#fdf2f0]" id="footer">
+        {totalPages > 1 && (
+          <View style={styles.pagination}>
+            <TouchableOpacity
+              onPress={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+            >
+              <Text
+                style={[styles.pageBtn, currentPage === 1 && styles.disabled]}
+              >
+                ◀
+              </Text>
+            </TouchableOpacity>
+
+            <Text style={[styles.pageText, { color: colors.text }]}>
+              Page {currentPage} sur {totalPages}
+            </Text>
+
+            <TouchableOpacity
+              onPress={() =>
+                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+              }
+              disabled={currentPage === totalPages}
+            >
+              <Text
+                style={[
+                  styles.pageBtn,
+                  currentPage === totalPages && styles.disabled,
+                ]}
+              >
+                ▶
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
+        <TouchableOpacity
+          className="bg-custom-red rounded-xl py-3 px-4 mb-6 m-auto"
+          onPress={goToAddRecipe}
+        >
+          <Text className="text-base text-white">Proposer une recette</Text>
         </TouchableOpacity>
       </View>
-
-      <ScrollView style={styles.recipeList}>
-        {loading ? (
-          <LoadingState />
-        ) : error ? (
-          <ErrorState message={error} />
-        ) : paginatedRecipes.length > 0 ? (
-          paginatedRecipes.map((recipe: any, index: number) => (
-            <Item
-              key={recipe.id}
-              recipe={recipe}
-              index={index}
-              length={paginatedRecipes.length}
-              onPress={() => goToRecipeDetails(recipe)}
-            />
-          ))
-        ) : (
-          <EmptyState />
-        )}
-      </ScrollView>
-
-      {totalPages > 1 && (
-        <View style={styles.pagination}>
-          <TouchableOpacity
-            onPress={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-            disabled={currentPage === 1}
-          >
-            <Text
-              style={[styles.pageBtn, currentPage === 1 && styles.disabled]}
-            >
-              ◀
-            </Text>
-          </TouchableOpacity>
-
-          <Text style={[styles.pageText, { color: colors.text }]}>
-            Page {currentPage} sur {totalPages}
-          </Text>
-
-          <TouchableOpacity
-            onPress={() =>
-              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-            }
-            disabled={currentPage === totalPages}
-          >
-            <Text
-              style={[
-                styles.pageBtn,
-                currentPage === totalPages && styles.disabled,
-              ]}
-            >
-              ▶
-            </Text>
-          </TouchableOpacity>
-        </View>
-      )}
-
-      <TouchableOpacity
-        className="bg-custom-red rounded-md py-2 px-4 mb-6 m-auto"
-        onPress={goToAddRecipe}
-      >
-        <Text className="text-base text-white">Proposer une recette</Text>
-      </TouchableOpacity>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
+  Radius: {
+    flex: 1,
+    backgroundColor: "white",
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+  },
 
   searchContainer: {
     flexDirection: "row",
-    padding: 10,
+    paddingHorizontal: 16,
+    paddingBottom:10,
     alignItems: "center",
     gap: 10,
+    justifyContent: "center",
   },
   searchInput: {
     flex: 1,
-    height: 40,
+    height: 43,
     borderWidth: 1,
-    borderRadius: 10,
-    paddingHorizontal: 10,
+    borderRadius: 16,
+    padding: 10,
+    fontFamily: "ArchivoLightItalic",
+
+    borderColor:"#c32721",
+    color:"#c32721"
   },
-  recipeList: { flex: 1,padding:10 },
+  recipeList: { flex: 1, padding: 10 },
   pagination: {
     flexDirection: "row",
     justifyContent: "center",
@@ -171,7 +197,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: "center",
   },
-
 });
 
 export default Recipes;

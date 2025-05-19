@@ -32,7 +32,7 @@ export default function TabLayout() {
         name="recipes"
         options={{
           title: "Recipes",
-          header: () => <CustomHeader image="rf" />,
+          header: () => <CustomHeader image="rf" isRecipes={true} />,
         }}
       />
       <Tabs.Screen

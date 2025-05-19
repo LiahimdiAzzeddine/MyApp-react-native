@@ -57,7 +57,7 @@ const Item: React.FC<Props> = ({ recipe, index, length, onPress }) => {
         </View>
 
         {/* Bouton flèche */}
-        <TouchableOpacity onPress={() => console.log()}>
+        <TouchableOpacity  onPress={() => onPress(recipe)}>
           <Image
             source={require("@/assets/images/recipes/recipeFleche.png")}
             style={styles.arrowIcon}
@@ -68,6 +68,7 @@ const Item: React.FC<Props> = ({ recipe, index, length, onPress }) => {
 
       {/* Séparateur */}
       {index < length - 1 && <View style={stylestest.separator} />}
+      {index == length - 1 && <View style={{height:15}}></View>}
     </View>
   );
 };
@@ -76,19 +77,21 @@ export default Item;
 
 const stylestest = StyleSheet.create({
   imageBg: {
-    width: 80,
-    height: 80,
+    width: 75,
+    height: 75,
     marginRight: 12,
     justifyContent: "center",
     alignItems: "center",
     resizeMode: "contain",
-    borderRadius: 10,
+   borderColor:"#c32721",
+    borderWidth:1.5,
+     borderRadius: 10,
   },
 
   image: {
     width: "100%",
     height: "100%",
-    borderRadius: 10,
+    borderRadius: 9,
   },
   details: {
     flex: 1,

@@ -13,6 +13,8 @@ import {
 } from 'react-native';
 import useSuggestRecipe from '@/hooks/recipes/useSuggestRecipe';
 import { useRouter } from 'expo-router';
+import RenderHeaderTab from '@/components/ui/renderHeader';
+  const backgroundImage = require("@/assets/images/recipes/background.png");
 
 // Types definitions
 interface IngredientInput {
@@ -220,14 +222,15 @@ const Suggestrecipe: React.FC = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <ScrollView style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Proposer une recette</Text>
-        </View>
-
+         <RenderHeaderTab
+          title="Proposer une recette"
+          titleColor="#c32721"
+          backgroundImage={backgroundImage}
+        />
         <View style={styles.formContainer}>
           {/* Titre de la recette */}
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>Titre de la recette :</Text>
+            <Text className="text-base" style={styles.label} >Titre de la recette :</Text>
             <TextInput
               style={[
                 styles.input,
@@ -517,11 +520,13 @@ const Suggestrecipe: React.FC = () => {
             <Text style={styles.infoText}>
               Pas d'inquiétude on se charge du shooting photo !
             </Text>
+                 
             <TouchableOpacity
               onPress={visualiseRecette}
               style={styles.visualizeButton}
+              className="bg-custom-red rounded-xl py-3 px-4 mb-4 m-auto"
             >
-              <Text style={styles.visualizeButtonText}>
+              <Text className="text-base text-white ArchivoLight">
                 Je visualise ma recette
               </Text>
             </TouchableOpacity>
@@ -529,8 +534,9 @@ const Suggestrecipe: React.FC = () => {
               onPress={handleFormSubmit}
               style={styles.submitButton}
               disabled={loading}
+              className="rounded-xl py-3 px-4 mb-6 m-auto"
             >
-              <Text style={styles.submitButtonText}>
+              <Text style={styles.submitButtonText} className='text-base'>
                 {loading ? "Envoi..." : "Envoyer ma recette"}
               </Text>
             </TouchableOpacity>
@@ -557,30 +563,18 @@ const Suggestrecipe: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    padding: 18,
     backgroundColor: '#fff',
   },
-  header: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: 80,
-    marginBottom: 24,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#D32F2F', // custom-red equivalent
-    textAlign: 'center',
-  },
+
   formContainer: {
     flex: 1,
     marginBottom: 20,
   },
   inputGroup: {
-    marginBottom: 24,
+    marginBottom: 16,
   },
   label: {
-    fontSize: 16,
     marginBottom: 8,
     color: '#D32F2F',
     fontFamily: 'ArchivoLight',
@@ -609,7 +603,7 @@ const styles = StyleSheet.create({
   buttonGroup: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    marginBottom: 8,
+    fontFamily:"ArchivoLight"
   },
   filterButton: {
     borderWidth: 1,
@@ -620,6 +614,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
     marginBottom: 8,
     backgroundColor: '#FFF',
+    fontFamily:"ArchivoLight"
   },
   activeButton: {
     backgroundColor: '#D32F2F',
@@ -638,7 +633,7 @@ const styles = StyleSheet.create({
   infoText: {
     color: '#666',
     fontSize: 14,
-    marginTop: 4,
+    padding:10,
     fontFamily: 'ArchivoLight',
   },
   ingredientInputGroup: {
@@ -676,7 +671,7 @@ const styles = StyleSheet.create({
     borderColor: '#D32F2F',
     borderRadius: 20,
     paddingVertical: 6,
-    paddingHorizontal: 12,
+    paddingHorizontal: 6,
     flexDirection: 'row',
     alignItems: 'center',
     marginRight: 8,
@@ -689,17 +684,15 @@ const styles = StyleSheet.create({
   },
   removeTagButton: {
     backgroundColor: '#EF5350',
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: 25,
+    height: 25,
+    justifyContent:"center",
+    borderRadius: 12,
+    margin:"auto",
   },
   removeTagButtonText: {
     color: 'white',
-    fontSize: 16,
-    lineHeight: 20,
-    textAlign: 'center',
+    margin:"auto"
   },
   submitContainer: {
     alignItems: 'center',
@@ -708,30 +701,14 @@ const styles = StyleSheet.create({
   },
   visualizeButton: {
     backgroundColor: '#D32F2F',
-    borderRadius: 8,
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    marginBottom: 16,
-    width: '100%',
-    alignItems: 'center',
   },
-  visualizeButtonText: {
-    color: '#FFF',
-    fontWeight: '500',
-  },
+
   submitButton: {
     backgroundColor: '#FAD4CE',
-    borderWidth: 1,
     borderColor: '#FAD4CE',
-    borderRadius: 8,
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    width: '100%',
-    alignItems: 'center',
   },
   submitButtonText: {
     color: '#B71C1C',
-    fontWeight: 'bold',
     fontFamily: 'ArchivoLight',
   },
 });

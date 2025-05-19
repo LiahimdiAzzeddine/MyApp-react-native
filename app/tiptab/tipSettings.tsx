@@ -12,54 +12,61 @@ import {
 import { storeTipPreferences, getTipPreferences } from "@/utils/storage";
 import { AuthContext } from "@/context/AuthContext";
 import { useRouter } from "expo-router";
+import { AppContext } from "@/context/AppContext";
+
 
 const tips = [
   {
     id: 1,
     label: "Astuces",
-    image: require("@/assets/images/tips/VISUELS_Astuces_pratiques.png"),
-    activeImage: require("@/assets/images/tips/VISUELS_Astuces_pratiques_blanc.png"),
+    image: require("@/assets/images/tips/VISUELS_Astuces_pratiques_blanc.png"),
+    activeImage: require("@/assets/images/tips/VISUELS_Astuces_pratiques.png"),
   },
   {
     id: 2,
     label: "Antigaspi",
-    image: require("@/assets/images/tips/VISUELS_Anti-gaspi.png"),
-    activeImage: require("@/assets/images/tips/VISUELS_Anti-gaspi_blanc.png"),
+    image: require("@/assets/images/tips/VISUELS_Anti-gaspi_blanc.png"),
+    activeImage: require("@/assets/images/tips/VISUELS_Anti-gaspi.png"),
   },
   {
     id: 4,
     label: "Cuisine durable",
-    image: require("@/assets/images/tips/VISUELS_Cuisine.png"),
-    activeImage: require("@/assets/images/tips/VISUELS_Cuisine_blanc.png"),
+    image: require("@/assets/images/tips/VISUELS_Cuisine_blanc.png"),
+    activeImage: require("@/assets/images/tips/VISUELS_Cuisine.png"),
   },
   {
     id: 3,
     label: "Techniques culinaires",
-    image: require("@/assets/images/tips/VISUELS_Techniques_culinaires.png"),
-    activeImage: require("@/assets/images/tips/VISUELS_Techniques_culinaires_blanc.png"),
+    image: require("@/assets/images/tips/VISUELS_Techniques_culinaires_blanc.png"),
+    activeImage: require("@/assets/images/tips/VISUELS_Techniques_culinaires.png"),
   },
   {
     id: 5,
     label: "Petits plaisirs",
-    image: require("@/assets/images/tips/VISUELS_Petits_plaisirs.png"),
-    activeImage: require("@/assets/images/tips/VISUELS_Petits_plaisirs_blanc.png"),
+    image: require("@/assets/images/tips/VISUELS_Petits_plaisirs_blanc.png"),
+    activeImage: require("@/assets/images/tips/VISUELS_Petits_plaisirs.png"),
   },
   {
     id: 6,
     label: "Sous les étiquettes",
-    image: require("@/assets/images/tips/VISUELS_Etiquettes.png"),
-    activeImage: require("@/assets/images/tips/tipsVISUELS_Etiquette_blanc.png"),
+    image: require("@/assets/images/tips/tipsVISUELS_Etiquette_blanc.png"),
+    activeImage: require("@/assets/images/tips/VISUELS_Etiquettes.png"),
   },
 ];
 
-
-
-const TipSettings= () => {
+const TipSettings = () => {
   const [selectedTips, setSelectedTips] = useState<Set<number>>(new Set());
   const [loading, setLoading] = useState(false);
   const authUser = useContext(AuthContext);
   const userId = authUser.userInfo?.id;
   const router = useRouter();
+    const context = useContext(AppContext);
+     if (!context) {
+    throw new Error('TipContext must be used within a TipProvider');
+  }
+
+  const { refreshTips } = context;
+
 
   const toggleTip = (tipId: number) => {
     setSelectedTips((prev) => {
@@ -77,6 +84,7 @@ const TipSettings= () => {
     setLoading(true);
     try {
       await storeTipPreferences(Number(userId), selectedTips);
+      refreshTips();
     } catch (err) {
       console.error(err);
       Alert.alert(
@@ -85,7 +93,7 @@ const TipSettings= () => {
       );
     } finally {
       setLoading(false);
-      router.back()
+      router.back();
     }
   };
 
@@ -146,7 +154,9 @@ const TipSettings= () => {
       {/* Footer */}
       <View style={styles.footer}>
         <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-          <Text style={styles.submitText}> {!loading?'Valider':'Sauvegarde en cours...'}</Text>
+          <Text style={styles.submitText}>
+            {!loading ? "Valider" : "Sauvegarde en cours..."}
+          </Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -207,15 +217,16 @@ const styles = StyleSheet.create({
     fontFamily: "ArchivoBold",
   },
   footer: {
-    padding: 20,
+    paddingTop: 16,
+    paddingBottom: 20,
     backgroundColor: "#fff",
     alignItems: "center",
   },
   submitButton: {
     backgroundColor: "#f97316",
-    paddingVertical: 12,
+    paddingVertical: 10,
     paddingHorizontal: 40,
-    borderRadius: 10,
+    borderRadius: 14,
     alignItems: "center",
   },
   submitText: {

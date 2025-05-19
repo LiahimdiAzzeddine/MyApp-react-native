@@ -21,7 +21,7 @@ interface Category {
 
 interface TipProps {
   tip: {
-    id: string;
+    id: any;
     title: string;
     image?: string;
     details: string;

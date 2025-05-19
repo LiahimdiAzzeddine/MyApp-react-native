@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "NativeApp",
-    "slug": "NativeApp",
+    "name": "TiCO",
+    "slug": "TiCO",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",

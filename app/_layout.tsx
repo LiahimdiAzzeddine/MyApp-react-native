@@ -16,6 +16,7 @@ import { StatusBar } from "expo-status-bar";
 import { CustomDarkTheme, LightTheme } from "@/utils/themeOptions";
 import { AuthProvider } from "@/context/AuthContext";
 import { ScannerBottomSheetProvider } from "@/context/ScannerBottomSheetContext";
+import { AppProvider } from "@/context/AppContext";
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
@@ -51,6 +52,8 @@ export default function RootLayout() {
       value={colorScheme === "dark" ? CustomDarkTheme : LightTheme}
     >
       <AuthProvider>
+            <AppProvider>
+
       <GestureHandlerRootView style={{flex:1}}>
 
         <Stack>
@@ -71,6 +74,7 @@ export default function RootLayout() {
           <Stack.Screen name="+not-found" />
         </Stack></GestureHandlerRootView>
         <StatusBar style="auto" />
+        </AppProvider>
       </AuthProvider>
     </ThemeProvider>
   );

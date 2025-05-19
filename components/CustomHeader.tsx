@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, StyleSheet, SafeAreaView, StatusBar, Platform, TouchableOpacity, Image } from 'react-native';
 import { useRouter } from 'expo-router';
+import { AppContext } from '@/context/AppContext';
 
 // Images
 const Tico = require('@/assets/images/headers/tico.png');
@@ -12,7 +13,7 @@ const OF = require('@/assets/images/headers/OFleche.png');
 const VF = require('@/assets/images/headers/vf.png');
 const FilterConseils = require('@/assets/images/tips/FILTRE_CONSEILS.png');
 const FilterRecettes = require("@/assets/images/recipes/FILTRE_RECETTES.png");
-
+const Search = require("@/assets/images/recipes/search.png");
 type Props = {
   color?: string;
   image?: 'x' | 'rf' | 'bf' | 'bx' | 'of' | 'vf' | 'vx';
@@ -28,6 +29,13 @@ const CustomHeader = ({
    isRecipes = false,
   isTips = false,
 }: Props) => {
+  const context = useContext(AppContext);
+  
+    if (!context) {
+      throw new Error("Context must be used within a Provider");
+    }
+  
+    const { setSearchRecipes,searchRecipes } = context;
   const router = useRouter();
 
   const imageMap: Record<string, any> = {
@@ -54,13 +62,21 @@ const CustomHeader = ({
 
         <View style={styles.ticoContainer}>
          {isRecipes && (
+          <>
+            <TouchableOpacity style={styles.iconButton} onPress={()=>setSearchRecipes(!searchRecipes)}>
+              <Image
+                source={Search}
+                style={styles.filter}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
             <TouchableOpacity style={styles.iconButton}>
               <Image
                 source={FilterRecettes}
                 style={styles.filter}
                 resizeMode="contain"
               />
-            </TouchableOpacity>
+            </TouchableOpacity></>
           )}
 
           {isTips && (
