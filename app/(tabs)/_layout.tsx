@@ -1,10 +1,25 @@
-import { Tabs } from "expo-router";
+import { Tabs, useRouter } from "expo-router";
 import CustomHeader from "@/components/CustomHeader";
 import ScanHeader from "@/components/headers/ScanHeader";
 import TabBar from "@/components/TabBar";
-import { ScannerBottomSheetProvider } from "@/context/ScannerBottomSheetContext";
+
 
 export default function TabLayout() {
+//     const [isFirstVisit, setIsFirstVisit] = useState<boolean | null>(null);
+// const router=useRouter();
+
+//   useEffect(() => {
+//     const checkFirstVisit = async () => {
+//       const firstVisitStatus = await getFirstVisit();
+//       setIsFirstVisit(firstVisitStatus === null);
+//     };
+//     checkFirstVisit();
+    
+//   }, []);
+  
+//   if(isFirstVisit){
+//       router.push("/welcomeSlider")
+//     }
   return (
     <Tabs tabBar={(props) => <TabBar {...props} />} >
       <Tabs.Screen

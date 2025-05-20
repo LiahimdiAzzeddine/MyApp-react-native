@@ -149,6 +149,7 @@ const TipSettings = () => {
               </TouchableOpacity>
             ))}
           </View>
+          
         </ScrollView>
       </View>
       {/* Footer */}

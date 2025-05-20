@@ -117,7 +117,7 @@ const RecipeSettings: React.FC = () => {
       
     }
   };
-
+ 
   useEffect(() => {
     const loadPreferences = async () => {
       const stored = await getPreferences(String(userId));
@@ -241,7 +241,6 @@ const styles = StyleSheet.create({
   },
 
   scroll: {
-    backgroundColor: "#fdf2f0",
     padding: 20,
   },
   section: {

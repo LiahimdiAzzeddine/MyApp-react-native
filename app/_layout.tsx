@@ -17,6 +17,9 @@ import { CustomDarkTheme, LightTheme } from "@/utils/themeOptions";
 import { AuthProvider } from "@/context/AuthContext";
 import { ScannerBottomSheetProvider } from "@/context/ScannerBottomSheetContext";
 import { AppProvider } from "@/context/AppContext";
+import Toast from "react-native-toast-message";
+import CustomHeader from "@/components/CustomHeader";
+
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
@@ -33,8 +36,8 @@ export default function RootLayout() {
     ArchivoExtraBold: require("../assets/fonts/Archivo-ExtraBold.otf"),
     ArchivoBoldItalic: require("../assets/fonts/Archivo-BoldItalic.otf"),
     ArchivoLight: require("../assets/fonts/Archivo-Light.otf"),
-    ArchivoItalic:require("../assets/fonts/Archivo-Italic.otf"),
-    ArchivoLightItalic:require("../assets/fonts/Archivo-Italic.otf"),
+    ArchivoItalic: require("../assets/fonts/Archivo-Italic.otf"),
+    ArchivoLightItalic: require("../assets/fonts/Archivo-Italic.otf"),
   });
 
   useEffect(() => {
@@ -52,30 +55,57 @@ export default function RootLayout() {
       value={colorScheme === "dark" ? CustomDarkTheme : LightTheme}
     >
       <AuthProvider>
-            <AppProvider>
-
-      <GestureHandlerRootView style={{flex:1}}>
-
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="hometab" options={{ headerShown: false,animation:'fade' }} />
-          <Stack.Screen name="recipetab" options={{ headerShown: false,animation: 'fade' }} />
-          <Stack.Screen name="tiptab" options={{ headerShown: false,animation: 'fade' }} />
-          <Stack.Screen name="fp" options={{ headerShown: false,animation: 'fade' }} />
-          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-          <Stack.Screen
-            name="settings"
-            options={{
-              title: "Paramètres",
-              animation: "fade",
-              headerShown: true,
-            }}
-          />
-          <Stack.Screen name="+not-found" />
-        </Stack></GestureHandlerRootView>
-        <StatusBar style="auto" />
+        <AppProvider>
+          <GestureHandlerRootView style={{ flex: 1 }}>
+            <Stack>
+               
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen
+                name="hometab"
+                options={{ headerShown: false, animation: "fade" }}
+              />
+              <Stack.Screen
+                name="recipetab"
+                options={{ headerShown: false, animation: "fade" }}
+              />
+              <Stack.Screen
+                name="tiptab"
+                options={{ headerShown: false, animation: "fade" }}
+              />
+              <Stack.Screen
+                name="fp"
+                options={{ headerShown: false, animation: "fade" }}
+              />
+              <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+              <Stack.Screen
+                name="settings"
+                options={{
+                  title: "Paramètres",
+                  animation: "fade",
+                  header: (props) => (
+                    <CustomHeader color={"#ffeda3"} image={"bx"} />
+                  ),
+                }}
+              />
+              <Stack.Screen
+                name="settingsPage"
+                options={{ headerShown: false, animation: "fade" }}
+              />
+             <Stack.Screen
+                name="welcomeSlider"
+                options={{
+                  title: "welcome",
+                  animation: "fade",
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen name="+not-found" />
+            </Stack>
+          </GestureHandlerRootView>
+          <StatusBar style="auto" />
         </AppProvider>
       </AuthProvider>
+      <Toast />
     </ThemeProvider>
   );
 }

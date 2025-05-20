@@ -46,6 +46,7 @@
     "react-native-collapsible": "^1.6.2",
     "react-native-gesture-handler": "~2.24.0",
     "react-native-modal": "^14.0.0-rc.1",
+    "react-native-pager-view": "^6.7.1",
     "react-native-reanimated": "~3.17.4",
     "react-native-render-html": "^6.3.4",
     "react-native-root-toast": "^4.0.1",
@@ -54,6 +55,7 @@
     "react-native-svg": "15.11.2",
     "react-native-swipe-list-view": "^3.2.9",
     "react-native-swiper-flatlist": "^3.2.5",
+    "react-native-toast-message": "^2.3.0",
     "react-native-web": "^0.20.0",
     "react-native-webview": "13.13.5",
     "tailwindcss": "3.4.17"

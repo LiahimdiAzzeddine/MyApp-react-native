@@ -94,14 +94,14 @@ export default function LoginScreen() {
 
       {/* Mot de passe oublié */}
       <Pressable>
-        <Text className="text-orange-500 text-sm font-medium mb-2">
+        <Text className="text-orange-500 text-sm font-medium mb-2" onPress={()=> router.push("/(auth)/forgotPassword")}>
           Mot de passe oublié ?
         </Text>
       </Pressable>
 
       {/* Créer un compte */}
       <Pressable>
-        <Text className="text-orange-500 text-sm font-medium">
+        <Text className="text-orange-500 text-sm font-medium"  onPress={()=> router.push("/(auth)/register")}>
           Je crée mon compte
         </Text>
       </Pressable>
