@@ -1,11 +1,16 @@
-import { calculateTotalTime, generateImageUrl } from "@/types/recipe";
-import React from "react";
+import {
+  calculateTotalTime,
+  generateImageUrl,
+  convertRecetteToSteps,
+  Step,
+  groupSteps,
+} from "@/types/recipe";
+import React, { useState } from "react";
 import {
   View,
   Text,
   Image,
   ScrollView,
-  Button,
   StyleSheet,
   Share,
   TouchableOpacity,
@@ -13,19 +18,10 @@ import {
 } from "react-native";
 import { SwiperFlatList } from "react-native-swiper-flatlist";
 const horloge = require("@/assets/images/recipes/horloge.png");
+import { Dimensions } from "react-native";
 
 // Replace with the correct API URL
 const apiUrl = "https://your-api-url.com";
-
-// Function to group steps into batches of 3
-const groupSteps = (steps: any[], groupSize: number) => {
-  if (!Array.isArray(steps)) return [];
-  const grouped: any[] = [];
-  for (let i = 0; i < steps.length; i += groupSize) {
-    grouped.push(steps.slice(i, i + groupSize));
-  }
-  return grouped;
-};
 
 interface RecipeDetailsProps {
   recipe: any;
@@ -42,8 +38,12 @@ const RecipeDetails = ({ recipe = {}, custom = true }: RecipeDetailsProps) => {
     timebake,
     regimes = [],
     ingredients = [],
-    recette: steps = [],
+    recette,
   } = recipe;
+  const steps: Step[] = convertRecetteToSteps(recette);
+  const groupedSteps = groupSteps(steps, 3);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const { width: largeur } = Dimensions.get("window");
 
   const shareRecipe = async () => {
     try {
@@ -112,13 +112,33 @@ const RecipeDetails = ({ recipe = {}, custom = true }: RecipeDetailsProps) => {
             <Text style={styles.sectionTitle}>Ingrédients</Text>
             <View style={styles.ingredientList}>
               {ingredients.length > 0 ? (
-                ingredients.map((ingredient: { qt: any; unit: any; name: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; }, index: React.Key | null | undefined) => (
-                  <Text key={index} style={styles.ingredientText}>
-                    {ingredient.qt ? `${ingredient.qt} ` : ""}
-                    {ingredient.unit ? `${ingredient.unit} ` : ""}
-                    {ingredient.name}
-                  </Text>
-                ))
+                ingredients.map(
+                  (
+                    ingredient: {
+                      qt: any;
+                      unit: any;
+                      name:
+                        | string
+                        | number
+                        | boolean
+                        | React.ReactElement<
+                            any,
+                            string | React.JSXElementConstructor<any>
+                          >
+                        | Iterable<React.ReactNode>
+                        | React.ReactPortal
+                        | null
+                        | undefined;
+                    },
+                    index: React.Key | null | undefined
+                  ) => (
+                    <Text key={index} style={styles.ingredientText}>
+                      {ingredient.qt ? `${ingredient.qt} ` : ""}
+                      {ingredient.unit ? `${ingredient.unit} ` : ""}
+                      {ingredient.name}
+                    </Text>
+                  )
+                )
               ) : (
                 <Text style={styles.noIngredientsText}>
                   Les ingrédients de cette recette, malheureusement, ne sont pas
@@ -131,22 +151,43 @@ const RecipeDetails = ({ recipe = {}, custom = true }: RecipeDetailsProps) => {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Recette</Text>
             {steps.length > 0 ? (
-              <SwiperFlatList
-                data={groupSteps(steps, 3)}
-                renderItem={({ item }) => (
-                  <View style={styles.stepGroup}>
-                    <View style={styles.stepList}>
-                      {item.map((step, index) => (
-                        <Text key={index} style={styles.stepText}>
-                          {step.description}
-                        </Text>
-                      ))}
+              <View style={{ flex: 1 }}>
+                <SwiperFlatList
+                  data={groupedSteps}
+                  onChangeIndex={({ index }) => setCurrentIndex(index)}
+                  showPagination={false}
+                  renderItem={({ item }) => (
+                    <View
+                      style={[styles.slideContainer, { width: largeur - 41 }]}
+                    >
+                      <View style={styles.bulletList}>
+                        {item.map((step: { id: React.Key | null | undefined; description: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; }) => (
+                          <View key={step.id} style={styles.bulletItem}>
+                            <Text style={styles.bulletText}>{"\u2022"}</Text>
+                            <Text style={styles.stepText}>
+                              {step.description}
+                            </Text>
+                          </View>
+                        ))}
+                      </View>
                     </View>
-                  </View>
-                )}
-                keyExtractor={(item, index) => index.toString()}
-                showPagination
-              />
+                  )}
+                  keyExtractor={(_, index) => index.toString()}
+                  paginationStyle={styles.hidden}
+                />
+
+                <View style={styles.paginationContainer}>
+                  {groupedSteps.map((_, i) => (
+                    <TouchableOpacity
+                      key={i}
+                      style={[
+                        styles.paginationDot,
+                        currentIndex === i && styles.paginationDotActive,
+                      ]}
+                    />
+                  ))}
+                </View>
+              </View>
             ) : (
               <Text style={styles.noStepsText}>
                 Les étapes de cette recette, malheureusement, ne sont pas
@@ -190,6 +231,32 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     minHeight: 240,
+  },
+  slideContainer: {
+    paddingVertical: 20,
+  },
+  bulletList: {
+    flexDirection: "column",
+    maxWidth: "99%",
+  },
+  bulletItem: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    marginBottom: 10,
+  },
+  bulletText: {
+    fontSize: 20,
+    marginRight: 5,
+    color: "#C92D2D",
+    justifyContent: "flex-start",
+    alignItems: "center",
+  },
+  stepText: {
+    flex: 1,
+    fontSize: 16,
+    lineHeight: 22,
+    fontFamily: "ArchivoLight",
+    color: "#ff0000",
   },
   title: {
     textAlign: "center",
@@ -264,6 +331,7 @@ const styles = StyleSheet.create({
   totalTimeText: {
     fontSize: 16,
     color: "#ff0000",
+    fontFamily: "Archivo",
   },
   section: {
     flex: 1,
@@ -272,8 +340,8 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 20,
-    fontWeight: "bold",
     color: "#ff0000",
+    fontFamily: "ArchivoExtraBold",
   },
   ingredientList: {
     paddingTop: 10,
@@ -281,25 +349,36 @@ const styles = StyleSheet.create({
   ingredientText: {
     fontSize: 16,
     color: "#ff0000",
+    fontFamily: "ArchivoLight",
   },
   noIngredientsText: {
     fontSize: 16,
     color: "#ff0000",
     fontStyle: "italic",
   },
-  stepGroup: {
-    paddingVertical: 10,
+  paginationContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 8, // Works only in newer RN, otherwise use margin
+    marginTop: 8,
+    marginBottom: 4,
   },
-  stepList: {
-    paddingLeft: 20,
+  paginationDot: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: "#ff0000", // Red
+    marginHorizontal: 4,
   },
-  stepText: {
-    fontSize: 16,
-    color: "#ff0000",
+  paginationDotActive: {
+    backgroundColor: "#d00000", // Darker red
+  },
+  hidden: {
+    display: "none",
   },
   noStepsText: {
     fontSize: 16,
-    color: "#ff0000",
     fontStyle: "italic",
   },
 });

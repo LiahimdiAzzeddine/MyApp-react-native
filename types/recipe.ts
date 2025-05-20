@@ -4,7 +4,11 @@ export interface Ingredient {
     unit: string;
     name: string;
   }
-  
+  export type Step = {
+  id: string;
+  description: string;
+};
+
   export interface RecetteEtapes {
     etape1?: string;
     etape2?: string;
@@ -95,4 +99,19 @@ export const generateImageUrl = (id:number, imageName:string) => {
   const thousands = idPadded.slice(0, 3); 
   const hundreds = idPadded.slice(3); 
   return "https://files.foodhea.com/recipe/files/"+thousands+"/"+hundreds+"/"+imageName;
+};
+
+export const convertRecetteToSteps = (recette: Record<string, string>): Step[] => {
+  return Object.entries(recette).map(([id, description]) => ({
+    id,
+    description,
+  }));
+};
+
+export const groupSteps = (steps: Step[], groupSize: number): Step[][] => {
+  const groups: Step[][] = [];
+  for (let i = 0; i < steps.length; i += groupSize) {
+    groups.push(steps.slice(i, i + groupSize));
+  }
+  return groups;
 };

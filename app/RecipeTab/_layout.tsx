@@ -16,6 +16,12 @@ export default function _layout() {
           header: (props) => <CustomHeader image="rf" />,
         }}
       />
+      <Stack.Screen
+        name="recipeSettings"
+        options={{
+          header: (props) => <CustomHeader image="rf" color="#fdf2f0" />,
+        }}
+      />
     </Stack>
   );
 }

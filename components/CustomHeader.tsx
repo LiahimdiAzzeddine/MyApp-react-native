@@ -70,7 +70,9 @@ const CustomHeader = ({
                 resizeMode="contain"
               />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.iconButton}>
+            <TouchableOpacity style={styles.iconButton}
+                          onPress={() => router.push('/recipetab/recipeSettings')}
+            >
               <Image
                 source={FilterRecettes}
                 style={styles.filter}
