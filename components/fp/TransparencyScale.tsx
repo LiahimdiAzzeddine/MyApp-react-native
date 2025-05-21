@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { View, Image, TouchableOpacity, Text, StyleSheet, Dimensions } from 'react-native';
-import { Link } from 'expo-router';
 import TransparencyInfo from './TransparencyInfo';
 import Modal from 'react-native-modal';
 
@@ -156,7 +155,7 @@ const TransparencyScale: React.FC<TransparencyScaleProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 10,
+    paddingHorizontal: 16,
     paddingBottom: 16,
   },
   scaleContainer: {

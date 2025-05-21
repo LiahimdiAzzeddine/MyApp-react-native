@@ -1,14 +1,18 @@
 // components/Encourager.tsx
-import { useGlobalContext } from '@/context/GlobalFpContext';
-import React, { useEffect, useRef } from 'react';
+import { useBottomSheet } from '@/context/BottomSheetContext';
+import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, Image, Pressable, Animated, StyleSheet } from 'react-native';
+import { ContactModal } from '../Modals/ContactModal';
+import Solliciter from '../Modals/Solliciter';
 
 const flecheLeft = require('@/assets/images/fp/FICHEFleche.png'); 
 const illustrationOrigines = require('@/assets/images/fp/BubbleImg.png'); 
 
 const Encourager: React.FC<{ product: any }> = ({ product }) => {
   const isAuthenticated = true;
-  const { hasRequested, setIsCourager } = useGlobalContext();
+  const { hasRequested, setIsCourager } = useBottomSheet();
+    const [isModalVisible, setIsModalVisible] = useState(true);
+
 
 
   const scaleAnim = useRef(new Animated.Value(1)).current;
@@ -52,12 +56,12 @@ const Encourager: React.FC<{ product: any }> = ({ product }) => {
   return (
     <View style={styles.container}>
       <Pressable onPress={openContactSolliciter} style={styles.textContainer}>
-        <Text style={styles.text}>
-          <Text style={styles.boldText}>Encourager la marque</Text> à fournir
+        <Text className='text-custom-blue ArchivoLight underline text-sl underline-offset-2 leading-tight'>
+          <Text className='text-custom-blue ArchivoBold leading-tight'>Encourager la marque</Text> à fournir
         </Text>
         <View style={styles.imageRow}>
-          <Text style={styles.text}>toutes les informations</Text>
-          <Image source={flecheLeft} style={styles.arrowImage} />
+          <Text className='text-custom-blue ArchivoLight underline text-sl underline-offset-2 leading-tight'>toutes les informations</Text>
+          <Image resizeMode="contain" source={flecheLeft} style={styles.arrowImage}  />
         </View>
       </Pressable>
 
@@ -70,6 +74,12 @@ const Encourager: React.FC<{ product: any }> = ({ product }) => {
           />
         </Pressable>
       </View>
+       <Solliciter
+          isOpen={isModalVisible}
+          setIsOpen={setIsModalVisible}
+          gtin="1234567890123"
+          productName="Produit Exemple"
+        />
     </View>
   );
 };
@@ -85,24 +95,17 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
-  text: {
-    color: '#1E3A8A', 
-    textDecorationLine: 'underline',
-    fontSize: 14,
-    lineHeight: 20,
-  },
-  boldText: {
-    fontWeight: 'bold',
-  },
+
+  
   imageRow: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   arrowImage: {
     position:"absolute",
-    width: 30,
-    height: 30,
-    marginLeft: 200,
+    width: 35,
+    height: 35,
+    marginLeft: 220,
     transform: [{ rotate: '-30deg' }],
   },
   imageContainer: {

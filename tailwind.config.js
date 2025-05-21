@@ -40,6 +40,7 @@ module.exports = {
         s:8,
         xs: 12,
         sm: 14,
+        sl: 15,
         base: 16,
         lg: 18,
         xl: 20,

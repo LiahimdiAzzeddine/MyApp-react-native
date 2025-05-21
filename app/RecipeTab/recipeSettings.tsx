@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { storePreferences, getPreferences } from "@/utils/storage";
 import { AuthContext } from "@/context/AuthContext";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const DIET_OPTIONS = {
   ALL: "Aucun régime spécial",
@@ -129,7 +130,7 @@ const RecipeSettings: React.FC = () => {
   }, [userId]);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
       <View style={styles.Radius}>
         {/* Header */}
         <ImageBackground
@@ -205,7 +206,7 @@ const RecipeSettings: React.FC = () => {
           <Text style={styles.submitText}>Valider</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 const styles = StyleSheet.create({
@@ -283,8 +284,8 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   footer: {
-    paddingTop: 16,
-    paddingBottom: 20,
+    paddingTop: 10,
+    paddingBottom: 10,
     backgroundColor: "#fff",
     alignItems: "center",
   },

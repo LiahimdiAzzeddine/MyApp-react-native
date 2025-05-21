@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: 'white',
-    paddingHorizontal:0,
+    paddingHorizontal:16,
     width:'100%',
     paddingBottom:5
   },

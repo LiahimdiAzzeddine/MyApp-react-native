@@ -3,13 +3,11 @@ import {
   View,
   Text,
   StyleSheet,
-  SafeAreaView,
   TextInput,
   ScrollView,
   TouchableOpacity,
   Image,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "@react-navigation/native";
 import useRecipesLast from "@/hooks/recipes/useRecipesLast";
 import Item from "@/components/recipes/ItemRecipe";
@@ -20,6 +18,9 @@ import { useRouter } from "expo-router";
 import RenderHeaderTab from "@/components/ui/renderHeader";
 import { AppContext } from "@/context/AppContext";
 const Search = require("@/assets/images/recipes/search.png");
+import AntDesign from '@expo/vector-icons/AntDesign';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
 
 const Recipes = () => {
   const { colors } = useTheme();
@@ -31,7 +32,7 @@ const Recipes = () => {
   if (!context) {
     throw new Error("AppContext must be used within a AppProvider");
   }
-  const { searchRecipes } = context;
+  const { searchRecipes,isOnline } = context;
 
   const itemsPerPage = 10;
   const { recipes, loading, error } = useRecipesLast(null, null, searchTerm);
@@ -60,7 +61,7 @@ const Recipes = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-[#fdf2f0]">
+    <SafeAreaView className="flex-1 bg-[#fdf2f0]" edges={['bottom', 'left', 'right']}>
       <View style={styles.Radius}>
         {/* Header */}
         <RenderHeaderTab
@@ -115,7 +116,7 @@ const Recipes = () => {
               <Text
                 style={[styles.pageBtn, currentPage === 1 && styles.disabled]}
               >
-                ◀
+             <AntDesign name="left" size={22} color="black" />
               </Text>
             </TouchableOpacity>
 
@@ -135,14 +136,14 @@ const Recipes = () => {
                   currentPage === totalPages && styles.disabled,
                 ]}
               >
-                ▶
+               <AntDesign name="right" size={22} color="black" />
               </Text>
             </TouchableOpacity>
           </View>
         )}
 
         <TouchableOpacity
-          className="bg-custom-red rounded-xl py-3 px-4 mb-6 m-auto"
+          className="bg-custom-red rounded-xl py-3 px-4 m-auto"
           onPress={goToAddRecipe}
         >
           <Text className="text-base text-white">Proposer une recette</Text>

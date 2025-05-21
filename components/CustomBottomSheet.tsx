@@ -1,77 +1,50 @@
-import React, { useEffect, useState } from "react";
-import {
-  Text,
-  StyleSheet,
-  ActivityIndicator,
-  View,
-  Alert,
-  TouchableOpacity,
-} from "react-native";
+import React, { useCallback, useContext, useEffect } from "react";
+import { StyleSheet, View, Alert, Text, TouchableOpacity } from "react-native";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
-import useGetProduct from "@/hooks/fp/useGetProduct";
-import ModalHeader from "./fp/ModalHeader";
-import { addProduct } from "@/utils/storage"; // Fonction d'ajout à l'historique
-import { addLaterProduct } from "@/utils/storage"; // Fonction d'ajout "plus tard"
-import NetInfo from "@react-native-community/netinfo"; // Importation de NetInfo
-import { useGlobalContext } from "@/context/GlobalFpContext";
-import ProductSkeletonLoader from "./fp/ProductSkeletonLoader";
-import ProductDetailsView from "./fp/ProductDetailsView";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useBottomSheet } from "@/context/BottomSheetContext";
+import { AuthContext } from "@/context/AuthContext";
+import { useAppContext } from "@/context/AppContext";
+import useGetProduct from "@/hooks/fp/useGetProduct";
+import { addLaterProduct, addProduct } from "@/utils/storage";
+import ProductSkeletonLoader from "./fp/ProductSkeletonLoader";
+import ModalHeader from "./fp/ModalHeader";
+import ProductDetailsView from "./fp/ProductDetailsView";
+import { Easing } from "react-native-reanimated";
 
-interface ScannerBottomSheetProps {
-  bottomSheetRef: any;
-  index: number;
-  snapPoints: string[];
-  barcode: string | null;
-  onClose: () => void;
-  onIndexChange: (index: number) => void;
-  isAuthenticated: boolean; // Propriété pour vérifier si l'utilisateur est connecté
-}
-
-export default function ScannerBottomSheet({
-  bottomSheetRef,
-  index,
-  snapPoints,
-  barcode,
-  onClose,
-  onIndexChange,
-  isAuthenticated,
-}: ScannerBottomSheetProps) {
-  // Gestion de l'état de la connexion
-  const [isOnline, setIsOnline] = useState<boolean>(true); // Par défaut, on considère que l'utilisateur est en ligne
-    const insets = useSafeAreaInsets();
-  
+const CustomBottomSheet: React.FC = () => {
+  const insets = useSafeAreaInsets();
+  const { bottomSheetRef, closeBottomSheet, scannedBarcode, setHasRequested } =
+    useBottomSheet();
+  const { userInfo } = useContext(AuthContext);
+  const { isOnline } = useAppContext();
   const { productData, loading, error, fetchProduct } = useGetProduct(
-    barcode || ""
+    scannedBarcode || ""
   );
-  const { setHasRequested, hasRequested, isCourager, setIsCourager } =
-    useGlobalContext();
 
+  const handleSheetChanges = useCallback(
+    (index: number) => {
+      if (index === -1) {
+        closeBottomSheet();
+      }
+    },
+    [closeBottomSheet]
+  );
   useEffect(() => {
-    // Écoute des changements de l'état de la connexion réseau
-    const unsubscribe = NetInfo.addEventListener((state) => {
-      setIsOnline(state.isConnected ?? false); // Met à jour l'état en fonction de la connexion
-    });
-
     // Effectue la récupération du produit si un code-barres est fourni
-    if (barcode) {
+    if (scannedBarcode && isOnline) {
       fetchProduct();
     }
-
-    // Nettoyage de l'écouteur à la désactivation du composant
-    return () => unsubscribe();
-  }, [barcode]);
-
+  }, [scannedBarcode]);
   useEffect(() => {
     // Si l'utilisateur est connecté et que nous avons des données de produit, on l'ajoute à l'historique automatiquement
-    if (isAuthenticated && productData) {
+    if (userInfo && productData) {
       addProduct(productData);
       if (productData.alreadyRequest !== undefined) {
         setHasRequested(productData.alreadyRequest);
       }
     }
-  }, [isAuthenticated, productData]); // Effectue l'ajout quand l'utilisateur est connecté et qu'on a des données de produit
-
+  }, [userInfo, productData]);
   const handleAddToLater = async (product: any) => {
     try {
       await addLaterProduct(product);
@@ -88,16 +61,20 @@ export default function ScannerBottomSheet({
   return (
     <BottomSheet
       ref={bottomSheetRef}
-      enableDynamicSizing
-      index={index}
-      snapPoints={snapPoints}
-      onChange={onIndexChange}
-      topInset={insets.top} 
-              enablePanDownToClose={true}
-              handleStyle={styles.handleStyle}
+      onChange={handleSheetChanges}
+      snapPoints={["40%", "100%"]}
+      topInset={insets.top}
+      enablePanDownToClose={true}
+      handleStyle={styles.handleStyle}
+      index={-1}
+      enableContentPanningGesture={true}
+      animationConfigs={{
+        duration: 500,
+        easing: Easing.out(Easing.exp),
+      }}
     >
       <BottomSheetView style={styles.contentContainer}>
-        <ModalHeader goToPage={onClose} />
+        <ModalHeader goToPage={closeBottomSheet} />
 
         {loading ? (
           <ProductSkeletonLoader />
@@ -117,11 +94,11 @@ export default function ScannerBottomSheet({
               Vous êtes hors ligne. Souhaitez-vous sauvegarder ce produit pour
               plus tard ?
             </Text>
-            {barcode && (
+            {productData && (
               <TouchableOpacity
                 onPress={() =>
                   handleAddToLater({
-                    gtin: barcode,
+                    gtin: productData,
                     name: "Produit hors ligne",
                     trademark: "N/A",
                     image: "default_image_url",
@@ -137,20 +114,21 @@ export default function ScannerBottomSheet({
       </BottomSheetView>
     </BottomSheet>
   );
-}
+};
 
 const styles = StyleSheet.create({
+  handleStyle: {
+    paddingTop: 12,
+    paddingBottom: 12,
+    backgroundColor: "transparent",
+  },
   contentContainer: {
     flex: 1,
     paddingTop: 0,
     marginTop: 0,
     alignItems: "center",
   },
-      handleStyle: {
-    paddingTop: 12,
-    paddingBottom: 12,
-    backgroundColor: 'transparent',
-  },
+
   modalText: {
     fontSize: 16,
     marginBottom: 20,
@@ -180,3 +158,5 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
 });
+
+export default CustomBottomSheet;

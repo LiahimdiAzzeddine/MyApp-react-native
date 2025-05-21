@@ -5,23 +5,9 @@ import TabBar from "@/components/TabBar";
 
 
 export default function TabLayout() {
-//     const [isFirstVisit, setIsFirstVisit] = useState<boolean | null>(null);
-// const router=useRouter();
 
-//   useEffect(() => {
-//     const checkFirstVisit = async () => {
-//       const firstVisitStatus = await getFirstVisit();
-//       setIsFirstVisit(firstVisitStatus === null);
-//     };
-//     checkFirstVisit();
-    
-//   }, []);
-  
-//   if(isFirstVisit){
-//       router.push("/welcomeSlider")
-//     }
   return (
-    <Tabs tabBar={(props) => <TabBar {...props} />} >
+    <Tabs  initialRouteName="index" tabBar={(props) => <TabBar {...props} />} >
       <Tabs.Screen
         name="home"
         options={{
@@ -48,6 +34,7 @@ export default function TabLayout() {
         options={{
           title: "Recipes",
           header: () => <CustomHeader image="rf" isRecipes={true} />,
+          tabBarStyle: { display: 'none' },
         }}
       />
       <Tabs.Screen

@@ -19,6 +19,7 @@ import {
 import { SwiperFlatList } from "react-native-swiper-flatlist";
 const horloge = require("@/assets/images/recipes/horloge.png");
 import { Dimensions } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 // Replace with the correct API URL
 const apiUrl = "https://your-api-url.com";
@@ -58,7 +59,7 @@ const RecipeDetails = ({ recipe = {}, custom = true }: RecipeDetailsProps) => {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
       <View style={styles.recipeHeader}>
         <ImageBackground
           source={require("@/assets/images/recipes/recipeBg.png")}
@@ -205,14 +206,14 @@ const RecipeDetails = ({ recipe = {}, custom = true }: RecipeDetailsProps) => {
           </TouchableOpacity>
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: "#fad4ce",
   },
   containerContent: {
     flex: 1,
@@ -223,8 +224,8 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    paddingTop: 16,
-    paddingBottom: 20,
+    paddingTop: 10,
+    paddingBottom: 10,
     backgroundColor: "#fad4ce",
   },
   imageContainer: {

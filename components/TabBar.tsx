@@ -41,7 +41,7 @@ const IMAGE_SOURCES: Record<RouteName, { active: ImageSourcePropType; inactive: 
   },
   helpTico: {
     active: require('@/assets/icons/help.png'),
-    inactive: require('@/assets/icons/help_inactive.png'),
+    inactive: require('@/assets/icons/help.png'),
   },
   index: {
     active: require('@/assets/icons/scanner.png'),
@@ -153,7 +153,7 @@ const TabBar = ({ state }: BottomTabBarProps) => {
       {state.routes.filter((route) => visibleRoutes.includes(route.name)).map((route, index) => {
         const routeName = route.name as RouteName;
         const isFocused = state.index === index;
-        const shouldBlockAccess = !isAuthenticated && routeName !== 'index';
+        const shouldBlockAccess = !isAuthenticated && routeName !== 'index' && routeName !== 'helpTico';
         const iconStyle = getIconStyle(routeName);
 
         return (
@@ -180,8 +180,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
     alignItems: 'center',
     paddingHorizontal: 5,
-    paddingTop: 10,
-    maxHeight: 100,
+    paddingTop: 9,
   },
   tabBarItem: {
     justifyContent: 'center',

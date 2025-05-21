@@ -15,10 +15,11 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import { StatusBar } from "expo-status-bar";
 import { CustomDarkTheme, LightTheme } from "@/utils/themeOptions";
 import { AuthProvider } from "@/context/AuthContext";
-import { ScannerBottomSheetProvider } from "@/context/ScannerBottomSheetContext";
 import { AppProvider } from "@/context/AppContext";
 import Toast from "react-native-toast-message";
 import CustomHeader from "@/components/CustomHeader";
+import { BottomSheetProvider } from "@/context/BottomSheetContext";
+import CustomBottomSheet from "@/components/CustomBottomSheet";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -56,6 +57,7 @@ export default function RootLayout() {
     >
       <AuthProvider>
         <AppProvider>
+          <BottomSheetProvider>
           <GestureHandlerRootView style={{ flex: 1 }}>
             <Stack>
                
@@ -76,7 +78,7 @@ export default function RootLayout() {
                 name="fp"
                 options={{ headerShown: false, animation: "fade" }}
               />
-              <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+              <Stack.Screen name="(auth)" options={{ headerShown: false, animation: "fade" }} />
               <Stack.Screen
                 name="settings"
                 options={{
@@ -101,7 +103,9 @@ export default function RootLayout() {
               />
               <Stack.Screen name="+not-found" />
             </Stack>
-          </GestureHandlerRootView>
+                          <CustomBottomSheet />
+
+          </GestureHandlerRootView></BottomSheetProvider>
           <StatusBar style="auto" />
         </AppProvider>
       </AuthProvider>

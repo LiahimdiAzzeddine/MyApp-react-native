@@ -13,6 +13,7 @@ import { storeTipPreferences, getTipPreferences } from "@/utils/storage";
 import { AuthContext } from "@/context/AuthContext";
 import { useRouter } from "expo-router";
 import { AppContext } from "@/context/AppContext";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 
 const tips = [
@@ -108,7 +109,7 @@ const TipSettings = () => {
   }, [userId]);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
       <View style={styles.Radius}>
         {/* Header */}
         <ImageBackground
@@ -160,7 +161,7 @@ const TipSettings = () => {
           </Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 const styles = StyleSheet.create({
@@ -218,8 +219,8 @@ const styles = StyleSheet.create({
     fontFamily: "ArchivoBold",
   },
   footer: {
-    paddingTop: 16,
-    paddingBottom: 20,
+    paddingTop: 10,
+    paddingBottom: 10,
     backgroundColor: "#fff",
     alignItems: "center",
   },

@@ -1,141 +1,110 @@
-import {
-  CameraView,
-  CameraType,
-  useCameraPermissions,
-  FlashMode,
-} from "expo-camera";
-import React, { useMemo, useRef, useState, useCallback, useContext } from "react";
-import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import BottomSheet from "@gorhom/bottom-sheet";
-import ScannerBottomSheet from "@/components/ScannerBottomSheet";
+import React, { useState, useCallback, useEffect, useRef } from "react";
+import { View, Text, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import {styles} from "./style"
-import { AuthContext } from "@/context/AuthContext";
-import { GlobalFpProvider } from "@/context/GlobalFpContext";
+import { CameraView, CameraType, useCameraPermissions, FlashMode } from "expo-camera";
+import { Ionicons } from "@expo/vector-icons";
+import { useTheme } from "@react-navigation/native";
+import { useFocusEffect } from '@react-navigation/native';
+import { styles } from "./style";
+import CustomButton from "@/components/ui/CustomButton";
+import { useBottomSheet } from "@/context/BottomSheetContext";
 
 export default function Scanner() {
-  // États
-  const [facing, setFacing] = useState<CameraType>("back");
   const [permission, requestPermission] = useCameraPermissions();
-  const [scannedBarcode, setScannedBarcode] = useState<string | null>(null);
   const [flashMode, setFlashMode] = useState<FlashMode>("off");
-  const [isScanning, setIsScanning] = useState(true);
-  const [bottomSheetIndex, setBottomSheetIndex] = useState(-1);
-    const { userInfo } = useContext(AuthContext);
-  
-  
-  // Refs
-  const bottomSheetRef = useRef<BottomSheet>(null);
-  
-  // Variables mémorisées
-  const snapPoints = useMemo(() => ["35%", "50%", "100%"], []);
+  const [isCameraActive, setIsCameraActive] = useState(true);
+  const { colors } = useTheme();
+  const { openBottomSheet, setScannedBarcode, isScanning } = useBottomSheet();
 
-  // Gestionnaires d'événements mémorisés
-  const toggleCameraFacing = useCallback(() => {
-    setFacing(current => (current === "back" ? "front" : "back"));
-  }, []);
+  // Utiliser useFocusEffect pour détecter quand l'écran est activé/désactivé
+  useFocusEffect(
+    useCallback(() => {
+      // Quand l'écran reçoit le focus, activer la caméra
+      setIsCameraActive(true);
+      
+      // Quand l'écran perd le focus, désactiver la caméra
+      return () => {
+        setIsCameraActive(false);
+      };
+    }, [])
+  );
 
   const toggleFlash = useCallback(() => {
-    setFlashMode(current => (current === "off" ? "on" : "off"));
+    setFlashMode((prev) => (prev === "off" ? "on" : "off"));
   }, []);
-
-  const handleBarCodeScanned = useCallback(({ type, data }: { type: string; data: string }) => {
-    if (!isScanning) return;
-
-    setScannedBarcode(data);
-    setIsScanning(false);
-    setBottomSheetIndex(1);
-  }, [isScanning]);
-
-  const resetScanner = useCallback(() => {
-    setBottomSheetIndex(-1);
-    bottomSheetRef.current?.close();
-    
-    setTimeout(() => {
-      setScannedBarcode(null);
-      setIsScanning(true);
-    }, 100);
-  }, []);
-
-  const handleSheetIndexChange = useCallback((index: number) => {
-    setBottomSheetIndex(index);
-    if (index === -1) {
-      resetScanner();
-    }
-  }, [resetScanner]);
-
-  // Gestion des permissions
-  if (!permission) return <View />;
   
+  const handleBarCodeScanned = useCallback(
+    ({ type, data }: { type: string; data: string }) => {
+      if (!isScanning) return;
+      setScannedBarcode(data);
+      openBottomSheet();
+    },
+    [isScanning, openBottomSheet, setScannedBarcode]
+  );
+
+  if (!permission) return <View />;
   if (!permission.granted) {
     return (
       <SafeAreaView className="flex-1 bg-white">
-        <View className="flex-1 bg-white justify-center">
-          <Text className="px-10 py-5 text-center font-extrabold">
+        <View className="flex-1 justify-center px-10">
+          <Text className="py-6 text-center font-extrabold Archivo">
             Nous avons besoin de votre autorisation pour utiliser la caméra
           </Text>
-          <View className="px-10 text-center items-center">
-            <Button 
-              onPress={requestPermission} 
-              title="Autoriser la caméra" 
-              color="#6dc3bc" 
+          <View className="items-center">
+            <CustomButton
+              title="Autoriser la caméra"
+              onPress={requestPermission}
+              style={{
+                width: "100%",
+                maxWidth: 210,
+                minWidth: 150,
+                backgroundColor: (colors as any)["custom-blue"],
+              }}
             />
           </View>
         </View>
       </SafeAreaView>
     );
   }
-
+  
   return (
     <View className="flex-1 bg-white">
       <View style={styles.containerScan}>
-        <CameraView
-          style={styles.camera}
-          facing={facing}
-          flash={flashMode}
-          enableTorch={flashMode === "on"}
-          onBarcodeScanned={isScanning ? handleBarCodeScanned : undefined}
-        >
-          <View style={styles.overlay}>
-            <View style={styles.scanFrameContainer}>
-              <View style={styles.scanFrame}>
-                <View style={[styles.scanCorner, styles.topLeftCorner]} />
-                <View style={[styles.scanCorner, styles.topRightCorner]} />
-                <View style={[styles.scanCorner, styles.bottomLeftCorner]} />
-                <View style={[styles.scanCorner, styles.bottomRightCorner]} />
+        {isCameraActive && (
+          <CameraView
+            style={styles.camera}
+            facing={"back"}
+            flash={flashMode}
+            enableTorch={flashMode === "on"}
+            onBarcodeScanned={isScanning ? handleBarCodeScanned : undefined}
+          >
+            <View style={styles.overlay}>
+              <View style={styles.scanFrameContainer}>
+                <View style={styles.scanFrame}>
+                  <View style={[styles.scanCorner, styles.topLeftCorner]} />
+                  <View style={[styles.scanCorner, styles.topRightCorner]} />
+                  <View style={[styles.scanCorner, styles.bottomLeftCorner]} />
+                  <View style={[styles.scanCorner, styles.bottomRightCorner]} />
+                </View>
               </View>
+              <Text style={styles.instructionText}>
+                {isScanning
+                  ? "Alignez le code-barres dans le cadre"
+                  : "Code scanné ! Fermer pour scanner à nouveau"}
+              </Text>
             </View>
-            <Text style={styles.instructionText}>
-              {isScanning
-                ? "Alignez le code-barres dans le cadre"
-                : "Code scanné! Fermer pour scanner à nouveau"}
-            </Text>
-          </View>
-          
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.iconButton} onPress={toggleFlash}>
-              <Ionicons
-                name={flashMode === "on" ? "flash" : "flash-off"}
-                size={28}
-                color="white"
-              />
-            </TouchableOpacity>
-            
-          
-          </View>
-        </CameraView>
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity style={styles.iconButton} onPress={toggleFlash}>
+                <Ionicons
+                  name={flashMode === "on" ? "flash" : "flash-off"}
+                  size={28}
+                  color="white"
+                />
+              </TouchableOpacity>
+            </View>
+          </CameraView>
+        )}
       </View>
-      <GlobalFpProvider>
-     
-      <ScannerBottomSheet
-        bottomSheetRef={bottomSheetRef}
-        index={bottomSheetIndex}
-        snapPoints={snapPoints}
-        barcode={scannedBarcode}
-        onClose={resetScanner}
-        onIndexChange={handleSheetIndexChange} isAuthenticated={userInfo?true:false}      />
-        </GlobalFpProvider>
     </View>
   );
 }

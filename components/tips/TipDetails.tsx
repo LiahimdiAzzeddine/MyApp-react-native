@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import { WebView } from "react-native-webview";
 import Constants from "expo-constants";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 // TypeScript interfaces
 interface Category {
@@ -51,7 +52,7 @@ const TipDetails: React.FC<TipProps> = ({ tip }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
       {/* Contenu principal */}
       <View style={styles.scrollView}>
         <View style={styles.mainContent}>
@@ -104,7 +105,7 @@ const TipDetails: React.FC<TipProps> = ({ tip }) => {
           <Text style={styles.shareButtonText}>Partager autour de moi</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -113,7 +114,7 @@ const { width } = Dimensions.get("window");
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#ffeda3",
   },
   scrollView: {
     flex: 1,
@@ -191,7 +192,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 24,
+    paddingVertical: 10,
     backgroundColor: "#ffeda3",
   },
   shareButton: {

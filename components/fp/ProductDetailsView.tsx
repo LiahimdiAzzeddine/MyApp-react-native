@@ -31,6 +31,7 @@ const ProductDetailsView: React.FC<ProductDetailsViewProps> = ({
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
       <View style={styles.innerContainer}>
         <TransparencyScale currentPosition={productData.transparency_scale} />
+       
         <GlobalInfo 
           ImageSrc={productData.image} 
           Name={productData.name} 
@@ -39,8 +40,9 @@ const ProductDetailsView: React.FC<ProductDetailsViewProps> = ({
         />
         <Encourager product={productData} />
       </View>
+      {/** 
       <InfoSection product={productData} />
-      <ProductDetailsAccordion product={productData} />
+      <ProductDetailsAccordion product={productData} />*/}
     </ScrollView>
   );
 };
