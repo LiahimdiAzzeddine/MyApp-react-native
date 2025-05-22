@@ -1,7 +1,7 @@
 import React from 'react';
-import { Modal, View, StyleSheet, ImageBackground, TouchableOpacity, Image, Text } from 'react-native';
+import { Modal, View, ImageBackground, TouchableOpacity, Image, Text } from 'react-native';
 import { Animated } from 'react-native';
-
+import styles from './style';
 type Props = {
   isOpen: boolean;
   onClose: () => void;
@@ -39,41 +39,4 @@ const CustomModal = ({ isOpen, onClose, children }: Props) => {
 
 export default CustomModal;
 
-const styles = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalContainer: {
-    width: '90%',
-    aspectRatio: 1, // makes it square
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  background: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-  },
-  closeButton: {
-    position: 'absolute',
-    top: 20,
-    left: 20,
-    zIndex: 10,
-  },
-  closeIcon: {
-    width: 40,
-    height: 40,
-    resizeMode: 'contain',
-  },
-  content: {
-    flex: 1,
-    paddingHorizontal: 20,
-    paddingTop: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+

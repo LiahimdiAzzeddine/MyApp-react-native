@@ -14,7 +14,7 @@ import { Easing } from "react-native-reanimated";
 
 const CustomBottomSheet: React.FC = () => {
   const insets = useSafeAreaInsets();
-  const { bottomSheetRef, closeBottomSheet, scannedBarcode, setHasRequested } =
+  const { bottomSheetRef, closeBottomSheet, scannedBarcode, setHasRequested,setProductName } =
     useBottomSheet();
   const { userInfo } = useContext(AuthContext);
   const { isOnline } = useAppContext();
@@ -43,8 +43,13 @@ const CustomBottomSheet: React.FC = () => {
       if (productData.alreadyRequest !== undefined) {
         setHasRequested(productData.alreadyRequest);
       }
+       
+       if (productData.name !== undefined) {
+        setProductName(productData.name);
+      }
     }
   }, [userInfo, productData]);
+  
   const handleAddToLater = async (product: any) => {
     try {
       await addLaterProduct(product);

@@ -1,79 +1,63 @@
-// screens/Solliciter.tsx
-import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, Linking } from 'react-native';
+import React from 'react';
+import { View, Text, Image, TouchableOpacity, StyleSheet, Linking, ActivityIndicator } from 'react-native';
 import CustomModal from './Modal';
+import styles from './style';
+import { useBottomSheet } from '@/context/BottomSheetContext';
+import useTransparencyRequests from '@/hooks/useTransparencyRequests'; // <-- importe ton hook
+import { Link } from 'expo-router';
 
-const Solliciter = ({isOpen,
-  setIsOpen,
-  authUser,
-  gtin,
-  productName}:any) => {
-  const [hasRequested, setHasRequested] = useState(false);
+const Solliciter = ({ isOpen, setIsOpen, authUser}: any) => {
+  const { hasRequested,productName,scannedBarcode } = useBottomSheet();
+  const { handleSubmit, loading, error, sended } = useTransparencyRequests();
 
   const handleRequest = async () => {
-    // simulate async request
-    setTimeout(() => {
-      setHasRequested(true);
-    }, 1000);
+    const formValues = {
+      gtin:scannedBarcode,
+      productName: productName,
+      user_id: authUser?.id, // ou tout autre champ utile
+    };
+    console.log("🚀 ~ handleRequest ~ formValues:", formValues)
+
+    await handleSubmit(formValues);
   };
 
   return (
-        <CustomModal isOpen={isOpen} onClose={() => setIsOpen(false)}>
+    <CustomModal isOpen={isOpen} onClose={() => setIsOpen(false)}>
       <View style={styles.modalContent}>
         <Image
           source={require('@/assets/images/popup/BubbleIImage.png')}
-          style={{ width: 60, height: 60 }}
+          style={{ width: 70, height: 70 }}
+          resizeMode='contain'
         />
+
         {!hasRequested ? (
-          <>
-            <Text style={styles.description}>
+          <View style={styles.contentInfo}>
+            <Text style={styles.description} className='text-custom-blue'>
               Les informations dans les applications ne sont pas toujours fiables...
             </Text>
-            <TouchableOpacity onPress={handleRequest} style={styles.button}>
-              <Text style={styles.buttonText}>Encourager la marque</Text>
+
+            <TouchableOpacity onPress={handleRequest} style={styles.button} className='bg-custom-blue' disabled={loading}>
+              {loading ? (
+                <ActivityIndicator color="#fff" />
+              ) : (
+                <Text style={styles.buttonText} className='text-lg'>Encourager la marque</Text>
+              )}
             </TouchableOpacity>
-          </>
+
+            {error && <Text style={{ color: 'red', marginTop: 10 }}>{error}</Text>}
+          </View>
         ) : (
-          <>
-            <Text style={styles.success}>Demande effectuée</Text>
+          <View style={styles.contentInfo}>
+            <Text style={styles.success} className='text-custom-blue'>Demande effectuée</Text>
             <TouchableOpacity onPress={() => Linking.openURL('app://mesDemandes')}>
-              <Text style={styles.link}>Suivre l’état de mes demandes</Text>
+              <Link href="/hometab/demands" style={styles.link} className='text-custom-blue'>Suivre l’état de mes demandes</Link>
+
             </TouchableOpacity>
-          </>
+          </View>
         )}
       </View>
     </CustomModal>
   );
 };
-
-const styles = StyleSheet.create({
-  modalContent: {
-    alignItems: 'center',
-    gap: 10,
-  },
-  description: {
-    textAlign: 'center',
-    fontSize: 14,
-    color: '#1959A5',
-  },
-  button: {
-    backgroundColor: '#1959A5',
-    paddingVertical: 8,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    marginTop: 10,
-  },
-  buttonText: {
-    color: 'white',
-  },
-  success: {
-    fontWeight: 'bold',
-    color: '#1959A5',
-  },
-  link: {
-    color: '#1959A5',
-    textDecorationLine: 'underline',
-  },
-});
 
 export default Solliciter;

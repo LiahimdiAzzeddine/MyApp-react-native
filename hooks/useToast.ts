@@ -7,7 +7,7 @@ export const useToast = () => {
     Toast.show({
       type,
       text1: message,
-      position: 'bottom',
+      position: 'top',
       visibilityTime: 3000,
     });
   };

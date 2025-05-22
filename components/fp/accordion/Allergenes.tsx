@@ -1,6 +1,6 @@
+import { useBottomSheet } from '@/context/BottomSheetContext';
 import React from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
-import { useGlobalContext } from '@/context/GlobalFpContext';
 
 type Props = {
   allergenes: string[];
@@ -25,7 +25,7 @@ const allergenesImg: Record<string, any> = {
 };
 
 const Allergenes: React.FC<Props> = ({ allergenes }) => {
-  const { setIsCourager } = useGlobalContext();
+  const { setIsCourager } = useBottomSheet();
 
   return (
     <View>

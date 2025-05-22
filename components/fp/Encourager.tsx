@@ -1,25 +1,27 @@
 // components/Encourager.tsx
+import { AuthContext } from '@/context/AuthContext';
 import { useBottomSheet } from '@/context/BottomSheetContext';
-import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, Image, Pressable, Animated, StyleSheet } from 'react-native';
-import { ContactModal } from '../Modals/ContactModal';
-import Solliciter from '../Modals/Solliciter';
+import { useRouter } from 'expo-router';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import { View, Text, Image, Pressable, Animated, StyleSheet, Alert } from 'react-native';
 
 const flecheLeft = require('@/assets/images/fp/FICHEFleche.png'); 
 const illustrationOrigines = require('@/assets/images/fp/BubbleImg.png'); 
 
-const Encourager: React.FC<{ product: any }> = ({ product }) => {
-  const isAuthenticated = true;
-  const { hasRequested, setIsCourager } = useBottomSheet();
-    const [isModalVisible, setIsModalVisible] = useState(true);
+const Encourager = ({ product }:any) => {
+  const { userInfo } = useContext(AuthContext);
+  const isAuthenticated = !!userInfo;
 
-
+  const router = useRouter();
+  const { hasRequested, setIsModalEncourager, isModalEncourager } = useBottomSheet();
 
   const scaleAnim = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
+    let animation: Animated.CompositeAnimation;
+
     if (!hasRequested) {
-      Animated.loop(
+      animation = Animated.loop(
         Animated.sequence([
           Animated.timing(scaleAnim, {
             toValue: 1.2,
@@ -32,27 +34,37 @@ const Encourager: React.FC<{ product: any }> = ({ product }) => {
             useNativeDriver: true,
           }),
         ])
-      ).start();
+      );
+      animation.start();
     }
-  }, [hasRequested]);
+
+    return () => {
+      animation?.stop?.(); // ✅ Nettoyage propre de l’animation
+    };
+  }, [hasRequested, scaleAnim]);
 
   const openContactSolliciter = () => {
-    /* if (!isAuthenticated) {
-        alert("Se connecter pour encourager la marque")
-     triggerAlert(
-        'Se connecter pour encourager la marque',
+    console.log("🚀 ~ isModalEncourager:", isModalEncourager);
+
+    if (!isAuthenticated) {
+      Alert.alert(
         'Attention',
-        () => {
-          //navigation.navigate('Login');
-        },
-        'ios',
-        'Se connecter'
+        'Se connecter pour encourager la marque',
+        [
+          {
+            text: 'Annuler',
+            style: 'cancel',
+          },
+          {
+            text: 'Se connecter',
+            onPress: () => router.push('/login'),
+          },
+        ]
       );
     } else {
-      //setIsCourager(true);
-    }*/
+      setIsModalEncourager(true);
+    }
   };
-
   return (
     <View style={styles.container}>
       <Pressable onPress={openContactSolliciter} style={styles.textContainer}>
@@ -74,12 +86,7 @@ const Encourager: React.FC<{ product: any }> = ({ product }) => {
           />
         </Pressable>
       </View>
-       <Solliciter
-          isOpen={isModalVisible}
-          setIsOpen={setIsModalVisible}
-          gtin="1234567890123"
-          productName="Produit Exemple"
-        />
+     
     </View>
   );
 };
@@ -88,8 +95,9 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 12,
-    paddingBottom: 12,
+    paddingHorizontal: 10,
+    paddingTop:10,
+    marginBottom: 35,
   },
   textContainer: {
     flex: 1,

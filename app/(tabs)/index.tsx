@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useRef } from "react";
+import React, { useState, useCallback, useEffect, useRef, useContext } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { CameraView, CameraType, useCameraPermissions, FlashMode } from "expo-camera";
@@ -8,14 +8,16 @@ import { useFocusEffect } from '@react-navigation/native';
 import { styles } from "./style";
 import CustomButton from "@/components/ui/CustomButton";
 import { useBottomSheet } from "@/context/BottomSheetContext";
+import Solliciter from "@/components/Modals/Solliciter";
+import { AuthContext } from "@/context/AuthContext";
 
 export default function Scanner() {
   const [permission, requestPermission] = useCameraPermissions();
   const [flashMode, setFlashMode] = useState<FlashMode>("off");
   const [isCameraActive, setIsCameraActive] = useState(true);
   const { colors } = useTheme();
-  const { openBottomSheet, setScannedBarcode, isScanning } = useBottomSheet();
-
+  const { openBottomSheet, setScannedBarcode, isScanning,isModalEncourager,setIsModalEncourager,scannedBarcode } = useBottomSheet();
+ const { userInfo } = useContext(AuthContext);
   // Utiliser useFocusEffect pour détecter quand l'écran est activé/désactivé
   useFocusEffect(
     useCallback(() => {
@@ -68,6 +70,7 @@ export default function Scanner() {
   }
   
   return (
+    <>
     <View className="flex-1 bg-white">
       <View style={styles.containerScan}>
         {isCameraActive && (
@@ -106,5 +109,7 @@ export default function Scanner() {
         )}
       </View>
     </View>
+    <Solliciter isOpen={isModalEncourager}  setIsOpen={setIsModalEncourager} authUser={userInfo} />
+    </>
   );
 }

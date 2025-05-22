@@ -3,9 +3,8 @@ import {
   View,
   Text,
   Image,
-  StyleSheet,
   SafeAreaView,
-  ImageBackground,
+  StyleSheet,
   Dimensions,
 } from 'react-native';
 
@@ -14,11 +13,14 @@ const { width, height } = Dimensions.get('window');
 const Intro0 = () => {
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ImageBackground
-        source={require('@/assets/images/intro/BIENVENUE0.png')} 
-        style={styles.background}
-        resizeMode="contain"
-      >
+      <View style={styles.container}>
+        {/* Background Image at the Bottom */}
+        <Image
+          source={require('@/assets/images/intro/BIENVENUE0.png')}
+          style={styles.backgroundImage}
+          resizeMode="contain"
+        />
+
         {/* Logo */}
         <View style={styles.logoContainer}>
           <Image
@@ -32,7 +34,6 @@ const Intro0 = () => {
         <View style={styles.contentContainer}>
           <View style={styles.textWrapper}>
             <Text style={styles.title}>Bienvenue !</Text>
-
             <Text style={styles.description}>
               <Text style={styles.bold}>Ti</Text>
               <Text style={[styles.bold, styles.tight]}>CO</Text>
@@ -50,10 +51,7 @@ const Intro0 = () => {
             />
           </View>
         </View>
-
-        {/* Spacing */}
-        <View style={styles.spacing} />
-      </ImageBackground>
+      </View>
     </SafeAreaView>
   );
 };
@@ -63,11 +61,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#ffffff',
   },
-  background: {
+  container: {
     flex: 1,
+    position: 'relative',
+  },
+  backgroundImage: {
+    position: 'absolute',
+    bottom: 0,
     width: width,
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    height: height * 0.4, // Ajustez selon besoin
   },
   logoContainer: {
     flex: 1,
@@ -75,8 +77,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   logo: {
-    width: 240,
-    height: 100,
+    width: 300,
+    height: 142,
   },
   contentContainer: {
     flex: 2,
@@ -94,10 +96,10 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
-    color: '#004B8D', // text-custom-blue
+    color: '#004B8D',
     fontWeight: 'bold',
     textDecorationLine: 'underline',
-    textDecorationColor: '#FB923C', // decoration-orange-400
+    textDecorationColor: '#FB923C',
     textAlign: 'center',
     paddingTop: 8,
   },
@@ -106,7 +108,7 @@ const styles = StyleSheet.create({
     color: '#004B8D',
     textAlign: 'center',
     lineHeight: 26,
-    fontFamily: 'Archivo-Light', // Remplace par une police custom si dispo
+    fontFamily: 'Archivo-Light',
     marginTop: 20,
   },
   bold: {
@@ -125,9 +127,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 56,
     bottom: -16,
-  },
-  spacing: {
-    height: height * 0.08,
   },
 });
 

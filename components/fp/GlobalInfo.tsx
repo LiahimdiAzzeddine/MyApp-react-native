@@ -108,6 +108,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: '#0f548d',
     fontFamily:'ArchivoBold',
+    maxWidth:"95%"
   },
   productBrand: {
     fontSize: 14,

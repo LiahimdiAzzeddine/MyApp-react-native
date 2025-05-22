@@ -29,20 +29,20 @@ const ProductDetailsView: React.FC<ProductDetailsViewProps> = ({
   // Affichage du produit
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-      <View style={styles.innerContainer}>
+     <View style={styles.innerContainer}>
         <TransparencyScale currentPosition={productData.transparency_scale} />
-       
         <GlobalInfo 
           ImageSrc={productData.image} 
           Name={productData.name} 
           Brand={productData.trademark} 
           Transparent={productData.transparency_scale} 
         />
-        <Encourager product={productData} />
+        
+       <Encourager product={productData} />
       </View>
-      {/** 
+      
       <InfoSection product={productData} />
-      <ProductDetailsAccordion product={productData} />*/}
+      <ProductDetailsAccordion product={productData} />
     </ScrollView>
   );
 };
@@ -51,6 +51,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
+    width:"100%"
   },
   contentContainer: {
     flexGrow: 1,

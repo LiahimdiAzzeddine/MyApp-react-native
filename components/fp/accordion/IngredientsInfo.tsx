@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
-import { useGlobalContext } from '@/context/GlobalFpContext';
 import Allergenes from './Allergenes';
 import Additifs from './Additifs';
 

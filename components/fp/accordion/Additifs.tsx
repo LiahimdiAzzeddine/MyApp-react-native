@@ -1,6 +1,6 @@
+import { useBottomSheet } from "@/context/BottomSheetContext";
 import React from "react";
 import { View, Text, Image, TouchableOpacity } from "react-native";
-import { useGlobalContext } from "@/context/GlobalFpContext";
 
 // SVGs via react-native-svg
 const pastilleNote1 = require('@/assets/images/fp/pastille-note-1.png');
@@ -21,7 +21,7 @@ type Props = {
 };
 
 const Additifs: React.FC<Props> = ({ additifs }) => {
-  const { setIsCourager } = useGlobalContext();
+  const { setIsCourager } = useBottomSheet();
 
   const getPastilleImage = (note: number = 4) => {
     switch (note) {

@@ -18,10 +18,14 @@ type BottomSheetContextType = {
   setIsScanning: Dispatch<SetStateAction<boolean>>;
   scannedBarcode: string | null;
   setScannedBarcode: Dispatch<SetStateAction<string | null>>;
+  productName: string | null;
+  setProductName: Dispatch<SetStateAction<string | null>>;
   hasRequested: boolean;
   setHasRequested: (value: boolean) => void;
   isCourager: boolean;
   setIsCourager: (value: boolean) => void;
+   isModalEncourager: boolean;
+  setIsModalEncourager: (value: boolean) => void;
 };
 
 const BottomSheetContext = createContext<BottomSheetContextType | undefined>(
@@ -42,9 +46,12 @@ export const BottomSheetProvider: React.FC<{ children: ReactNode }> = ({
   const bottomSheetRef = useRef<BottomSheet>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [scannedBarcode, setScannedBarcode] = useState<string | null>(null);
+  const [productName, setProductName] = useState<string | null>(null);
   const [isScanning, setIsScanning] = useState(true);
   const [hasRequested, setHasRequested] = useState(false);
   const [isCourager, setIsCourager] = useState(false);
+  const [isModalEncourager, setIsModalEncourager] = useState(false);
+
 
   const openBottomSheet = () => {
     bottomSheetRef.current?.snapToIndex(0);
@@ -73,6 +80,10 @@ export const BottomSheetProvider: React.FC<{ children: ReactNode }> = ({
         setHasRequested,
         isCourager,
         setIsCourager,
+        isModalEncourager, 
+        setIsModalEncourager,
+        productName, 
+        setProductName
       }}
     >
       {children}
