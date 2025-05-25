@@ -53,7 +53,7 @@ const Intro7 = () => {
       </View>
 
       {/* Background and Buttons */}
-      <View style={styles.contentContainer}>
+      <View  className='justify-center items-center align-center' style={{flex: 2,justifyContent:'center',width:360,margin:"auto"}}>
         <ImageBackground
           source={require('@/assets/images/intro/background6.png')}
           style={styles.imageBackground}
@@ -66,7 +66,7 @@ const Intro7 = () => {
 
             <TouchableOpacity style={styles.button} onPress={handleGuestClick}>
               <Text style={styles.buttonText}>
-                J'utilise <Text style={styles.bold}>Ti<Text style={styles.tight}>CO</Text></Text>{'\n'}en tant qu'invité
+                J'utilise <Text className='ArchivoBold'>Ti<Text style={styles.tight}>CO</Text></Text>{'\n'}en tant qu'invité
               </Text>
             </TouchableOpacity>
           </View>
@@ -74,9 +74,6 @@ const Intro7 = () => {
       </View>
 
 
-
-      {/* Bottom spacer */}
-      <View style={styles.spacing} />
     </SafeAreaView>
   );
 };
@@ -90,11 +87,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
-    paddingTop: 4,
   },
-  logo: {
-    width: 240,
-    height: 100,
+ logo: {
+    height: 142,
   },
   contentContainer: {
     flex: 2,
@@ -114,6 +109,7 @@ const styles = StyleSheet.create({
     width: '60%',
     justifyContent: 'center',
     alignItems: 'center',
+    paddingTop:27
   },
   button: {
     backgroundColor: '#FF8200',
@@ -130,16 +126,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
   },
-  bold: {
-    fontWeight: 'bold',
-    fontFamily: 'Archivo-Bold',
-  },
+
   tight: {
     letterSpacing: -1,
   },
-  spacing: {
-    height: height * 0.08,
-  },
+
 
 });
 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Text, View, TouchableOpacity, StyleSheet } from 'react-native';
+import { Text, View, TouchableOpacity, StyleSheet, useWindowDimensions } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
+import RenderHtml from 'react-native-render-html';
 
 type FAQItemProps = {
   question: string;
@@ -11,6 +12,11 @@ type FAQItemProps = {
 
 const FAQItem: React.FC<FAQItemProps> = ({ question, answer, index, length }) => {
   const [isOpen, setIsOpen] = useState(false);
+    const { width } = useWindowDimensions();
+
+function stripHtmlTags(html:any) {
+  return html.replace(/<\/?[^>]+(>|$)/g, "");
+}
 
   const highlightTiCO = (text: string) => {
     const parts = text.split(/(TiCO)/i);
@@ -30,7 +36,7 @@ const FAQItem: React.FC<FAQItemProps> = ({ question, answer, index, length }) =>
     <View>
       <TouchableOpacity style={styles.header} onPress={() => setIsOpen(!isOpen)}>
         <View style={styles.textContainer}>
-          <Text style={styles.questionText}>{highlightTiCO(question)}</Text>
+          <Text className='ArchivoLight text-lg text-custom-blue leading-archivo '>{highlightTiCO(stripHtmlTags(question))}</Text>
         </View>
         <Ionicons
           name={isOpen ? 'chevron-up' : 'chevron-down'}
@@ -40,9 +46,17 @@ const FAQItem: React.FC<FAQItemProps> = ({ question, answer, index, length }) =>
       </TouchableOpacity>
 
       {isOpen && (
-        <View style={styles.answerBox}>
-          <Text style={styles.answerText}>{highlightTiCO(answer)}</Text>
-        </View>
+    <View style={styles.answerBox}>
+      <RenderHtml
+        contentWidth={width}
+        source={{ html: answer }}
+        tagsStyles={{
+          p: styles.answerText,
+          b: { fontWeight: 'bold' },
+          i: { fontStyle: 'italic' }
+        }}
+      />
+    </View>
       )}
 
       <View style={styles.separatorContainer}>
@@ -61,16 +75,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 16,
+    paddingHorizontal:16,
+    paddingTop:8
   },
   textContainer: {
     width: '85%',
   },
-  questionText: {
-    color: '#1a5b90',
-    fontSize: 18,
-    flexWrap: 'wrap',
-  },
+ 
   ticoBold: {
     fontWeight: 'bold',
   },
@@ -90,7 +101,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   separatorContainer: {
-    padding: 16,
+    paddingHorizontal:16,
+    paddingVertical:10
   },
   separator: {
     height: 1,

@@ -6,55 +6,71 @@ import {
   ImageBackground,
   StyleSheet,
   TouchableOpacity,
-  Dimensions,
-  Share
+  Share,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Keyboard,
+  ScrollView,
 } from "react-native";
 
-const { width } = Dimensions.get("window");
 
-const apiUrl = "https://your-api-url.com"; // Remplace par process.env si tu utilises un système d'env RN
+const apiUrl = "https://your-api-url.com"; 
 
 const InviteTico = () => {
   const handleShare = async () => {
     const content = {
-        title: "TiCO App",
-        message:
-          "Découvrez l'application TiCO et partagez-la avec votre entourage !\n" +
-          apiUrl +
-          "/tico/helptico",
-        subject: "Partager TiCO",
-      };
+      title: "TiCO App",
+      message:
+        "Découvrez l'application TiCO et partagez-la avec votre entourage !\n" +
+        apiUrl +
+        "/tico/helptico",
+      subject: "Partager TiCO",
+    };
     await Share.share(content);
   };
 
   return (
-    <View style={styles.container}>
-      {/* Image des mains */}
-      <Image source={require("@/assets/images/settings/hands.png")} style={styles.handsImage} />
-
-      {/* Zone centrale avec fond et texte */}
-      <View style={styles.mainContent}>
-        <ImageBackground
-          source={require("@/assets/images/settings/background.png")}
-          resizeMode="contain"
-          style={styles.imageBackground}
+    <KeyboardAvoidingView
+      className="bg-white"
+      style={{ flex: 1 }}
+      behavior={"padding"}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <ScrollView
+          contentContainerStyle={styles.container}
+          keyboardShouldPersistTaps="handled"
         >
-          <View style={styles.textContainer}>
-            <Text style={styles.title}>
-              Faire connaître <TicoTitle />
-            </Text>
-            <Text style={styles.paragraph}>
-              Envie de faire connaître <TicoTitle /> ?
-            </Text>
-          </View>
-        </ImageBackground>
+          {/* Image des mains */}
+          <Image
+            source={require("@/assets/images/settings/hands.png")}
+            style={styles.handsImage}
+          />
 
-        {/* Bouton */}
-        <TouchableOpacity style={styles.button} onPress={handleShare}>
-          <Text style={styles.buttonText}>Je partage</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+          {/* Zone centrale avec fond et texte */}
+          <View style={styles.mainContent}>
+            <ImageBackground
+              source={require("@/assets/images/settings/background.png")}
+              resizeMode="contain"
+              style={styles.imageBackground}
+            >
+              <View style={styles.textContainer}>
+                <Text style={styles.title}>
+                  Faire connaître <TicoTitle />
+                </Text>
+                <Text style={styles.paragraph}>
+                  Envie de faire connaître <TicoTitle /> ?
+                </Text>
+              </View>
+            </ImageBackground>
+
+            {/* Bouton */}
+            <TouchableOpacity style={styles.button} onPress={handleShare}>
+              <Text style={styles.buttonText}>Je partage</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -71,12 +87,13 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    position:"static"
   },
   handsImage: {
     position: "absolute",
-    top: -10,
-    width: 180,
-    height: 120,
+    top: 120,
+    width: 200,
+    height: 150,
     resizeMode: "contain",
     zIndex: 10,
   },
@@ -86,7 +103,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   imageBackground: {
-    width: width * 0.8,
+    width: 350,
     aspectRatio: 1,
     alignItems: "center",
     justifyContent: "center",
@@ -97,16 +114,17 @@ const styles = StyleSheet.create({
     marginTop: -30,
   },
   title: {
-    fontSize: 22,
-    color: "#004A9F", // équivalent de text-custom-blue
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  paragraph: {
-    marginTop: 20,
-    fontSize: 16,
+    fontSize: 25,
     color: "#004A9F",
     textAlign: "center",
+    fontFamily:"ArchivoBold"
+  },
+  paragraph: {
+    marginTop: 15,
+    fontSize: 18,
+    color: "#004A9F",
+    textAlign: "center",
+    fontFamily:"Archivo"
   },
   button: {
     marginTop: 30,
@@ -127,6 +145,6 @@ const styles = StyleSheet.create({
     fontSize: 22,
   },
   coPart: {
-    letterSpacing: -1,
+    letterSpacing: -1.5,
   },
 });

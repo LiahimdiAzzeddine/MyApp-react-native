@@ -1,274 +1,353 @@
-// components/AccountCreationForm.tsx
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   StyleSheet,
-  ActivityIndicator,
   ScrollView,
   Alert,
-} from 'react-native';
-import useRegister from '@/hooks/auth/useRegister';
-import { Ionicons } from '@expo/vector-icons';
+  KeyboardAvoidingView,
+  Pressable,
+  Keyboard,
+  TouchableWithoutFeedback,
+  Platform,
+} from "react-native";
+import useRegister from "@/hooks/auth/useRegister";
+import { Ionicons } from "@expo/vector-icons";
+import { InputField } from "@/components/ui/InputField";
+import { useRouter } from "expo-router";
 
-const AccountCreationForm = ({ onClose }: { onClose: () => void }) => {
-  const [values, setValues] = useState({
-    email: '',
-    userName: '',
-    password: '',
-    confirm_password: '',
+// Types d'interface
+interface FormValues {
+  email: string;
+  username: string;
+  password: string;
+  confirm_password: string;
+  role_id: number;
+}
+
+interface FormErrors {
+  [key: string]: string[] | undefined;
+  email?: string[];
+  username?: string[];
+  password?: string[];
+  confirm_password?: string[];
+  acceptedCGUs?: string[];
+}
+
+
+interface RegisterPayload {
+  email: string;
+  username: string;
+  password: string;
+  password_confirmation: string;
+  role_id: number;
+}
+
+interface ApiError {
+  errors?: FormErrors;
+  message?: string;
+}
+
+const AccountCreationForm = () => {
+  const [values, setValues] = useState<FormValues>({
+    email: "",
+    username: "",
+    password: "",
+    confirm_password: "",
     role_id: 1,
   });
-  const [acceptedCGUs, setAcceptedCGUs] = useState(false);
-  const [errors, setErrors] = useState<Record<string, string[]>>({});
-  const [showPassword, setShowPassword] = useState(false);
-  const [showCPassword, setShowCPassword] = useState(false);
-
+  
+  const [acceptedCGUs, setAcceptedCGUs] = useState<boolean>(false);
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showCPassword, setShowCPassword] = useState<boolean>(false);
+const router=useRouter();
   const { register, loading } = useRegister();
 
-  const handleSubmit = async () => {
-    setErrors({});
-    if (values.password !== values.confirm_password) {
-      setErrors({
-        confirm_password: ['Les mots de passe ne correspondent pas.'],
-      });
+  // Fonction de validation d'un champ individuel
+  const validateField = (name: keyof FormValues | "confirm_password", value: string): string[] => {
+    switch (name) {
+      case "email":
+        if (!value) return ["Le champ email est requis."];
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(value)) return ["Email invalide."];
+        return [];
+        
+      case "username":
+        if (!value) return ["Le pseudo est requis."];
+        if (value.length < 3) return ["Le pseudo doit faire au moins 3 caractères."];
+        return [];
+        
+      case "password":
+        if (!value) return ["Le mot de passe est requis."];
+        if (value.length < 8) return ["Le mot de passe doit contenir au moins 8 caractères."];
+        return [];
+        
+      case "confirm_password":
+        if (value !== values.password) return ["Les mots de passe ne correspondent pas."];
+        return [];
+        
+      default:
+        return [];
+    }
+  };
+
+  // Validation à chaque changement de champ
+  const handleChange = (name: keyof FormValues, text: string): void => {
+    setValues((prev) => ({ ...prev, [name]: text }));
+
+    const fieldErrors = validateField(name, text);
+
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: fieldErrors.length > 0 ? fieldErrors : undefined,
+    }));
+
+    // Si on modifie le mot de passe, on valide aussi la confirmation
+    if (name === "password" && values.confirm_password) {
+      const confirmErrors = validateField("confirm_password", values.confirm_password);
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        confirm_password: confirmErrors.length > 0 ? confirmErrors : undefined,
+      }));
+    }
+  };
+
+  const handleSubmit = async (): Promise<void> => {
+    const newErrors: FormErrors = {};
+
+    // Validation complète avant soumission
+    Object.entries(values).forEach(([key, val]) => {
+      const errs = validateField(key as keyof FormValues, val.toString());
+      if (errs.length) newErrors[key] = errs;
+    });
+
+    if (!acceptedCGUs) {
+      newErrors["acceptedCGUs"] = ["Vous devez accepter les CGU."];
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
 
     try {
       await register({
         email: values.email,
-        username: values.userName,
+        username: values.username,
         password: values.password,
         password_confirmation: values.confirm_password,
         role_id: 1,
-      });
-      onClose();
-    } catch (err: any) {
-      if (err?.errors) {
-        setErrors(err.errors);
+      } as RegisterPayload);
+
+    } catch (err) {
+      const apiError = err as ApiError;
+      if (apiError?.errors) {
+        setErrors(apiError.errors);
+      } else {
+        // Gérer d'autres types d'erreurs
+        console.error("Erreur lors de l'inscription:", err);
+        Alert.alert("Erreur", "Une erreur est survenue lors de l'inscription.");
       }
     }
   };
 
+  const toggleCGUAcceptance = (): void => {
+    setAcceptedCGUs(!acceptedCGUs);
+    // Clear error CGUs on toggle
+    setErrors((prevErrors) => {
+      const copy = { ...prevErrors };
+      delete copy.acceptedCGUs;
+      return copy;
+    });
+  };
+
+
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Je crée mon compte</Text>
-
-      <InputField
-        label="Mon adresse mail"
-        value={values.email}
-        onChangeText={(text) => setValues({ ...values, email: text })}
-        error={errors.email}
-      />
-
-      <InputField
-        label="Mon pseudo"
-        value={values.userName}
-        onChangeText={(text) => setValues({ ...values, userName: text })}
-        error={errors.username}
-      />
-
-      <InputField
-        label="Mon mot de passe"
-        secureTextEntry={!showPassword}
-        value={values.password}
-        onChangeText={(text) => setValues({ ...values, password: text })}
-        error={errors.password}
-        icon={
-          <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-           <Ionicons
-              name={showPassword ? "eye-off-outline" : "eye-outline"}
-              size={20}
-              color="#888"
-            />
-          </TouchableOpacity>
-        }
-      />
-
-      <InputField
-        label="Confirmer mon mot de passe"
-        secureTextEntry={!showCPassword}
-        value={values.confirm_password}
-        onChangeText={(text) =>
-          setValues({ ...values, confirm_password: text })
-        }
-        error={errors.confirm_password}
-        icon={
-          <TouchableOpacity onPress={() => setShowCPassword(!showCPassword)}>
-          <Ionicons
-                        name={showPassword ? "eye-off-outline" : "eye-outline"}
-                        size={20}
-                        color="#888"
-                      />
-          </TouchableOpacity>
-        }
-      />
-
-      <View style={styles.checkboxContainer}>
-        <TouchableOpacity
-          onPress={() => setAcceptedCGUs(!acceptedCGUs)}
-          style={styles.checkbox}
+    <KeyboardAvoidingView
+      className="bg-custom-orange"
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <ScrollView
+          contentContainerStyle={styles.container}
+          keyboardShouldPersistTaps="handled"
         >
-          {acceptedCGUs && <View style={styles.checkedBox} />}
-        </TouchableOpacity>
-        <Text style={styles.checkboxText}>
-          J'ai lu et j'accepte les{' '}
-          <Text
-            style={styles.link}
-            onPress={() => Alert.alert('CGU', 'Afficher CGU ici')}
-          >
-            CGU
-          </Text>
-        </Text>
-      </View>
+          <View style={styles.header}>
+            <Text className="text-custom-blue text-3xl ClashDisplayBold">
+              Je crée mon compte
+            </Text>
+          </View>
+          
+          <View style={{ flex: 1 }}>
+            <InputField
+              label="Mon adresse mail"
+              value={values.email}
+              onChangeText={(text: string) => handleChange("email", text)}
+              error={errors.email}
+              keyboardType="email-address"
+              autoComplete="email"
+            />
 
-      <TouchableOpacity
-        style={[
-          styles.submitButton,
-          !acceptedCGUs || loading ? styles.disabled : {},
-        ]}
-        disabled={!acceptedCGUs || loading}
-        onPress={handleSubmit}
-      >
-        <Text style={styles.submitText}>Valider</Text>
-      </TouchableOpacity>
+            <InputField
+              label="Mon pseudo"
+              value={values.username}
+              onChangeText={(text: string) => handleChange("username", text)}
+              error={errors.username}
+              autoComplete="username"
+            />
 
-      {loading && (
-        <View style={styles.loadingOverlay}>
-          <ActivityIndicator size="large" color="#fff" />
-        </View>
-      )}
-    </ScrollView>
+            <InputField
+              label="Mon mot de passe"
+              secureTextEntry={!showPassword}
+              value={values.password}
+              onChangeText={(text: string) => handleChange("password", text)}
+              error={errors.password}
+              autoComplete="new-password"
+              icon={
+                <TouchableOpacity
+                  onPress={() => setShowPassword(!showPassword)}
+                  style={styles.icon}
+                  accessibilityLabel={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+                >
+                  <Ionicons
+                    name={showPassword ? "eye-off-outline" : "eye-outline"}
+                    size={20}
+                    color="#888"
+                  />
+                </TouchableOpacity>
+              }
+            />
+
+            <InputField
+              label="Confirmer mon mot de passe"
+              secureTextEntry={!showCPassword}
+              value={values.confirm_password}
+              onChangeText={(text: string) => handleChange("confirm_password", text)}
+              error={errors.confirm_password}
+              autoComplete="new-password"
+              icon={
+                <Pressable
+                  onPress={() => setShowCPassword(!showCPassword)}
+                  style={styles.icon}
+                  accessibilityLabel={showCPassword ? "Masquer la confirmation" : "Afficher la confirmation"}
+                >
+                  <Ionicons
+                    name={showCPassword ? "eye-off-outline" : "eye-outline"}
+                    size={20}
+                    color="#888"
+                  />
+                </Pressable>
+              }
+            />
+
+            <View style={styles.checkboxContainer}>
+              <TouchableOpacity
+                onPress={toggleCGUAcceptance}
+                style={styles.checkbox}
+                accessibilityLabel={acceptedCGUs ? "CGU acceptées" : "Accepter les CGU"}
+                accessibilityRole="checkbox"
+                accessibilityState={{ checked: acceptedCGUs }}
+              >
+                {acceptedCGUs && <View style={styles.checkedBox} />}
+              </TouchableOpacity>
+              <Text style={styles.checkboxText}>
+                J'ai lu et j'accepte les{" "}
+                <Text style={styles.link} onPress={()=>router.push('/settingsPage/CGUConfidentiality')}>
+                  CGU
+                </Text>
+              </Text>
+            </View>
+            
+            {errors.acceptedCGUs && (
+              <Text style={[styles.checkboxText, styles.errorText]}>
+                {errors.acceptedCGUs[0]}
+              </Text>
+            )}
+
+            <TouchableOpacity
+              style={[
+                styles.submitButton,
+                (!acceptedCGUs || loading) && styles.disabled,
+              ]}
+              disabled={!acceptedCGUs || loading}
+              onPress={handleSubmit}
+              accessibilityLabel={loading ? "Inscription en cours..." : "Valider l'inscription"}
+            >
+              <Text style={styles.submitText}>
+                {loading ? "Chargement..." : "Valider"}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 };
 
-const InputField = ({
-  label,
-  value,
-  onChangeText,
-  secureTextEntry,
-  error,
-  icon,
-}: {
-  label: string;
-  value: string;
-  onChangeText: (text: string) => void;
-  secureTextEntry?: boolean;
-  error?: string[];
-  icon?: React.ReactNode;
-}) => (
-  <View style={styles.inputContainer}>
-    <Text style={styles.label}>{label}</Text>
-    <View style={styles.inputWrapper}>
-      <TextInput
-        style={[styles.input, error && styles.inputError]}
-        value={value}
-        onChangeText={onChangeText}
-        secureTextEntry={secureTextEntry}
-        autoCapitalize="none"
-      />
-      {icon && <View style={styles.icon}>{icon}</View>}
-    </View>
-    {error && <Text style={styles.errorText}>{error[0]}</Text>}
-  </View>
-);
-
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
-    paddingBottom: 40,
-    backgroundColor: '#fff',
+    backgroundColor: "#ffeda3",
+    padding: 25,
+    flexGrow: 1,
+    justifyContent: "center",
   },
-  title: {
-    fontSize: 24,
-    color: '#004488',
-    textAlign: 'center',
-    marginBottom: 20,
-    fontWeight: 'bold',
-  },
-  inputContainer: {
-    marginBottom: 16,
-  },
-  label: {
-    color: '#F97316',
-    fontWeight: 'bold',
-    marginBottom: 4,
-  },
-  inputWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderWidth: 1.5,
-    borderColor: '#FDBA74',
-    borderRadius: 8,
-    paddingHorizontal: 8,
-  },
-  input: {
+  header: {
+    alignItems: "center",
     flex: 1,
-    paddingVertical: 10,
-  },
-  inputError: {
-    borderColor: 'red',
+    justifyContent: "center",
   },
   icon: {
-    paddingHorizontal: 8,
-  },
-  errorText: {
-    color: 'red',
-    marginTop: 4,
-    fontSize: 12,
+    position: "absolute",
+    right: 12,
+    top: 14,
   },
   checkboxContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 20,
   },
   checkbox: {
     height: 20,
     width: 20,
     borderWidth: 2,
-    borderColor: '#F97316',
+    borderColor: "#F97316",
     marginRight: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   checkedBox: {
     height: 12,
     width: 12,
-    backgroundColor: '#F97316',
+    backgroundColor: "#F97316",
   },
   checkboxText: {
     flex: 1,
-    color: '#F97316',
+    color: "#F97316",
   },
   link: {
-    textDecorationLine: 'underline',
-    color: '#F97316',
+    textDecorationLine: "underline",
+    color: "#F97316",
+  },
+  errorText: {
+    color: "red",
+    textAlign: "center",
+    marginBottom: 10,
   },
   submitButton: {
-    backgroundColor: '#F97316',
+    backgroundColor: "#F97316",
     padding: 12,
     borderRadius: 12,
-    alignItems: 'center',
+    alignItems: "center",
   },
   disabled: {
     opacity: 0.5,
   },
   submitText: {
-    color: '#fff',
-    fontWeight: 'bold',
-  },
-  loadingOverlay: {
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: '#00000066',
-    justifyContent: 'center',
-    alignItems: 'center',
+    color: "#fff",
+    fontWeight: "bold",
   },
 });
 

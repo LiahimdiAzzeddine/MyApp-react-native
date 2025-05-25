@@ -21,6 +21,7 @@ import CustomHeader from "@/components/CustomHeader";
 import { BottomSheetProvider } from "@/context/BottomSheetContext";
 import CustomBottomSheet from "@/components/CustomBottomSheet";
 import { getFirstVisit } from "@/utils/storage";
+import { LoadingProvider } from "@/context/LoadingContext";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -31,18 +32,19 @@ export default function RootLayout() {
   const router = useRouter();
 
   const [loaded] = useFonts({
+    Archivo: require("../assets/fonts/Archivo-Regular.otf"),
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
     ClashDisplayBold: require("../assets/fonts/ClashDisplay-Bold.ttf"),
     ClashDisplayRegular: require("../assets/fonts/ClashDisplay-Regular.ttf"),
     RobotoBold: require("../assets/fonts/Roboto-Bold.ttf"),
     RobotoRegular: require("../assets/fonts/Roboto-Regular.ttf"),
-    Archivo: require("../assets/fonts/Archivo-Regular.otf"),
     ArchivoBold: require("../assets/fonts/Archivo-Bold.otf"),
     ArchivoExtraBold: require("../assets/fonts/Archivo-ExtraBold.otf"),
     ArchivoBoldItalic: require("../assets/fonts/Archivo-BoldItalic.otf"),
     ArchivoLight: require("../assets/fonts/Archivo-Light.otf"),
     ArchivoItalic: require("../assets/fonts/Archivo-Italic.otf"),
     ArchivoLightItalic: require("../assets/fonts/Archivo-Italic.otf"),
+    pallybold: require("../assets/fonts/Pally-Bold.ttf"),
   });
 
  
@@ -88,6 +90,8 @@ export default function RootLayout() {
     <ThemeProvider
       value={colorScheme === "dark" ? CustomDarkTheme : LightTheme}
     >
+          <LoadingProvider>
+
       <AuthProvider>
         <AppProvider>
           <BottomSheetProvider>
@@ -141,6 +145,7 @@ export default function RootLayout() {
           <StatusBar style="auto" />
         </AppProvider>
       </AuthProvider>
+      </LoadingProvider>
       <Toast />
     </ThemeProvider>
   );

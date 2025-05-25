@@ -31,28 +31,28 @@ const WelcomeSlider = () => {
         <View key="1" style={styles.page}>
           <Intro0/>
         </View>
-        {/*** 
+       
         <View key="2" style={styles.page}>
           <Intro1 />
         </View>
-        <View key="3" style={styles.page}>
+       <View key="3" style={styles.page}>
          <Intro2/>
         </View>
-        <View key="4" style={styles.page}>
+          <View key="4" style={styles.page}>
           <Intro3 />
         </View>
         <View key="5" style={styles.page}>
           <Intro4 />
         </View>
-        <View key="6" style={styles.page}>
+         <View key="6" style={styles.page}>
           <Intro5 />
         </View>
         <View key="7" style={styles.page}>
           <Intro6 />
         </View>
-        <View key="8" style={styles.page}>
+       <View key="8" style={styles.page}>
           <Intro7 />
-        </View>*/}
+        </View>
       </PagerView>
       
       <View style={styles.paginationContainer}>

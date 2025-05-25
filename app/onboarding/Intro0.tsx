@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   View,
   Text,
@@ -6,38 +6,61 @@ import {
   SafeAreaView,
   StyleSheet,
   Dimensions,
-} from 'react-native';
+} from "react-native";
+import {styles} from './styles'
 
-const { width, height } = Dimensions.get('window');
+const { height: screenHeight, width: screenWidth } = Dimensions.get("window");
+
+const IMAGES = {
+  background: require("@/assets/images/intro/BIENVENUE0.png"),
+  logo: require("@/assets/images/intro/tico_intro.png"),
+  loupe: require("@/assets/images/intro/Loupe.png"),
+};
 
 const Intro0 = () => {
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
-        {/* Background Image at the Bottom */}
-        <Image
-          source={require('@/assets/images/intro/BIENVENUE0.png')}
-          style={styles.backgroundImage}
-          resizeMode="contain"
-        />
-
-        {/* Logo */}
+      <View className="flex-1 relative">
+        <View
+          style={{
+            width: "100%",
+            height: "100%",
+            position: "absolute",
+            flex: 1,
+            flexDirection: 'row',
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Image
+            source={IMAGES.background}
+            style={styles.backgroundImage}
+            resizeMode='contain'
+          />
+        </View>
         <View style={styles.logoContainer}>
           <Image
-            source={require('@/assets/images/intro/tico_intro.png')}
+            source={IMAGES.logo}
             style={styles.logo}
             resizeMode="contain"
           />
         </View>
 
-        {/* Main Content */}
-        <View style={styles.contentContainer}>
+        <View style={styles.contentContainer0}>
           <View style={styles.textWrapper}>
-            <Text style={styles.title}>Bienvenue !</Text>
-            <Text style={styles.description}>
+            <Text className="text-3xl ClashDisplayBold text-custom-blue underline underline-offset-4  decoration-custom-text-orange">
+              Bienvenue !
+            </Text>
+            <Text
+              style={styles.description0}
+              className="text-xl text-custom-blue ArchivoLight leading-archivo text-center"
+            >
               <Text style={styles.bold}>Ti</Text>
               <Text style={[styles.bold, styles.tight]}>CO</Text>
-              <Text> est l’application{"\n"}de scan alimentaire qui vous{"\n"}donne </Text>
+              <Text>
+                {" "}
+                est l’application{"\n"}de scan alimentaire qui vous{"\n"}donne{" "}
+              </Text>
               <Text style={styles.strong}>
                 le pouvoir d'agir{"\n"}pour une santé globale
               </Text>
@@ -45,7 +68,7 @@ const Intro0 = () => {
             </Text>
 
             <Image
-              source={require('@/assets/images/intro/Loupe.png')}
+              source={IMAGES.loupe}
               style={styles.loupe}
               resizeMode="contain"
             />
@@ -56,78 +79,6 @@ const Intro0 = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: '#ffffff',
-  },
-  container: {
-    flex: 1,
-    position: 'relative',
-  },
-  backgroundImage: {
-    position: 'absolute',
-    bottom: 0,
-    width: width,
-    height: height * 0.4, // Ajustez selon besoin
-  },
-  logoContainer: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
-  logo: {
-    width: 300,
-    height: 142,
-  },
-  contentContainer: {
-    flex: 2,
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-    paddingHorizontal: 16,
-  },
-  textWrapper: {
-    width: '85%',
-    aspectRatio: 1,
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    position: 'relative',
-  },
-  title: {
-    fontSize: 28,
-    color: '#004B8D',
-    fontWeight: 'bold',
-    textDecorationLine: 'underline',
-    textDecorationColor: '#FB923C',
-    textAlign: 'center',
-    paddingTop: 8,
-  },
-  description: {
-    fontSize: 18,
-    color: '#004B8D',
-    textAlign: 'center',
-    lineHeight: 26,
-    fontFamily: 'Archivo-Light',
-    marginTop: 20,
-  },
-  bold: {
-    fontWeight: 'bold',
-  },
-  tight: {
-    letterSpacing: -1,
-  },
-  strong: {
-    fontWeight: 'bold',
-    fontFamily: 'Archivo',
-  },
-  loupe: {
-    width: 144,
-    height: 144,
-    position: 'absolute',
-    left: 56,
-    bottom: -16,
-  },
-});
+
 
 export default Intro0;

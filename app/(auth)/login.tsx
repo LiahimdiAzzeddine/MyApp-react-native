@@ -1,110 +1,261 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   TextInput,
   Text,
   Pressable,
-  ActivityIndicator,
-  Image,
+  ScrollView,
+  KeyboardAvoidingView,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useLogin } from "@/hooks/auth/useLogin";
-import { Ionicons } from "@expo/vector-icons"; 
+import { Ionicons } from "@expo/vector-icons";
+import useSendValidationEmail from "@/hooks/auth/useSendValidationEmail";
+import { TouchableOpacity } from "react-native";
 
 export default function LoginScreen() {
   const router = useRouter();
-  const { handleSubmit, loading, errorMessage } = useLogin();
+  const { handleSubmit, loading, errorMessage, status, setStatus } = useLogin();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  
+  // États pour la validation temps réel
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [emailTouched, setEmailTouched] = useState(false);
+  const [passwordTouched, setPasswordTouched] = useState(false);
+
+  const { sendValidationEmail } = useSendValidationEmail({
+    to_email: email,
+    setStatus,
+  });
+
+  // Vérifie si l'email est valide
+  const isValidEmail = (email: string) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+  // Validation en temps réel de l'email
+  useEffect(() => {
+    if (emailTouched) {
+      if (email.trim() === "") {
+        setEmailError("L'adresse email est requise");
+      } else if (!isValidEmail(email)) {
+        setEmailError("Format d'email invalide");
+      } else {
+        setEmailError("");
+      }
+    }
+  }, [email, emailTouched]);
+
+  // Validation en temps réel du mot de passe
+  useEffect(() => {
+    if (passwordTouched) {
+      if (password.trim() === "") {
+        setPasswordError("Le mot de passe est requis");
+      } else if (password.length < 6) {
+        setPasswordError("Le mot de passe doit contenir au moins 6 caractères");
+      } else {
+        setPasswordError("");
+      }
+    }
+  }, [password, passwordTouched]);
+
+  // Le formulaire est valide si l'email est correct, le mot de passe rempli et aucune erreur
+  const isFormValid = isValidEmail(email) && password.trim() !== "" && !emailError && !passwordError;
 
   const onSubmit = async () => {
-    const success = await handleSubmit({ email, password });
-    if (success) {
-      router.replace("/(tabs)");
+    // Marquer tous les champs comme touchés avant la soumission
+    setEmailTouched(true);
+    setPasswordTouched(true);
+    
+    if (isFormValid) {
+      const success = await handleSubmit({ email, password });
+      if (success) {
+        router.replace("/(tabs)");
+      }
     }
   };
 
   return (
-    <View className="flex-1 justify-center items-center px-6 bg-custom-orange">
-      <Text className="text-xl font-bold text-orange-500 mb-6">Connexion</Text>
-
-      {/* Email */}
-      <View className="w-full max-w-md mb-4">
-        <Text className="text-orange-500 font-bold text-center mb-1">
-          Mon adresse mail
-        </Text>
-        <TextInput
-          value={email}
-          onChangeText={setEmail}
-          placeholder="Adresse email"
-          autoCapitalize="none"
-          keyboardType="email-address"
-          className="w-full p-3 border-2 rounded-xl text-base bg-white border-orange-300 focus:border-orange-500"
-        />
-      </View>
-
-      {/* Mot de passe */}
-      <View className="w-full max-w-md mb-4">
-        <Text className="text-orange-500 font-bold text-center mb-1">
-          Mon mot de passe
-        </Text>
-        <View className="relative">
-          <TextInput
-            value={password}
-            onChangeText={setPassword}
-            placeholder="Mot de passe"
-            secureTextEntry={!showPassword}
-            className="w-full p-3 border-2 rounded-xl text-base bg-white border-orange-300 focus:border-orange-500"
-          />
-          <Pressable
-            onPress={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-4"
+    <KeyboardAvoidingView
+      className="bg-custom-orange"
+      style={{ flex: 1 }}
+      behavior={"padding"}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <ScrollView
+          contentContainerStyle={styles.container}
+          keyboardShouldPersistTaps="handled"
+        >
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              flexDirection: "row",
+            }}
           >
-            <Ionicons
-              name={showPassword ? "eye-off-outline" : "eye-outline"}
-              size={20}
-              color="#888"
-            />
-          </Pressable>
-        </View>
-      </View>
+            <Text className="text-custom-blue text-3xl ClashDisplayBold">
+              Connexion
+            </Text>
+          </View>
 
-      {/* Message d'erreur */}
-      {errorMessage ? (
-        <Text className="text-red-500 text-sm text-center mb-2">
-          {errorMessage}
-        </Text>
-      ) : null}
+          <View style={{ flex: 2}}>
+            {/* Email */}
+            <View className="w-full max-w-md mb-4">
+              <Text className="text-custom-text-orange mb-1 text-base text-center ArchivoBold">
+                Mon adresse mail
+              </Text>
+              <TextInput
+                value={email}
+                onChangeText={setEmail}
+                onBlur={() => setEmailTouched(true)}
+                placeholder="Adresse email"
+                autoCapitalize="none"
+                autoComplete="email"
+                keyboardType="email-address"
+                style={{
+                  borderRadius: 15,
+                  borderColor: emailError && emailTouched ? "#ef4444" : "#fed7aa"
+                }}
+                className={`w-full p-3 border-2 text-base bg-white ${
+                  emailError && emailTouched ? "border-red-500" : "border-orange-300 focus:border-custom-text-orange"
+                }`}
+              />
+              {/* Afficher l'erreur temps réel ou l'erreur du serveur */}
+              {emailTouched && emailError ? (
+                <Text className="text-red-500 text-sm text-center mt-1">
+                  {emailError}
+                </Text>
+              ) : errorMessage?.email ? (
+                <Text className="text-red-500 text-sm text-center mt-1">
+                  {errorMessage.email[0]}
+                </Text>
+              ) : null}
+            </View>
 
-      {/* Bouton Connexion */}
-      <Pressable
-        onPress={onSubmit}
-        disabled={loading}
-        className="bg-orange-500 rounded-xl px-6 py-3 mb-4 active:scale-95"
-      >
-        <Text className="text-white font-bold text-lg">
-          {loading ? "Connexion..." : "Se connecter"}
-        </Text>
-      </Pressable>
+            {/* Mot de passe */}
+            <View className="w-full max-w-md mb-2">
+              <Text className="text-custom-text-orange mb-1 text-base text-center ArchivoBold">
+                Mon mot de passe
+              </Text>
+              <View className="relative">
+                <TextInput
+                  value={password}
+                  onChangeText={setPassword}
+                  onBlur={() => setPasswordTouched(true)}
+                  placeholder="Mot de passe"
+                  autoComplete="password"
+                  secureTextEntry={!showPassword}
+                  style={{
+                    borderColor: passwordError && passwordTouched ? "#ef4444" : "#fed7aa"
+                  }}
+                  className={`w-full p-3 border-2 rounded-xl text-base bg-white ${
+                    passwordError && passwordTouched ? "border-red-500" : "border-orange-300 focus:border-custom-text-orange"
+                  }`}
+                />
+                <Pressable
+                  onPress={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-4"
+                >
+                  <Ionicons
+                    name={showPassword ? "eye-off-outline" : "eye-outline"}
+                    size={20}
+                    color="#888"
+                  />
+                </Pressable>
+              </View>
+              {/* Afficher l'erreur temps réel ou l'erreur du serveur */}
+              {passwordTouched && passwordError ? (
+                <Text className="text-red-500 text-sm text-center mt-1">
+                  {passwordError}
+                </Text>
+              ) : errorMessage?.password ? (
+                <Text className="text-red-500 text-sm text-center mt-1">
+                  {errorMessage.password[0]}
+                </Text>
+              ) : null}
+            </View>
 
-      {/* Loader */}
-      {loading && <ActivityIndicator size="small" color="#f97316" />}
+            <View className="w-full mb-4">
+              <Pressable>
+                <Text
+                  className="text-custom-text-orange text-base Archivo"
+                  onPress={() => router.push("/(auth)/forgotPassword")}
+                >
+                  Mot de passe oublié ?
+                </Text>
+              </Pressable>
+            </View>
 
-      {/* Mot de passe oublié */}
-      <Pressable>
-        <Text className="text-orange-500 text-sm font-medium mb-2" onPress={()=> router.push("/(auth)/forgotPassword")}>
-          Mot de passe oublié ?
-        </Text>
-      </Pressable>
+            {/* Bouton Connexion */}
+            <TouchableOpacity
+              style={[
+                styles.button,
+                (!isFormValid || loading) && styles.buttonDisabled,
+              ]}
+              onPress={onSubmit}
+              disabled={!isFormValid || loading}
+            >
+              <Text className="text-white ArchivoBold text-lg">
+                {loading ? "Connexion..." : "Se connecter"}
+              </Text>
+            </TouchableOpacity>
 
-      {/* Créer un compte */}
-      <Pressable>
-        <Text className="text-orange-500 text-sm font-medium"  onPress={()=> router.push("/(auth)/register")}>
-          Je crée mon compte
-        </Text>
-      </Pressable>
-    </View>
+            {/* Créer un compte */}
+            <Pressable>
+              <Text
+                className="text-custom-text-orange text-base Archivo mt-4 text-center"
+                onPress={() => router.push("/(auth)/register")}
+              >
+                Je crée mon compte
+              </Text>
+            </Pressable>
+
+            {/* Message d'erreur général */}
+            {errorMessage?.account && (
+              <Text className="text-red-500 text-sm text-center mt-2">
+                {errorMessage.account[0] ?? errorMessage.message}
+              </Text>
+            )}
+
+            {status == 404 && (
+              <Pressable className="mt-2">
+                <Text
+                  className="text-custom-text-orange text-base Archivo text-center"
+                  onPress={() => sendValidationEmail()}
+                >
+                  Demander un nouveau lien de validation
+                </Text>
+              </Pressable>
+            )}
+          </View>
+        </ScrollView>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }
+
+const styles = StyleSheet.create({
+  button: {
+    backgroundColor: "#FF8200",
+    paddingVertical: 8,
+    borderRadius: 8,
+    alignItems: "center",
+    elevation: 3,
+  },
+  buttonDisabled: {
+    backgroundColor: "#FFB877", // plus clair pour montrer l'état désactivé
+  },
+  container: {
+    backgroundColor: "#ffeda3",
+    padding: 25,
+    flexGrow: 1,
+    justifyContent: "center",
+  },
+});

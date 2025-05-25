@@ -3,12 +3,14 @@ import { useState } from 'react';
 import axios from '../../api/axios';
 import { useToast } from '../useToast';
 import { Alert } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-
+import { useSpinner } from "@/context/LoadingContext";
+import { useRouter } from 'expo-router';
 const useRegister = () => {
   const [loading, setLoading] = useState(false);
-  const navigation = useNavigation<any>();
+  const router = useRouter();
   const { triggerToast } = useToast();
+    const { setSpinner  } = useSpinner();
+
   const register = async ({
     username,
     email,
@@ -23,6 +25,7 @@ const useRegister = () => {
     role_id: number;
   }) => {
     setLoading(true);
+    setSpinner(true);
     try {
       const response = await axios.post('/api/auth/register', {
         username,
@@ -33,7 +36,7 @@ const useRegister = () => {
       });
 
       triggerToast('Enregistrement réussi', 'success');
-      navigation.navigate('login');
+      router.replace('/login');
 
       Alert.alert(
         'Validation',
@@ -49,6 +52,7 @@ const useRegister = () => {
       throw error?.response?.data || error;
     } finally {
       setLoading(false);
+       setSpinner(false);
     }
   };
 

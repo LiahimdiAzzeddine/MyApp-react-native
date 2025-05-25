@@ -10,8 +10,7 @@ import {
   Dimensions,
 } from 'react-native';
 
-const { width, height } = Dimensions.get('window');
-
+import { styles } from './styles';
 const features = ['claires', 'complètes', 'accessibles'];
 
 const Intro2 = () => {
@@ -27,24 +26,24 @@ const Intro2 = () => {
       </View>
 
       {/* Main Content Section */}
-      <View style={styles.contentContainer}>
+      <View className='justify-center items-center align-center' style={{flex: 2,}}>
         <ImageBackground
           source={require('@/assets/images/intro/background4.png')}
           style={styles.imageBackground}
           resizeMode="contain"
         >
-          <View style={styles.textWrapper}>
-            <Text style={styles.text}>
+          <View style={styles.textWrapper2}>
+            <Text className="text-xl text-custom-blue ArchivoLight leading-archivo">
               Faire la transparence,
             </Text>
-            <Text style={styles.text}>
+            <Text className="text-xl text-custom-blue ArchivoLight leading-archivo text-center">
               c’est{' '}
-              <Text style={styles.bold}>
+              <Text className='ArchivoBold text-center'>
                 lever le voile sur l’opacité{'\n'}alimentaire
               </Text>{' '}
               en partageant
             </Text>
-            <Text style={styles.text}>des informations :</Text>
+            <Text  className="text-xl text-custom-blue ArchivoLight leading-archivo">des informations :</Text>
 
             {/* Feature List */}
             <FlatList
@@ -55,88 +54,24 @@ const Intro2 = () => {
                   <Image
                     source={require('@/assets/images/intro/plus.png')}
                     style={styles.listIcon}
+                    resizeMode='contain'
                   />
-                  <Text style={styles.listText}>{item}</Text>
+                  <Text className="flex items-center justify-start text-xl text-custom-blue ArchivoBold" style={{marginVertical:5}}>{item}</Text>
                 </View>
               )}
               contentContainerStyle={styles.list}
             />
 
-            <Text style={styles.text}>Et ça, c’est notre credo&nbsp;!</Text>
+            <Text  className="text-xl text-custom-blue ArchivoLight leading-archivo">Et ça, c’est notre credo&nbsp;!</Text>
           </View>
         </ImageBackground>
       </View>
 
-      {/* Spacing */}
-      <View style={styles.spacing} />
+     
     </SafeAreaView>
   );
 };
 
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: '#ffffff',
-  },
-  logoContainer: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
-  logo: {
-    width: 240,
-    height: 100,
-  },
-  contentContainer: {
-    flex: 2,
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-  },
-  imageBackground: {
-    width: '100%',
-    aspectRatio: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  textWrapper: {
-    width: '80%',
-    alignItems: 'center',
-    gap: 8,
-  },
-  text: {
-    fontSize: 18,
-    color: '#004B8D', // text-custom-blue
-    textAlign: 'center',
-    fontFamily: 'Archivo-Light',
-    lineHeight: 26,
-  },
-  bold: {
-    fontFamily: 'Archivo-Bold',
-    fontWeight: 'bold',
-  },
-  list: {
-    width: '70%',
-    marginVertical: 10,
-  },
-  listItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 8,
-  },
-  listIcon: {
-    width: 32,
-    height: 32,
-    marginRight: 12,
-  },
-  listText: {
-    fontSize: 18,
-    fontFamily: 'Archivo-Bold',
-    color: '#004B8D',
-  },
-  spacing: {
-    height: height * 0.08,
-  },
-});
+
 
 export default Intro2;

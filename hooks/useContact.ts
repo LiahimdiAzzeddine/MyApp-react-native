@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "../api/axios";
 import { useToast } from "@/hooks/useToast";
+import { useSpinner } from "@/context/LoadingContext";
 
 const CONTACT_URL = "/api/auth/contact";
 
@@ -15,9 +16,10 @@ const useContact = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<any>(null);
   const [sended, setSended] = useState<boolean | null>(null);
-
+    const { setSpinner  } = useSpinner();
   const handleSubmit = async (formValues: FormValues) => {
     setLoading(true);
+    setSpinner(true);
     setError(null);
 
     try {
@@ -30,6 +32,7 @@ const useContact = () => {
       triggerToast("Erreur lors de l'envoi du message.", "error");
     } finally {
       setLoading(false);
+      setSpinner(false);
     }
   };
 

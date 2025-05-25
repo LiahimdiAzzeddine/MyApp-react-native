@@ -9,8 +9,7 @@ import {
   Dimensions,
 } from 'react-native';
 
-const { width, height } = Dimensions.get('window');
-
+import {styles} from "./styles"
 const Intro1 = () => {
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -24,21 +23,21 @@ const Intro1 = () => {
       </View>
 
       {/* Main Content Section with Background */}
-      <View style={styles.contentContainer}>
+      <View className='justify-center items-center align-center' style={{flex: 2,}}>
         <ImageBackground
           source={require('@/assets/images/intro/background3.png')}
-          style={styles.imageBackground}
+          style={styles.imageBackground1}
           resizeMode="contain"
         >
-          <View style={styles.textWrapper}>
-            <Text style={styles.description}>
-              <Text style={styles.bold}>En évaluant la transparence</Text>
+          <View className='w-[80%] text-center'>
+            <Text  className="text-xl text-custom-blue ArchivoLight leading-archivo text-center" style={{paddingTop:20}}>
+              <Text className='ArchivoBold' >En évaluant la transparence</Text>
               {"\n"}des produits alimentaires,
               {"\n"}nous incitons les marques
-              {"\n"}à <Text style={styles.bold}>décrypter leurs produits</Text>
+              {"\n"}à <Text className='ArchivoBold'>décrypter leurs produits</Text>
               {"\n"}pour offrir la possibilité
               {"\n"}aux consommateurs de{" "}
-              <Text style={styles.bold}>
+              <Text className='ArchivoBold'>
                 faire{"\n"}des choix éclairés.
               </Text>
             </Text>
@@ -46,57 +45,10 @@ const Intro1 = () => {
         </ImageBackground>
       </View>
 
-      {/* Spacing */}
-      <View style={styles.spacing} />
+      
     </SafeAreaView>
   );
 };
 
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: '#ffffff',
-  },
-  logoContainer: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    paddingTop: 4,
-  },
-  logo: {
-    width: 240,
-    height: 100,
-  },
-  contentContainer: {
-    flex: 2,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    width: '100%',
-  },
-  imageBackground: {
-    width: '100%',
-    aspectRatio: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  textWrapper: {
-    width: '80%',
-    alignItems: 'center',
-  },
-  description: {
-    fontSize: 18,
-    color: '#004B8D', // text-custom-blue
-    textAlign: 'center',
-    lineHeight: 26,
-    fontFamily: 'Archivo-Light', // Remplace par la bonne police si utilisée
-  },
-  bold: {
-    fontWeight: 'bold',
-    fontFamily: 'Archivo',
-  },
-  spacing: {
-    height: height * 0.08,
-  },
-});
 
 export default Intro1;

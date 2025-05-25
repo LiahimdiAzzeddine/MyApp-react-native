@@ -1,3 +1,4 @@
+import { useSpinner } from '@/context/LoadingContext';
 import api from '@/utils/axiosInstance';
 import { useState } from 'react';
 
@@ -12,11 +13,12 @@ type ForgotPasswordResponse = {
 const useForgotPassword = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | Record<string, string[]> | null>(null);
-
+const { setSpinner  } = useSpinner();
   const handleForgotPassword = async (
     userData: ForgotPasswordData
   ): Promise<ForgotPasswordResponse> => {
     setLoading(true);
+    setSpinner(true);
     setError(null);
 
     try {
@@ -35,6 +37,7 @@ const useForgotPassword = () => {
       return { success: false };
     } finally {
       setLoading(false);
+      setSpinner(false);
     }
   };
 
