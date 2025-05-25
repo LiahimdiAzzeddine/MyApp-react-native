@@ -124,7 +124,7 @@ export default function LoginScreen() {
                   borderColor: emailError && emailTouched ? "#ef4444" : "#fed7aa"
                 }}
                 className={`w-full p-3 border-2 text-base bg-white ${
-                  emailError && emailTouched ? "border-red-500" : "border-orange-300 focus:border-custom-text-orange"
+                  emailError && emailTouched ? "border-red-500" : "border-orange-300"
                 }`}
               />
               {/* Afficher l'erreur temps réel ou l'erreur du serveur */}

@@ -1,16 +1,34 @@
 // components/PersonalInfo.tsx
 
-import React, { useEffect, useState } from 'react';
-import { View, Text, Button, Alert, ActivityIndicator, StyleSheet, Modal, Pressable } from 'react-native';
-import useGetProfile from '@/hooks/auth/useGetProfile';
-import useDeleteAccount from '@/hooks/auth/useDeleteAccount';
-import { useRouter } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import NetInfo from '@react-native-community/netinfo';
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  Alert,
+  ActivityIndicator,
+  StyleSheet,
+  Pressable,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  ScrollView,
+  Keyboard,
+  TouchableOpacity,
+} from "react-native";
+import useGetProfile from "@/hooks/auth/useGetProfile";
+import useDeleteAccount from "@/hooks/auth/useDeleteAccount";
+import { useRouter } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import NetInfo from "@react-native-community/netinfo";
+import { Ionicons } from "@expo/vector-icons";
+import { WhiteModal } from "@/components/ui/WhiteModal";
 
 const PersonalInfo = () => {
   const router = useRouter();
-  const { profile, loading: profileLoading, error: profileError } = useGetProfile();
+  const {
+    profile,
+    loading: profileLoading,
+    error: profileError,
+  } = useGetProfile();
   const { deleteAccount, loading: deleteLoading } = useDeleteAccount();
 
   const [isOnline, setIsOnline] = useState<boolean>(true);
@@ -18,7 +36,7 @@ const PersonalInfo = () => {
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
 
   useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener(state => {
+    const unsubscribe = NetInfo.addEventListener((state) => {
       setIsOnline(state.isConnected ?? true);
     });
 
@@ -28,11 +46,11 @@ const PersonalInfo = () => {
   useEffect(() => {
     const syncProfile = async () => {
       if (profile && isOnline) {
-        await AsyncStorage.setItem('cachedProfile', JSON.stringify(profile));
+        await AsyncStorage.setItem("cachedProfile", JSON.stringify(profile));
       }
 
       if (!isOnline) {
-        const cached = await AsyncStorage.getItem('cachedProfile');
+        const cached = await AsyncStorage.getItem("cachedProfile");
         if (cached) {
           setCachedProfile(JSON.parse(cached));
         }
@@ -48,178 +66,268 @@ const PersonalInfo = () => {
     setShowModalDelete(false);
     const result = await deleteAccount();
     if (result.success) {
-      Alert.alert('Succès', result.message);
-      router.replace('/login');
+      Alert.alert("Succès", result.message);
+      router.replace("/login");
     } else {
-      Alert.alert('Erreur', result.message);
+      Alert.alert("Erreur", result.message);
     }
   };
 
   if (profileLoading && isOnline) {
     return (
-      <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
+      <KeyboardAvoidingView
+        className="bg-custom-orange"
+        style={{ flex: 1 }}
+        behavior={"padding"}
+      >
+        <View style={styles.centered}>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+      </KeyboardAvoidingView>
     );
   }
 
   if (profileError && !cachedProfile) {
     return (
-      <View style={styles.centered}>
-        <Text style={styles.errorText}>
-          Une erreur est survenue lors du chargement du profil. {isOnline ? profileError : 'Vérifiez votre connexion internet.'}
-        </Text>
-      </View>
+      <KeyboardAvoidingView
+        className="bg-custom-orange"
+        style={{ flex: 1 }}
+        behavior={"padding"}
+      >
+        <View style={styles.centered}>
+          <Text style={styles.errorText}>
+            Une erreur est survenue lors du chargement du profil.{" "}
+            {isOnline ? profileError : "Vérifiez votre connexion internet."}
+          </Text>
+        </View>
+      </KeyboardAvoidingView>
     );
   }
 
   if (!displayProfile) {
     return (
-      <View style={styles.centered}>
-        <Text style={styles.infoText}>
-          Aucune information disponible. Connectez-vous à Internet pour charger votre profil.
-        </Text>
-      </View>
+      <KeyboardAvoidingView
+        className="bg-custom-orange"
+        style={{ flex: 1 }}
+        behavior={"padding"}
+      >
+        <View style={styles.centered}>
+          <Text style={styles.infoText}>
+            Aucune information disponible. Connectez-vous à Internet pour
+            charger votre profil.
+          </Text>
+        </View>
+      </KeyboardAvoidingView>
     );
   }
 
   return (
-    <View style={styles.container}>
-      {!isOnline && (
-        <View style={styles.offlineBanner}>
-          <Text style={styles.offlineText}>
-            Vous êtes hors ligne. Les informations affichées proviennent du cache.
-          </Text>
-        </View>
-      )}
+    <KeyboardAvoidingView
+      className="bg-custom-orange"
+      style={{ flex: 1 }}
+      behavior={"padding"}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <ScrollView
+          contentContainerStyle={styles.container}
+          keyboardShouldPersistTaps="handled"
+        >
+          {!isOnline && (
+            <View style={styles.offlineBanner}>
+              <Text style={styles.offlineText}>
+                Vous êtes hors ligne. Les informations affichées proviennent du
+                cache.
+              </Text>
+            </View>
+          )}
 
-      <Text style={styles.title}>Mes informations</Text>
-
-      <View style={styles.infoContainer}>
-        <Text style={styles.label}>Mon adresse email</Text>
-        <Text style={styles.infoText}>{displayProfile.email || "Pas d'email disponible"}</Text>
-      </View>
-
-      <View style={styles.infoContainer}>
-        <Text style={styles.label}>Mon pseudo</Text>
-        <Text style={styles.infoText}>{displayProfile.username || "Pas de pseudo disponible"}</Text>
-      </View>
-
-      <Button
-        title="Supprimer mon compte"
-        onPress={() => setShowModalDelete(true)}
-        disabled={!isOnline || deleteLoading}
-      />
-
-      <Modal
-        visible={showModalDelete}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={() => setShowModalDelete(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalBox}>
-            <Text style={styles.modalTitle}>Supprimer le compte</Text>
-            <Text style={{ marginVertical: 10 }}>
-              Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              flexDirection: "row",
+            }}
+          >
+            <Text className="text-custom-blue text-3xl ClashDisplayBold">
+              Mes informations
             </Text>
-            <View style={styles.modalActions}>
-              <Pressable onPress={() => setShowModalDelete(false)} style={styles.cancelBtn}>
-                <Text style={styles.cancelText}>Annuler</Text>
-              </Pressable>
-              <Pressable onPress={handleDeleteAccount} style={styles.deleteBtn}>
-                <Text style={styles.deleteText}>Supprimer</Text>
-              </Pressable>
+          </View>
+          <View style={{ flex: 1 }}>
+            <View className="w-full max-w-md mb-4">
+              <Text className="text-custom-text-orange mb-1 text-base text-center ArchivoBold">
+                Mon adresse mail
+              </Text>
+              <Text
+                className="w-full p-3 border-2 text-base bg-white border-orange-300"
+                style={styles.infoText}
+              >
+                {displayProfile.email || "Pas d'email disponible"}
+              </Text>
+            </View>
+
+            <View className="w-full max-w-md mb-4">
+              <Text className="text-custom-text-orange mb-1 text-base text-center ArchivoBold">
+                Mon pseudo
+              </Text>
+              <Text
+                className="w-full p-3 border-2 text-base bg-white border-orange-300"
+                style={styles.infoText}
+              >
+                {displayProfile.username || "Pas de pseudo disponible"}
+              </Text>
+            </View>
+
+            <View className="flex-1 gap-4">
+              <TouchableOpacity
+                style={[
+                  styles.button,
+                  (!isOnline || !displayProfile) && styles.buttonDisabled,
+                ]}
+                disabled={!isOnline || !displayProfile}
+                onPress={() => router.push("/(auth)/changePassword")}
+              >
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    flexDirection: "row",
+                    gap: 5,
+                  }}
+                >
+                  <Ionicons name={"lock-closed"} size={20} color="white" />
+                  <Text className="text-white ArchivoBold text-lg">
+                    Changer mon mot de passe
+                    {!isOnline && (
+                      <p className="text-sm text-gray-500">
+                        (Non disponible hors ligne)
+                      </p>
+                    )}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.button,
+                  (!isOnline || !displayProfile) && styles.buttonDisabled,
+                ]}
+                disabled={!isOnline || !displayProfile}
+                onPress={() => setShowModalDelete(true)}
+              >
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    flexDirection: "row",
+                    gap: 5,
+                  }}
+                >
+                  <Ionicons name={"trash-bin"} size={20} color="white" />
+                  <Text className="text-white ArchivoBold text-lg">
+                    Supprimer mon compte
+                  </Text>
+                </View>
+              </TouchableOpacity>
             </View>
           </View>
-        </View>
-      </Modal>
-    </View>
+          <WhiteModal
+            isOpen={showModalDelete}
+            ContentPadding="ion-padding-top"
+            scroll={true}
+            onClose={() => setShowModalDelete(false)}
+          >
+            <View>
+              <Text style={styles.modalTitle}>Supprimer le compte</Text>
+              <Text style={{ marginVertical: 10, fontFamily: "Archivo" }}>
+                Êtes-vous sûr de vouloir supprimer votre compte ?{"\n"}
+                Cette action est irréversible.
+              </Text>
+              <View style={styles.modalActions}>
+                <Pressable
+                  onPress={() => setShowModalDelete(false)}
+                  style={styles.cancelBtn}
+                >
+                  <Text style={styles.cancelText}>Annuler</Text>
+                </Pressable>
+                <Pressable
+                  onPress={handleDeleteAccount}
+                  style={styles.deleteBtn}
+                >
+                  <Text style={styles.deleteText}>Supprimer</Text>
+                </Pressable>
+              </View>
+            </View>
+          </WhiteModal>
+        </ScrollView>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    padding: 16,
+    backgroundColor: "#ffeda3",
+    padding: 25,
+    flexGrow: 1,
+    justifyContent: "center",
   },
   centered: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   offlineBanner: {
-    backgroundColor: '#FFF3CD',
+    backgroundColor: "#FFF3CD",
     padding: 10,
     marginBottom: 10,
   },
   offlineText: {
-    color: '#856404',
-    textAlign: 'center',
+    color: "#856404",
+    textAlign: "center",
+    fontFamily: "Archivo",
   },
-  title: {
-    fontSize: 24,
-    color: '#007AFF',
-    textAlign: 'center',
-    marginVertical: 20,
-  },
-  infoContainer: {
-    marginBottom: 15,
-  },
-  label: {
-    color: '#FF9500',
-    marginBottom: 5,
-    fontWeight: 'bold',
-  },
+
   infoText: {
-    backgroundColor: '#F2F2F2',
-    padding: 10,
-    borderRadius: 10,
-    borderColor: '#FF9500',
-    borderWidth: 1,
-    color: '#007AFF',
+    borderRadius: 15,
   },
   errorText: {
-    color: 'red',
-    textAlign: 'center',
+    color: "red",
+    textAlign: "center",
   },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.3)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalBox: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 10,
-    width: '85%',
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowRadius: 10,
-    elevation: 5,
-  },
+
   modalTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#007AFF',
+    color: "#0F548D",
+    fontFamily: "ArchivoBold",
   },
   modalActions: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
+    flexDirection: "row",
+    justifyContent: "flex-end",
     marginTop: 15,
   },
   cancelBtn: {
-    marginRight: 10,
+    marginRight: 20,
   },
   deleteBtn: {},
   cancelText: {
-    color: '#007AFF',
-    fontWeight: 'bold',
+    color: "#0F548D",
+    fontFamily: "ArchivoBold",
   },
   deleteText: {
-    color: 'red',
-    fontWeight: 'bold',
+    color: "red",
+    fontFamily: "ArchivoBold",
+  },
+  button: {
+    backgroundColor: "#FF8200",
+    paddingVertical: 8,
+    borderRadius: 8,
+    alignItems: "center",
+    elevation: 3,
+  },
+  buttonDisabled: {
+    backgroundColor: "#FFB877", // plus clair pour montrer l'état désactivé
   },
 });
 

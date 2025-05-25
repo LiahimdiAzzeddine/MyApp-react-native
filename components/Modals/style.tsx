@@ -38,23 +38,29 @@ const styles = StyleSheet.create({
   },
    modalContent: {
     alignItems: 'center',
-    gap: 30,
+    gap: 15,
     justifyContent: 'center',
   },
   contentInfo: {
     alignItems: 'center',
-    gap: 5,
+    gap: 10,
   },
   description: {
     textAlign: 'center',
     fontSize: 14,
-    fontFamily:"ArchivoLight"
+    fontFamily:"ArchivoLight",
+    maxWidth:310
   },
   button: {
     paddingVertical: 8,
-    paddingHorizontal: 15,
-    borderRadius: 8,
+    paddingHorizontal: 25,
+    borderRadius: 10,
     marginTop: 10,
+     shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.5,
+    shadowRadius: 6,
+    borderWidth: 2,
+    borderColor: 'rgba(0, 123, 255, 0.1)',
   },
   buttonText: {
     color: 'white',
@@ -67,6 +73,17 @@ const styles = StyleSheet.create({
   link: {
     textDecorationLine: 'underline',
     fontFamily:"ArchivoLight",
+  },
+   container: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    position: 'relative',
+  },
+  arrowImage: {
+    width: 32,
+    height: 32,
+    position: 'absolute',
+    left: -35,
   },
 });
 export default  styles;

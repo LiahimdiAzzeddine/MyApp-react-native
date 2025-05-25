@@ -1,39 +1,8 @@
 import React, { useState } from 'react';
 import { View, Image, TouchableOpacity, Text, StyleSheet, Dimensions } from 'react-native';
 import TransparencyInfo from './TransparencyInfo';
-import Modal from 'react-native-modal';
+import { WhiteModal } from '../ui/WhiteModal';
 
-// Composant WhiteModal équivalent
-const WhiteModal = ({ 
-    isOpen, 
-    children, 
-    ContentPadding = '', 
-    scroll = false, 
-    onClose 
-  }: { 
-    isOpen: boolean, 
-    children: React.ReactNode, 
-    ContentPadding?: string, 
-    scroll?: boolean, 
-    onClose: () => void 
-  }) => {
-    return (
-      <Modal
-        isVisible={isOpen}
-        onBackdropPress={onClose}
-        backdropOpacity={0.5}
-        style={styles.modal}
-      >
-        <View style={[styles.modalContent, scroll && styles.scrollable]}>
-          <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-            <Text style={styles.closeButtonText}>×</Text>
-          </TouchableOpacity>
-          {children}
-        </View>
-      </Modal>
-    );
-  };
-  
 
 
 type TransparencyScaleProps = {
@@ -199,30 +168,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontFamily: 'ArchivoItalic', 
   },
-  modal: {
-    margin: 0,
-    justifyContent: 'flex-end',
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    padding: 16,
-    maxHeight: '80%',
-  },
-  scrollable: {
-    maxHeight: '80%',
-  },
-  closeButton: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    zIndex: 10,
-  },
-  closeButtonText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
+  
   transparencyInfo: {
     padding: 16,
   },
