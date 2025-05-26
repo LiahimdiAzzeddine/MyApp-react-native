@@ -5,25 +5,41 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "scheme": "tico",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.tico.mobileapp",
+      "bundleIdentifier": "com.tico.foodhea.tico",
+      "associatedDomains": [
+        "applinks:tico.foodhea.com"
+      ],
       "buildNumber": "1.0.0",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
+      "package": "com.tico.foodhea.tico",
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "data": {
+            "scheme": "https",
+            "host": "tico.foodhea.com",
+            "pathPrefix": "/"
+          },
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        }
+      ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#fff"
       },
       "permissions": [
-        "android.permission.CAMERA",
-        "android.permission.RECORD_AUDIO",
         "android.permission.CAMERA",
         "android.permission.RECORD_AUDIO"
       ]
@@ -56,20 +72,18 @@
     "experiments": {
       "typedRoutes": true
     },
-    "extra": {
-      "router": {
-        "origin": false
-      },
-      "eas": {
-        "projectId": "c784d721-95d0-447c-bcd5-1b86d9e7f0fb"
-      }
-    },
     "owner": "azzeddine22",
     "runtimeVersion": {
       "policy": "appVersion"
     },
     "updates": {
       "url": "https://u.expo.dev/c784d721-95d0-447c-bcd5-1b86d9e7f0fb"
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "b95cb4d2-dc3b-4f9f-90e4-c27ee79f5fba"
+      }
     }
   }
 }

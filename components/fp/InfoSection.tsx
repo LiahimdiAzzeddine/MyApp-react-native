@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Product } from '@/types/product';
+import ShareSection from './ShareSection';
 
 // ✅ Import d'images locales avec alias @ (nécessite babel alias config)
 const NutriA = require('@/assets/images/nutriscore/Nutri_score_A.png');
@@ -29,11 +30,11 @@ const InfoSection: React.FC<Props> = ({ product }) => {
 
   const nutriscoreImages = { A: NutriA, B: NutriB, C: NutriC, D: NutriD, E: NutriE };
   const nutriscoreComment = {
-    A: 'A consommer avec parcimonie et vérifier si les ingrédients sont naturels !',
-    B: 'Profil nutritionnel OK, vérifier la naturalité…',
-    C: 'Profil nutritionnel moyen, vérifier la naturalité…',
-    D: 'À consommer avec modération…',
-    E: 'À consommer avec parcimonie…',
+    A: 'OK côté nutrition, vérifier la naturalité des ingrédients avant de favoriser ce produit',
+    B: 'Profil nutritionnel OK, vérifier la naturalité des ingrédients avant de favoriser ce produit',
+    C: 'Profil nutritionnel moyen, vérifier la naturalité des ingrédients avant de favoriser ce produit',
+    D: 'À consommer avec modération et vérifier la naturalité des ingrédients.',
+    E: 'A consommer avec parcimonie et vérifier si les ingrédients sont naturels !',
   };
 
   const selectedNutriImg = product.nutriscore ? nutriscoreImages[product.nutriscore] : null;
@@ -45,241 +46,347 @@ const InfoSection: React.FC<Props> = ({ product }) => {
 
   const renderUnavailableContent = () => (
     <View style={styles.unavailableContainer}>
-      <Text style={styles.unavailableText}>Indisponible</Text>
-      <View style={styles.unavailableIconContainer}>
-        <Image source={FlecheLeft} style={styles.arrow} />
-        <TouchableOpacity onPress={openEmail}>
-          <Image source={Illustration} style={styles.illustration} />
+      <View style={styles.unavailableRow}>
+        <View style={styles.unavailableTextContainer}>
+          <Text style={styles.unavailableText}>Indisponible</Text>
+          <Image source={FlecheLeft} style={styles.arrow} resizeMode='contain' />
+        </View>
+        <TouchableOpacity onPress={openEmail} style={styles.illustrationButton}>
+          <Image source={Illustration} style={styles.illustration} resizeMode='contain'/>
         </TouchableOpacity>
       </View>
     </View>
   );
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>LA SYNTHÈSE DU PRODUIT</Text>
+    <View >
+      {/* Header avec badge arrondi */}
+      <View style={styles.headerContainer}>
+        <View style={styles.header}>
+          <Text style={styles.title}>LA SYNTHÈSE SUR LE PRODUIT</Text>
+        </View>
       </View>
 
-      <View style={styles.gridContainer}>
-        {/* Section Nutrition - Top Left */}
-        <View style={[styles.gridItem, styles.topLeft]}>
-          <Text style={styles.sectionTitle}>Informations nutritionnelles</Text>
-          
-          {selectedNutriImg ? (
-            <TouchableOpacity style={styles.contentContainer} onPress={() => setIsOpenNutrition(true)}>
-              <View style={styles.nutriContainer}>
-                <Text style={styles.nutriLabel}>NUTRI-SCORE</Text>
-                <Image source={selectedNutriImg} style={styles.nutriImage} />
-              </View>
-              <Ionicons name="chevron-forward-outline" size={24} color="#4a90a4" style={styles.chevron} />
-            </TouchableOpacity>
-          ) : (
-            renderUnavailableContent()
-          )}
-          
-          <Text style={styles.commentText}>
-            {selectedComment ?? 'Données non communiquées par le fabricant'}
-          </Text>
-        </View>
-
-        {/* Section Naturalité - Top Right */}
-        <View style={[styles.gridItem, styles.topRight]}>
-          <Text style={styles.sectionTitle}>Naturalité des ingrédients</Text>
-          
-          <TouchableOpacity style={styles.contentContainer} onPress={() => setIsOpenAdd(true)}>
-            <Text style={styles.additifsText}>
-              {product.additifs?.length
-                ? `Contient ${product.additifs.length} additifs`
-                : 'Ne contient pas d\'additifs'}
+      {/* Contenu principal avec fond teal clair */}
+      <View style={styles.mainContent}>
+        <View style={styles.gridContainer}>
+          {/* Section Nutrition - Top Left */}
+          <View style={[styles.gridItem, styles.topLeft]}>
+            <Text style={styles.sectionTitle}>Informations nutritionnelles</Text>
+            
+            {selectedNutriImg ? (
+              <TouchableOpacity 
+                style={styles.contentContainer} 
+                onPress={() => setIsOpenNutrition(true)}
+              >
+                <View style={styles.nutriContainer}>
+                  <Image source={selectedNutriImg} style={styles.nutriImage} />
+                </View>
+                <Ionicons 
+                  name="chevron-forward-outline" 
+                  size={20} 
+                  color="#4a90a4" 
+                  style={styles.chevron} 
+                />
+              </TouchableOpacity>
+            ) : (
+              renderUnavailableContent()
+            )}
+            
+            <Text style={styles.commentText}>
+              {selectedComment ?? 'Données non communiquées par le fabricant'}
             </Text>
-            <Ionicons name="chevron-forward-outline" size={24} color="#4a90a4" style={styles.chevron} />
-          </TouchableOpacity>
-          
-          <Text style={styles.commentText}>
-            À confirmer par un décryptage du produit
-          </Text>
+            {Number(product!.transparency_scale) >1 && (
+              <Text style={styles.transparentText}>Produit 100% transparent !</Text>
+            )}
+          </View>
+
+          {/* Section Naturalité - Top Right */}
+          <View style={[styles.gridItemRight, styles.topRight]}>
+            <Text style={styles.sectionTitle}>Degré de transformation</Text>
+            
+            <TouchableOpacity 
+              style={styles.contentContainer} 
+              onPress={() => setIsOpenAdd(true)}
+            >
+              <View style={styles.additifsContainer}>
+                <View style={styles.additifsIconContainer}>
+                  <Ionicons name="cube-outline" size={32} color="#4a90a4" />
+                  <Text style={styles.additifsText}>
+                    {product.additifs?.length
+                      ? `Contient ${product.additifs.length} additifs`
+                      : ' Ne contient pas d’additifs'}
+                  </Text>
+                </View>
+              </View>
+              <Ionicons 
+                name="chevron-forward-outline" 
+                size={20} 
+                color="#4a90a4" 
+                style={styles.chevron} 
+              />
+            </TouchableOpacity>
+            {product?.commentaire?(<Text style={styles.commentText}>{product?.commentaire}</Text>):(
+              <Text style={styles.commentText}>À confirmer par un décryptage du produit</Text>
+            )}
+            
+            
+          </View>
+
+          {/* Section Impact environnemental - Bottom Left */}
+          <View style={[styles.gridItem, styles.bottomLeft]}>
+            <Text style={styles.sectionTitle}>Impact environnemental</Text>
+            
+            {product.commentaire && product.planetScore ? (
+              <TouchableOpacity style={styles.contentContainer}>
+                <View style={styles.environmentContainer}>
+                  <View style={styles.environmentIcons}>
+                    <Text style={styles.environmentEmoji}>🌍</Text>
+                    <Text style={styles.environmentEmoji}>🍃</Text>
+                    <Text style={styles.environmentEmoji}>🌱</Text>
+                  </View>
+                  <Text style={styles.environmentText}>Impact environnemental</Text>
+                </View>
+                <Ionicons 
+                  name="chevron-forward-outline" 
+                  size={20} 
+                  color="#4a90a4" 
+                  style={styles.chevron} 
+                />
+              </TouchableOpacity>
+            ) : (
+              renderUnavailableContent()
+            )}
+            
+           
+          </View>
+
+          {/* Section Origines - Bottom Right */}
+          <View style={[styles.gridItemRight, styles.bottomRight]}>
+            <Text style={styles.sectionTitle}>Origines</Text>
+            
+            {product.commentaire ? (
+              <TouchableOpacity style={styles.contentContainer}>
+                <View style={styles.originesContainer}>
+                  <View style={styles.originesInfo}>
+                    <Text style={styles.originesLabel}>🇫🇷 France</Text>
+                    <Text style={styles.originesDetail}>Lieu de conditionnement : France</Text>
+                    <Text style={styles.originesDetail}>Tomate : Espagne</Text>
+                    <Text style={styles.originesDetail}>Bœuf : France</Text>
+                  </View>
+                </View>
+                <Ionicons 
+                  name="chevron-forward-outline" 
+                  size={20} 
+                  color="#4a90a4" 
+                  style={styles.chevron} 
+                />
+              </TouchableOpacity>
+            ) : (
+              renderUnavailableContent()
+            )}
+       
+          </View>
         </View>
 
-        {/* Section Impact environnemental - Bottom Left */}
-        <View style={[styles.gridItem, styles.bottomLeft]}>
-          <Text style={styles.sectionTitle}>Impact environnemental</Text>
-          
-          {product.commentaire && product.planetScore ? (
-            <Image source={{ uri: product.planetScore }} style={styles.planetScore} />
-          ) : (
-            renderUnavailableContent()
-          )}
-        </View>
-
-        {/* Section Origines - Bottom Right */}
-        <View style={[styles.gridItem, styles.bottomRight]}>
-          <Text style={styles.sectionTitle}>Origines</Text>
-          {renderUnavailableContent()}
-        </View>
+        {/* Bottom Action Bar avec icônes rondes */}
+        <ShareSection  gtin={product.gtin} productName={product.name}/>
       </View>
 
-      {/* Bottom Action Bar */}
-      <View style={styles.actionBar}>
-        <TouchableOpacity style={styles.actionButton}>
-          <Ionicons name="share-outline" size={28} color="#4a90a4" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.actionButton}>
-          <Ionicons name="restaurant-outline" size={28} color="#4a90a4" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.actionButton}>
-          <Image source={Illustration} style={styles.actionIcon} />
-        </TouchableOpacity>
-      </View>
-
-      {/* Modals (non implémentés ici) */}
-      {/* {isOpenNutrition && <NutrriInfo />} */}
-      {/* {isOpenAdd && <ContactAdditif />} */}
+   
+   
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#e8f4f8',
-    width: '100%',
+
+  headerContainer: {
+    position: 'relative',
+    zIndex: 1,
   },
   header: {
-    backgroundColor: '#b8dde0',
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderTopRightRadius: 25,
-    borderBottomRightRadius: 25,
+    backgroundColor: '#a9d7d4',
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderTopRightRadius: 20,
+    borderBottomRightRadius: 20,
     alignSelf: 'flex-start',
-    minWidth: '70%',
+    marginBottom: -19,
   },
   title: {
     color: '#2c5f70',
-    fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: 14,
     textAlign: 'left',
+    fontFamily:'ArchivoBold'
+  },
+  mainContent: {
+    backgroundColor: '#e8f4f5',
+    paddingHorizontal: 5,
+    paddingBottom: 25,
   },
   gridContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    backgroundColor: 'white',
-    margin: 16,
-    borderRadius: 12,
-    padding: 16,
+    backgroundColor: 'transparent',
+   
   },
   gridItem: {
-    width: '48%',
-    backgroundColor: 'white',
-    padding: 16,
-    minHeight: 140,
-    justifyContent: 'space-between',
+    width: '50%',
+    backgroundColor: 'transparent',
+    paddingVertical: 12,
+    paddingHorizontal: 5,
+    justifyContent: 'flex-start',
+    minHeight: 100,
+  },
+  gridItemRight: {
+    width: '50%',
+    backgroundColor: 'transparent',
+    paddingVertical: 12,
+    paddingHorizontal: 8,
+    justifyContent: 'flex-start',
+    minHeight: 100,
   },
   topLeft: {
-    marginRight: '2%',
-    marginBottom: 12,
-    borderRightWidth: 0.5,
-    borderBottomWidth: 0.5,
-    borderColor: '#d0e7ea',
+    paddingTop:28,
+    borderRightWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: '#b8dde0',
+    paddingRight:5
   },
   topRight: {
-    marginLeft: '2%',
-    marginBottom: 12,
-    borderBottomWidth: 0.5,
-    borderColor: '#d0e7ea',
+     paddingTop:28,
+    borderBottomWidth: 1,
+    borderColor: '#b8dde0',
   },
   bottomLeft: {
-    marginRight: '2%',
-    borderRightWidth: 0.5,
-    borderColor: '#d0e7ea',
+    borderRightWidth: 1,
+    borderColor: '#b8dde0',
   },
   bottomRight: {
-    marginLeft: '2%',
+    marginLeft: 0,
   },
   sectionTitle: {
-    color: '#4a90a4',
-    fontWeight: 'bold',
-    fontSize: 14,
-    marginBottom: 12,
+    color: '#2c5f70',
+    fontSize: 12,
+    marginBottom: 8,
+    lineHeight: 14,
+    fontFamily:"ArchivoBold"
   },
   contentContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    flex: 1,
+    justifyContent: 'space-around',
+    marginBottom: 8,
+    minHeight: 40,
   },
   nutriContainer: {
-    flex: 1,
-  },
-  nutriLabel: {
-    fontSize: 10,
-    color: '#666',
-    marginBottom: 4,
-    fontWeight: '600',
+    //alignItems: 'flex-start',
   },
   nutriImage: {
-    width: 100,
-    height: 20,
+    width: 80,
+    height: 50,
     resizeMode: 'contain',
   },
   chevron: {
-    marginLeft: 8,
+    marginLeft: 2,
   },
-  additifsText: {
-    fontSize: 12,
-    color: '#2c5f70',
+  additifsContainer: {
     flex: 1,
   },
-  commentText: {
-    color: '#7bb3b8',
+  additifsIconContainer: {
+    alignItems: 'center',
+  },
+  additifsText: {
     fontSize: 11,
+    color: '#2c5f70',
+    textAlign: 'center',
+    marginTop: 4,
+    fontWeight: '600',
+  },
+  environmentContainer: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  environmentIcons: {
+    flexDirection: 'row',
+    marginBottom: 4,
+  },
+  environmentEmoji: {
+    fontSize: 16,
+    marginHorizontal: 2,
+  },
+  environmentText: {
+    fontSize: 10,
+    color: '#2c5f70',
+    textAlign: 'center',
+  },
+  originesContainer: {
+    flex: 1,
+  },
+  originesInfo: {
+    alignItems: 'flex-start',
+  },
+  originesLabel: {
+    fontSize: 12,
+    color: '#2c5f70',
+    fontWeight: '600',
+    marginBottom: 2,
+  },
+  originesDetail: {
+    fontSize: 9,
+    color: '#7bb3b8',
+    marginBottom: 1,
+  },
+  commentText: {
+    color: '#42a29a',
+    fontSize: 9,
     fontStyle: 'italic',
-    marginTop: 8,
-    lineHeight: 14,
+    lineHeight: 11,
+  },
+  transparentText: {
+    color: '#42a29a',
+    fontSize: 9,
+    fontWeight: '600',
+    marginTop: 2,
   },
   unavailableContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  unavailableText: {
-    fontSize: 12,
-    color: '#7bb3b8',
-    marginBottom: 8,
-  },
-  unavailableIconContainer: {
+  unavailableRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-around',
+    width: '100%',
+  },
+  unavailableTextContainer: {
+    position: 'relative',
+    marginRight:2,
+  },
+  unavailableText: {
+    fontSize: 10,
+    color: '#42a29a',
+    textAlign: 'center',
   },
   arrow: {
-    width: 16,
-    height: 16,
-    transform: [{ rotate: '-40deg' }],
-    marginRight: 8,
-  },
-  illustration: {
     width: 24,
     height: 24,
+    position: 'absolute',
+    right: -32,
+    top: 5,
+    transform: [{ rotate: '-25deg' }],
   },
-  planetScore: {
-    width: 120,
-    height: 30,
-    resizeMode: 'contain',
+  illustrationButton: {
+    padding: 4,
   },
-  actionBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    backgroundColor: '#b8dde0',
-    paddingVertical: 16,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
+  illustration: {
+    width: 32,
+    height: 32,
   },
-  actionButton: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  actionIcon: {
-    width: 28,
-    height: 28,
-  },
+ 
+
 });
+
 export default InfoSection;

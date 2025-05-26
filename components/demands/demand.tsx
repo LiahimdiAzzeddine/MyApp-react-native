@@ -122,7 +122,8 @@ const Demand = ({ demande, incrementInsistCount, press }: DemandeProps) => {
             ) : (
               <Image
                 source={require("@/assets/images/demands/addOutline.png")}
-                style={{ width: 40, height: 40 }}
+                style={{ width: 35, height: 35 }}
+                resizeMode="contain"
               />
             )}
           </TouchableOpacity>
@@ -135,18 +136,21 @@ const Demand = ({ demande, incrementInsistCount, press }: DemandeProps) => {
             <Image
               source={require("@/assets/images/demands/processing.png")}
               style={{ width: 40, height: 40 }}
+              resizeMode="contain"
             />
           )}
           {demandeState.status === "pending" && (
             <Image
               source={require("@/assets/images/demands/pending.png")}
               style={{ width: 40, height: 40 }}
+              resizeMode="contain"
             />
           )}
           {demandeState.status === "rejected" && (
             <Image
               source={require("@/assets/images/demands/rejected.png")}
               style={{ width: 40, height: 40 }}
+              resizeMode="contain"
             />
           )}
         </View>

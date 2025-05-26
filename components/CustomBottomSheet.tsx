@@ -1,6 +1,9 @@
-import React, { useCallback, useContext, useEffect } from "react";
+import React, { useCallback, useContext, useEffect, useMemo } from "react";
 import { StyleSheet, View, Alert, Text, TouchableOpacity } from "react-native";
-import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
+import BottomSheet, {
+  BottomSheetScrollView,
+  BottomSheetView,
+} from "@gorhom/bottom-sheet";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useBottomSheet } from "@/context/BottomSheetContext";
 import { AuthContext } from "@/context/AuthContext";
@@ -14,13 +17,21 @@ import { Easing } from "react-native-reanimated";
 
 const CustomBottomSheet: React.FC = () => {
   const insets = useSafeAreaInsets();
-  const { bottomSheetRef, closeBottomSheet, scannedBarcode, setHasRequested,setProductName } =
-    useBottomSheet();
+  const {
+    bottomSheetRef,
+    closeBottomSheet,
+    scannedBarcode,
+    setHasRequested,
+    setProductName,
+  } = useBottomSheet();
   const { userInfo } = useContext(AuthContext);
   const { isOnline } = useAppContext();
   const { productData, loading, error, fetchProduct } = useGetProduct(
     scannedBarcode || ""
   );
+
+  // Définir les snap points avec useMemo pour éviter les re-renders
+  const snapPoints = useMemo(() => ["40%", "90%"], []);
 
   const handleSheetChanges = useCallback(
     (index: number) => {
@@ -30,26 +41,26 @@ const CustomBottomSheet: React.FC = () => {
     },
     [closeBottomSheet]
   );
+
   useEffect(() => {
-    // Effectue la récupération du produit si un code-barres est fourni
     if (scannedBarcode && isOnline) {
       fetchProduct();
     }
   }, [scannedBarcode]);
+
   useEffect(() => {
-    // Si l'utilisateur est connecté et que nous avons des données de produit, on l'ajoute à l'historique automatiquement
     if (userInfo && productData) {
       addProduct(productData);
       if (productData.alreadyRequest !== undefined) {
         setHasRequested(productData.alreadyRequest);
       }
-       
-       if (productData.name !== undefined) {
+
+      if (productData.name !== undefined) {
         setProductName(productData.name);
       }
     }
   }, [userInfo, productData]);
-  
+
   const handleAddToLater = async (product: any) => {
     try {
       await addLaterProduct(product);
@@ -67,87 +78,102 @@ const CustomBottomSheet: React.FC = () => {
     <BottomSheet
       ref={bottomSheetRef}
       onChange={handleSheetChanges}
-      snapPoints={["40%", "100%"]}
+      snapPoints={snapPoints}
       topInset={insets.top}
       enablePanDownToClose={true}
       handleStyle={styles.handleStyle}
       index={-1}
-      enableContentPanningGesture={true}
+      enableContentPanningGesture={false} // Désactiver le pan gesture sur le contenu
+      keyboardBehavior="interactive"
+      keyboardBlurBehavior="restore"
       animationConfigs={{
         duration: 500,
         easing: Easing.out(Easing.exp),
       }}
     >
-      <BottomSheetView style={styles.contentContainer}>
+      {/* Option 1: Utiliser BottomSheetView avec BottomSheetScrollView */}
+      <BottomSheetView style={styles.container}>
         <ModalHeader goToPage={closeBottomSheet} />
-
-        {loading ? (
-          <ProductSkeletonLoader />
-        ) : isOnline ? (
-          // Si l'utilisateur est en ligne
-          productData ? (
-            <ProductDetailsView productData={productData} />
+        <BottomSheetScrollView
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={true}
+          keyboardShouldPersistTaps="handled"
+        >
+          {loading ? (
+            <ProductSkeletonLoader />
+          ) : isOnline ? (
+            productData ? (
+              <ProductDetailsView productData={productData} />
+            ) : (
+              <View style={styles.messageContainer}>
+                <Text style={styles.messageText}>
+                  Aucun produit trouvé pour ce code-barres.
+                </Text>
+              </View>
+            )
           ) : (
-            <Text style={styles.modalText}>
-              Aucun produit trouvé pour ce code-barres.
-            </Text>
-          )
-        ) : (
-          // Si l'utilisateur est hors ligne
-          <View style={styles.offlineContainer}>
-            <Text style={styles.offlineText}>
-              Vous êtes hors ligne. Souhaitez-vous sauvegarder ce produit pour
-              plus tard ?
-            </Text>
-            {productData && (
-              <TouchableOpacity
-                onPress={() =>
-                  handleAddToLater({
-                    gtin: productData,
-                    name: "Produit hors ligne",
-                    trademark: "N/A",
-                    image: "default_image_url",
-                  })
-                }
-                style={styles.button}
-              >
-                <Text style={styles.buttonText}>Sauvegarder</Text>
-              </TouchableOpacity>
-            )}
-          </View>
-        )}
+            <View style={styles.offlineContainer}>
+              <Text style={styles.offlineText}>
+                Vous êtes hors ligne. Souhaitez-vous sauvegarder ce produit pour
+                plus tard ?
+              </Text>
+              {productData && (
+                <TouchableOpacity
+                  onPress={() =>
+                    handleAddToLater({
+                      gtin: productData.gtin,
+                      name: "Produit hors ligne",
+                      trademark: "N/A",
+                      image: "default_image_url",
+                    })
+                  }
+                  style={styles.button}
+                >
+                  <Text style={styles.buttonText}>Sauvegarder</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          )}
+        </BottomSheetScrollView>
       </BottomSheetView>
     </BottomSheet>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "white",
+  },
+  scrollContent: {
+    flexGrow: 1,
+    paddingBottom: 50, // Ajouter de l'espace en bas pour le scroll
+  },
   handleStyle: {
     paddingTop: 12,
     paddingBottom: 12,
     backgroundColor: "transparent",
   },
-  contentContainer: {
-    flex: 1,
-    paddingTop: 0,
-    marginTop: 0,
+  messageContainer: {
+    paddingTop: 60,
+    paddingHorizontal: 16,
     alignItems: "center",
   },
-
-  modalText: {
+  messageText: {
     fontSize: 16,
-    marginBottom: 20,
+    textAlign: "center",
+    paddingBottom: 60,
   },
   offlineContainer: {
-    marginTop: 20,
+    paddingTop: 60,
+    paddingHorizontal: 16,
     alignItems: "center",
     justifyContent: "center",
-    textAlign: "center",
   },
   offlineText: {
     fontSize: 16,
-    color: "#333",
-    marginBottom: 10,
+    marginBottom: 20,
+    textAlign: "center",
   },
   button: {
     backgroundColor: "#0f548d",

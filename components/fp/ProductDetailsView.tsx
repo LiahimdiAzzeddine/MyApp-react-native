@@ -7,6 +7,7 @@ import Encourager from './Encourager';
 import InfoSection from './InfoSection';
 import ProductDetailsAccordion from './ProductDetailsAccordion';
 import { Product } from '@/types/product';
+import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 
 interface ProductDetailsViewProps {
   productData: Product | null;
@@ -28,7 +29,7 @@ const ProductDetailsView: React.FC<ProductDetailsViewProps> = ({
 
   // Affichage du produit
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+    <>
      <View style={styles.innerContainer}>
         <TransparencyScale currentPosition={productData.transparency_scale} />
         <GlobalInfo 
@@ -43,7 +44,7 @@ const ProductDetailsView: React.FC<ProductDetailsViewProps> = ({
       
       <InfoSection product={productData} />
       <ProductDetailsAccordion product={productData} />
-    </ScrollView>
+    </ >
   );
 };
 
@@ -51,11 +52,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
-    width:"100%"
+    paddingBottom:16
   },
-  contentContainer: {
-    flexGrow: 1,
-  },
+  
   innerContainer: {
     paddingHorizontal: 10,
   },

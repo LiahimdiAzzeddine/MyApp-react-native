@@ -8,6 +8,8 @@ import ProductSkeletonLoader from '@/components/fp/ProductSkeletonLoader';
 import NetInfo from '@react-native-community/netinfo'; // à importer si pas déjà fait
 import useGetProduct from '@/hooks/fp/useGetProduct';
 import { AuthContext } from '@/context/AuthContext';
+import { ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type RouteParams = {
   ProductDetails: {
@@ -76,7 +78,11 @@ const ProductDetailsScreen = () => {
       {isLoading ? (
         <ProductSkeletonLoader />
       ) : (
+        <ScrollView style={{backgroundColor:'white'}}>
+          <SafeAreaView >
         <ProductDetailsView productData={product} />
+        </SafeAreaView>
+        </ScrollView>
       )}
     </GlobalFpProvider>
   );

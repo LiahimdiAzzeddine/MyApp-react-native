@@ -1,12 +1,11 @@
-import { useBottomSheet } from '@/context/BottomSheetContext';
 import React from 'react';
-import { View, Text, Image, TouchableOpacity } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { useBottomSheet } from '@/context/BottomSheetContext';
 
 type Props = {
   allergenes: string[];
 };
 
-// Définir les images avec leur chemin d'importation correct pour React Native
 const allergenesImg: Record<string, any> = {
   peanuts: require('@/assets/images/fp/Allergenes/Arachides.png'),
   celery: require('@/assets/images/fp/Allergenes/Celeri.png'),
@@ -24,53 +23,123 @@ const allergenesImg: Record<string, any> = {
   'sulphur-dioxide-and-sulphites': require('@/assets/images/fp/Allergenes/Sulfites.png'),
 };
 
+const allergenesEngToFr: Record<string, string> = {
+  peanuts: 'Arachides',
+  celery: 'Céleri',
+  molluscs: 'Mollusques',
+  crustaceans: 'Crustacés',
+  nuts: 'Noix',
+  gluten: 'Gluten',
+  milk: 'Lait',
+  lupin: 'Lupin',
+  mustard: 'Moutarde',
+  eggs: 'Œufs',
+  fish: 'Poisson',
+  'sesame-seeds': 'Graines de sésame',
+  soybeans: 'Soja',
+  'sulphur-dioxide-and-sulphites': 'Dioxyde de soufre et sulfites',
+};
+
 const Allergenes: React.FC<Props> = ({ allergenes }) => {
   const { setIsCourager } = useBottomSheet();
 
   return (
     <View>
-      <Text style={{ color: '#0000FF', fontSize: 18, fontWeight: 'bold', paddingTop: 24 }}>Allergènes</Text>
+     <Text
+          className="text-xl text-custom-blue ArchivoBold "
+          style={{ paddingVertical: 5 }}
+        >
+          <Text className="text-custom-blue ArchivoBold">Allergènes</Text>
+        </Text>
 
       {allergenes && allergenes.length > 0 ? (
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 16, paddingTop: 24, paddingBottom: 24 }}>
+        <View style={styles.gridContainer}>
           {allergenes.map((allergene, index) => (
-            <View key={index} style={{ width: 56, height: 56, alignItems: 'center', justifyContent: 'center' }}>
+            <View key={index} style={styles.allergenContainer}>
               {allergenesImg[allergene] ? (
                 <Image
                   source={allergenesImg[allergene]}
-                  style={{ width: 48, height: 48 }}
+                  style={styles.image}
                   resizeMode="contain"
                 />
               ) : (
-                <TouchableOpacity
-                  style={{
-                    width: 56,
-                    height: 56,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    backgroundColor: '#e5e7eb',
-                    borderRadius: 28,
-                  }}
-                  onPress={() => setIsCourager(true)}
-                >
-                  <Text style={{ color: '#0000FF', fontSize: 24 }}>?</Text>
+                <TouchableOpacity style={styles.placeholder} onPress={() => setIsCourager(true)}>
+                  <Text style={styles.placeholderText}>?</Text>
                 </TouchableOpacity>
               )}
+              <Text style={styles.label}>
+                {allergenesEngToFr[allergene] || 'Incertain'}
+              </Text>
             </View>
           ))}
         </View>
       ) : (
-        <View style={{ flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'flex-start', paddingTop: 24, paddingBottom: 24 }}>
-          <Text style={{ color: '#0000FF', fontSize: 14 }}>Ne contient pas d'Allergènes</Text>
+        <View style={styles.noAllergenContainer}>
+          <Text style={styles.noAllergenText}>Ne contient pas d'Allergènes</Text>
           <TouchableOpacity onPress={() => setIsCourager(true)}>
-            <Text style={{ color: '#0000FF', textDecorationLine: 'underline', fontWeight: 'bold', marginTop: 4, fontSize: 13 }}>
-              À confirmer par la marque
-            </Text>
+            <Text style={styles.confirmText}>À confirmer par la marque</Text>
           </TouchableOpacity>
         </View>
       )}
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+
+  gridContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 16,
+    paddingTop: 24,
+    paddingBottom: 24,
+  },
+  allergenContainer: {
+    width: 56,
+    height: 56,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  image: {
+    width: 48,
+    height: 48,
+  },
+  placeholder: {
+    width: 56,
+    height: 56,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#e5e7eb',
+    borderRadius: 28,
+  },
+  placeholderText: {
+    color: '#0000FF',
+    fontSize: 24,
+  },
+  label: {
+    fontSize: 12,
+    color: '#0F548D',
+    fontFamily: 'ArchivoBold',
+    textAlign: 'center',
+  },
+  noAllergenContainer: {
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+    paddingTop: 24,
+    paddingBottom: 24,
+  },
+  noAllergenText: {
+    color: '#0000FF',
+    fontSize: 14,
+  },
+  confirmText: {
+    color: '#0000FF',
+    textDecorationLine: 'underline',
+    fontWeight: 'bold',
+    marginTop: 4,
+    fontSize: 13,
+  },
+});
 
 export default Allergenes;

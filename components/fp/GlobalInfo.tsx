@@ -114,6 +114,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#42a29a',
     fontFamily:'ArchivoBold',
+    maxWidth:"95%"
   },
   productTransparency: {
     fontSize: 14,

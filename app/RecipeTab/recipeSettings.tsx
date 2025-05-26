@@ -11,6 +11,8 @@ import {
 import { storePreferences, getPreferences } from "@/utils/storage";
 import { AuthContext } from "@/context/AuthContext";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useSpinner } from "@/context/LoadingContext";
+import { useRouter } from "expo-router";
 
 const DIET_OPTIONS = {
   ALL: "Aucun régime spécial",
@@ -43,6 +45,8 @@ const ALLERGEN_OPTIONS = {
 const RecipeSettings: React.FC = () => {
   const authUser = useContext(AuthContext);
   const userId = authUser.userInfo?.id;
+    const { setSpinner  } = useSpinner();
+const router = useRouter();
   const [values, setValues] = useState({
     regime: [] as string[],
     allergen: [] as string[],
@@ -99,6 +103,7 @@ const RecipeSettings: React.FC = () => {
   };
 
   const handleSubmit = async () => {
+    setSpinner(true);
     try {
       if (!values.regime.length) {
         setError({ regime: "Veuillez sélectionner au moins un régime." });
@@ -115,7 +120,8 @@ const RecipeSettings: React.FC = () => {
         "Une erreur est survenue lors de la sauvegarde des préférences. Veuillez réessayer."
       );
     } finally {
-      
+      setSpinner(false);
+       router.back();
     }
   };
  

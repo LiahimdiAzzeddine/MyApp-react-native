@@ -14,6 +14,7 @@ import { AuthContext } from "@/context/AuthContext";
 import { useRouter } from "expo-router";
 import { AppContext } from "@/context/AppContext";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useSpinner } from "@/context/LoadingContext";
 
 
 const tips = [
@@ -61,6 +62,8 @@ const TipSettings = () => {
   const authUser = useContext(AuthContext);
   const userId = authUser.userInfo?.id;
   const router = useRouter();
+    const { setSpinner  } = useSpinner();
+  
     const context = useContext(AppContext);
      if (!context) {
     throw new Error('TipContext must be used within a TipProvider');
@@ -83,6 +86,7 @@ const TipSettings = () => {
 
   const handleSubmit = async () => {
     setLoading(true);
+setSpinner(true);
     try {
       await storeTipPreferences(Number(userId), selectedTips);
       refreshTips();
@@ -94,6 +98,7 @@ const TipSettings = () => {
       );
     } finally {
       setLoading(false);
+      setSpinner(false);
       router.back();
     }
   };

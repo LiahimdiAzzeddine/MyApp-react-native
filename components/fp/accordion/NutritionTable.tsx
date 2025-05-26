@@ -1,5 +1,12 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Switch } from 'react-native';
+import React, { useState, useEffect, useMemo } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  StyleSheet,
+  Switch,
+} from "react-native";
 
 interface LineItem {
   id: number;
@@ -21,7 +28,7 @@ interface Props {
 }
 
 const NutritionTable: React.FC<Props> = ({ product, portion }) => {
-  const [unit, setUnit] = useState<'100g' | 'portion'>('100g');
+  const [unit, setUnit] = useState<"100g" | "portion">("100g");
   const [AGS, setAGS] = useState(false);
 
   const organizeHierarchicalData = (lines: LineItem[]) => {
@@ -52,7 +59,8 @@ const NutritionTable: React.FC<Props> = ({ product, portion }) => {
     return hierarchy;
   };
 
-  const calculatePortionValue = (qt: number, portion: number) => (qt / 100) * portion;
+  const calculatePortionValue = (qt: number, portion: number) =>
+    (qt / 100) * portion;
   const calculatePortionVNR = (vnr: number, portion: number, qt: number) =>
     qt > 0 && portion > 0 && vnr > 0 ? (qt * portion) / vnr : 0;
   const calculatePortionVNR100 = (vnr: number, qt: number) =>
@@ -61,25 +69,25 @@ const NutritionTable: React.FC<Props> = ({ product, portion }) => {
   const NutritionRow = ({
     item,
     level = 0,
-    parentId = '',
+    parentId = "",
   }: {
     item: any;
     level?: number;
     parentId?: string;
   }) => {
     useEffect(() => {
-      if (item.name === 'AGS') {
+      if (item.name === "AGS") {
         setAGS(true);
       }
     }, [item.name]);
 
     const value =
-      unit === 'portion' && portion
+      unit === "portion" && portion
         ? calculatePortionValue(item.value.qt, portion)
         : item.value.qt ?? 0;
 
     const vnr =
-      unit === 'portion' && portion
+      unit === "portion" && portion
         ? calculatePortionVNR(item.value.vnr, portion, item.value.qt)
         : calculatePortionVNR100(item.value.vnr, item.value.qt);
 
@@ -89,22 +97,36 @@ const NutritionTable: React.FC<Props> = ({ product, portion }) => {
     return (
       <View key={`${parentId}-${item.id}`}>
         <View style={styles.row}>
-          <Text style={[styles.cell, { paddingLeft: level * 12 }]}>
+          <Text
+            style={[
+              styles.cell,
+              {
+                paddingLeft: level * 12,
+                color: item.parent === 0 ? "#0F548D" : "#333",
+              },
+            ]}
+          >
             {item.name}
           </Text>
+
           <Text style={styles.cellRight}>
             {value ? (
               <>
                 <Text>
                   {formattedValue} {item.value.unit}
                 </Text>
-                {item.value.unit === 'kcal' && (
-                  <Text> | {(parseFloat(formattedValue) * 4.184).toFixed(2)} kJ</Text>
+                {item.value.unit === "kcal" && (
+                  <Text>
+                    {" "}
+                    | {(parseFloat(formattedValue) * 4.184).toFixed(2)} kJ
+                  </Text>
                 )}
               </>
             ) : null}
           </Text>
-          <Text style={styles.cellRight}>{vnr ? `${formattedVNR}%` : ''}</Text>
+          <Text style={[styles.cellRight, { color: "#6b7280" }]}>
+            {vnr ? `${formattedVNR}%` : ""}
+          </Text>
         </View>
         {item.children?.map((child: any) => (
           <NutritionRow
@@ -125,20 +147,28 @@ const NutritionTable: React.FC<Props> = ({ product, portion }) => {
   );
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView>
       {portion !== 0 && (
         <View style={styles.switchContainer}>
-          <TouchableOpacity onPress={() => setUnit('100g')}>
-            <Text style={unit === '100g' ? styles.activeText : styles.inactiveText}>Par 100g</Text>
+          <TouchableOpacity onPress={() => setUnit("100g")}>
+            <Text
+              style={unit === "100g" ? styles.activeText : styles.inactiveText}
+            >
+              Par 100g
+            </Text>
           </TouchableOpacity>
 
           <Switch
-            value={unit === 'portion'}
-            onValueChange={(val) => setUnit(val ? 'portion' : '100g')}
+            value={unit === "portion"}
+            onValueChange={(val) => setUnit(val ? "portion" : "100g")}
           />
 
-          <TouchableOpacity onPress={() => setUnit('portion')}>
-            <Text style={unit === 'portion' ? styles.activeText : styles.inactiveText}>
+          <TouchableOpacity onPress={() => setUnit("portion")}>
+            <Text
+              style={
+                unit === "portion" ? styles.activeText : styles.inactiveText
+              }
+            >
               Par portion
             </Text>
           </TouchableOpacity>
@@ -148,21 +178,23 @@ const NutritionTable: React.FC<Props> = ({ product, portion }) => {
       <View style={styles.tableHeader}>
         <Text style={[styles.cell, styles.headerText]}>Général</Text>
         <Text style={[styles.cellRight, styles.headerText]}>
-          {unit === '100g' ? 'Pour 100g' : 'Par portion'}
+          {unit === "100g" ? "Pour 100g" : "Par portion"}
         </Text>
         <Text style={[styles.cellRight, styles.headerText]}>% VNR</Text>
       </View>
 
       {hierarchicalData
-        .filter((item) => item.forced || (item.quantity && item.quantity !== ''))
+        .filter(
+          (item) => item.forced || (item.quantity && item.quantity !== "")
+        )
         .map((item) => (
           <NutritionRow key={`root-${item.id}`} item={item} portion={portion} />
         ))}
 
       <View style={styles.footer}>
         <Text style={styles.footerText}>
-          <Text style={styles.bold}>VNR</Text> : Valeur Nutritionnelles de Référence pour un adulte
-          en bonne santé
+          <Text style={styles.bold}>VNR</Text> : Valeur Nutritionnelles de
+          Référence pour un adulte en bonne santé
         </Text>
         {AGS && (
           <Text style={styles.footerText}>
@@ -177,51 +209,52 @@ const NutritionTable: React.FC<Props> = ({ product, portion }) => {
 export default NutritionTable;
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 12,
-  },
   row: {
-    flexDirection: 'row',
+    flexDirection: "row",
     paddingVertical: 4,
-    alignItems: 'center',
+    alignItems: "center",
   },
   cell: {
     flex: 1.5,
     fontSize: 14,
+    fontFamily: "Archivo",
   },
   cellRight: {
     flex: 1,
     fontSize: 14,
-    textAlign: 'right',
+    textAlign: "right",
+    fontFamily: "Archivo",
+    color:"#333"
   },
   divider: {
     height: 1,
-    backgroundColor: '#bde4e1',
+    backgroundColor: "#bde4e1",
     marginVertical: 8,
   },
   switchContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginVertical: 16,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginVertical: 5,
     gap: 12,
   },
   activeText: {
-    color: '#0F548D',
-    fontWeight: '600',
+    color: "#0F548D",
+    fontFamily: "ArchivoBold",
   },
   inactiveText: {
-    color: '#888',
+    color: "#888",
+    fontFamily: "Archivo",
   },
   tableHeader: {
-    flexDirection: 'row',
+    flexDirection: "row",
     paddingVertical: 6,
     borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    borderBottomColor: "#ccc",
   },
   headerText: {
-    fontWeight: 'bold',
-    color: '#0F548D',
+    fontFamily: "ArchivoBold",
+    color: "#0F548D",
     fontSize: 14,
   },
   footer: {
@@ -229,10 +262,11 @@ const styles = StyleSheet.create({
   },
   footerText: {
     fontSize: 13,
-    color: '#0F548D',
+    color: "#0F548D",
     marginBottom: 6,
+    fontFamily: "Archivo",
   },
   bold: {
-    fontWeight: 'bold',
+    fontFamily: "ArchivoBold",
   },
 });

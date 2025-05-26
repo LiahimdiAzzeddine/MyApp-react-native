@@ -1,9 +1,16 @@
-import React from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
-import Allergenes from './Allergenes';
-import Additifs from './Additifs';
+import React from "react";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+} from "react-native";
+import Allergenes from "./Allergenes";
+import Additifs from "./Additifs";
 
-const FICHETOP =require('@/assets/images/fp/FICHETOP.png');
+const FICHETOP = require("@/assets/images/fp/FICHETOP.png");
 
 type SubIngredient = {
   label?: string;
@@ -19,20 +26,25 @@ type Props = {
   ingredients?: Ingredient[];
   allergenesArray?: string[];
   additifsArray?: string[];
+  onToggle:any
 };
 
 const IngredientsInfo: React.FC<Props> = ({
   ingredients = [],
   allergenesArray = [],
   additifsArray = [],
+  onToggle
 }) => {
-
-
-  const formatSubIngredients = (subIngredients: SubIngredient[] = []): React.ReactNode => {
+  const formatSubIngredients = (
+    subIngredients: SubIngredient[] = []
+  ): React.ReactNode => {
     return subIngredients.map((sub, index) => {
       let subText = (
-        <Text key={`sub-${index}`} style={sub.allergene ? styles.underline : undefined}>
-          {sub.label || 'Inconnu'}
+        <Text
+          key={`sub-${index}`}
+          style={sub.allergene ? styles.underline : undefined}
+        >
+          {sub.label || "Inconnu"}
         </Text>
       );
 
@@ -65,7 +77,7 @@ const IngredientsInfo: React.FC<Props> = ({
       return (
         <Text key={index}>
           {subText}
-          {!isLast && ', '}
+          {!isLast && ", "}
         </Text>
       );
     });
@@ -73,9 +85,14 @@ const IngredientsInfo: React.FC<Props> = ({
 
   return (
     <View style={styles.container}>
+      <View style={{ paddingVertical: 16, paddingHorizontal: 16 }}>
       <View style={styles.innerContainer}>
-        <Text style={styles.title}>Ingrédients</Text>
-
+        <Text
+          className="text-xl text-custom-blue ArchivoBold "
+          style={{ paddingVertical: 5 }}
+        >
+          <Text className="text-custom-blue ArchivoBold">Ingrédients</Text>
+        </Text>
         <View style={styles.ingredientList}>
           {ingredients.length > 0 ? (
             ingredients.map((ingredient, index) => (
@@ -86,16 +103,20 @@ const IngredientsInfo: React.FC<Props> = ({
                     ingredient.allergene ? styles.underline : undefined,
                   ]}
                 >
-                  {ingredient.label || 'Inconnu'}
+                  {ingredient.label || "Inconnu"}
                   {ingredient.quantity && ` ${ingredient.quantity}`}
-                  {ingredient.children && ingredient.children.length > 0 ? ':' : ''}
+                  {ingredient.children && ingredient.children.length > 0
+                    ? ":"
+                    : ""}
                 </Text>
-                <Text style={styles.ingredientDetail}>
-                  {ingredient.details || ''}
-                  {ingredient.children && ingredient.children.length > 0 && (
-                    <Text>{formatSubIngredients(ingredient.children)}</Text>
-                  )}
-                </Text>
+                {(ingredient.details || ingredient.children) && (
+                  <Text style={styles.ingredientDetail}>
+                    {ingredient.details || ""}
+                    {ingredient.children && ingredient.children.length > 0 && (
+                      <Text>{formatSubIngredients(ingredient.children)}</Text>
+                    )}
+                  </Text>
+                )}
               </View>
             ))
           ) : (
@@ -105,13 +126,16 @@ const IngredientsInfo: React.FC<Props> = ({
           )}
         </View>
 
-        {allergenesArray.length > 0 && <Allergenes allergenes={allergenesArray} />}
-        <Additifs additifs={additifsArray}  />
+        {allergenesArray.length > 0 && (
+          <Allergenes allergenes={allergenesArray} />
+        )}
+        <Additifs additifs={additifsArray} />
       </View>
 
-      <TouchableOpacity style={styles.imageWrapper}>
+      <TouchableOpacity style={styles.imageWrapper} onPress={()=>onToggle()}>
         <Image source={FICHETOP} style={styles.image} />
       </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -119,55 +143,50 @@ const IngredientsInfo: React.FC<Props> = ({
 export default IngredientsInfo;
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#E6F6EF',
-    borderTopRightRadius: 32,
-    paddingBottom: 32,
-    position: 'relative',
-    width: '100%',
+   container: {
+    backgroundColor: "#E6F6EF",
+    borderTopRightRadius: 40,
+    borderBottomRightRadius: 40,
+    position: "relative",
+    width: "97%",
   },
   innerContainer: {
-    paddingHorizontal: 16,
-    paddingTop: 24,
+    paddingBottom:20
   },
-  title: {
-    fontSize: 20,
-    color: '#00425C',
-    fontWeight: 'bold',
-  },
+
   ingredientList: {
-    marginTop: 16,
+    marginTop: 5,
   },
   ingredientItem: {
-    marginBottom: 12,
+    marginBottom: 5,
   },
   ingredientTitle: {
-    fontWeight: 'bold',
+    fontFamily: "ArchivoBold",
     fontSize: 14,
-    color: '#00425C',
+    color: "#00425C",
   },
   underline: {
-    textDecorationLine: 'underline',
+    textDecorationLine: "underline",
   },
   ingredientDetail: {
     fontSize: 14,
-    color: '#00425C',
+    color: "#00425C",
   },
   noData: {
     fontSize: 12,
-    color: '#00425C',
-    fontWeight: 'bold',
+    color: "#00425C",
+    fontFamily: "ArchivoBold",
   },
-  imageWrapper: {
-    position: 'absolute',
-    bottom: 4,
-    right: 4,
+imageWrapper: {
+    position: "absolute",
+    bottom: 0,
+    right: 0,
     width: 48,
     height: 48,
   },
   image: {
-    width: 48,
-    height: 48,
-    resizeMode: 'contain',
+    width: 45,
+    height: 45,
+    resizeMode: "contain",
   },
 });

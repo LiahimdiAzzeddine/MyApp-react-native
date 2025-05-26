@@ -49,9 +49,12 @@ const Additifs: React.FC<Props> = ({ additifs }) => {
 
   return (
     <View>
-      <Text className="text-xl text-custom-blue font-bold pt-3">
-        <Text className="marker-effect-cyan">Additifs</Text>
-      </Text>
+      <Text
+                className="text-xl text-custom-blue ArchivoBold "
+                style={{ paddingVertical: 5 }}
+              >
+                <Text className="text-custom-blue ArchivoBold">Additifs</Text>
+              </Text>
 
       {additifs && additifs.length > 0 ? (
         additifs.map((item, index) => (

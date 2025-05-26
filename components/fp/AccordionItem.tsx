@@ -30,7 +30,7 @@ export default function AccordionItem({
       >
         <Text style={styles.title}>{title}</Text>
         {!disabled && (
-          <Image source={require('@/assets/images/fp/flechBottom.png')} style={styles.icon} />
+          <Image source={require('@/assets/images/fp/flechBottom.png')} style={styles.icon} resizeMode='contain' />
         )}
         {disabled && showBubble && (
           <TouchableOpacity onPress={onBubblePress} style={styles.bubble}>
@@ -51,6 +51,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    borderBottomWidth:1.5,
+    borderColor:'#c6e8e5'
   },
   disabledHeader: {
     backgroundColor: '#f0f0f0',
