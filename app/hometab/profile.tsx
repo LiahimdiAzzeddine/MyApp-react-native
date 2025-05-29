@@ -138,7 +138,6 @@ export default function Profile(): JSX.Element {
     let nextLevel: Level | undefined | null = null;
 
     if (!currentLevel) {
-      // Pas encore de niveau => commencer par le premier niveau réel
       const firstLevel = levels[0]; // Assumer que levels[0] est une base neutre
       if (totalRequests >= firstLevel.goal) {
         setNextEligibleLevel(firstLevel);
