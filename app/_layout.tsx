@@ -42,6 +42,7 @@ export default function RootLayout() {
     ArchivoExtraBold: require("../assets/fonts/Archivo-ExtraBold.otf"),
     ArchivoBoldItalic: require("../assets/fonts/Archivo-BoldItalic.otf"),
     ArchivoLight: require("../assets/fonts/Archivo-Light.otf"),
+    ArchivoLightBold: require("../assets/fonts/Archivo-ExtraLight.ttf"),
     ArchivoItalic: require("../assets/fonts/Archivo-Italic.otf"),
     ArchivoLightItalic: require("../assets/fonts/Archivo-Italic.otf"),
     pallybold: require("../assets/fonts/Pally-Bold.ttf"),

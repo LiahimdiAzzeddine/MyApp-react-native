@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "TiCO",
-    "slug": "TiCO",
+    "name": "tico",
+    "slug": "tico",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -24,6 +24,7 @@
       "intentFilters": [
         {
           "action": "VIEW",
+          "autoVerify": true,
           "data": {
             "scheme": "https",
             "host": "tico.foodhea.com",
@@ -82,7 +83,7 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "b95cb4d2-dc3b-4f9f-90e4-c27ee79f5fba"
+        "projectId": "f4210c76-96c8-476e-83cf-f886b3c51bb6"
       }
     }
   }

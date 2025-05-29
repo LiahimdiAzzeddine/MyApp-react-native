@@ -1,19 +1,20 @@
 import React, { useState } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import CustomModal from './Modal';
+import { useBottomSheet } from '@/context/BottomSheetContext';
 
-export const ContactModal = ({ isOpen, setIsOpen, gtin, productName }: any) => {
-  const [isOpenTiCO, setIsOpenTiCO] = useState(false);
-  const [isOpenSolliciter, setIsOpenSolliciter] = useState(false);
+export const ContactModal = ({ isOpen, setIsOpen}: any) => {
+ const { setIsModalEncourager,setIsModalContactTico } =
+     useBottomSheet();
 
   const OpenContactTiCO = () => {
     setIsOpen(false);
-    setIsOpenTiCO(true);
+    setIsModalContactTico(true);
   };
 
   const OpenContactSolliciter = () => {
     setIsOpen(false);
-    setIsOpenSolliciter(true);
+   setIsModalEncourager(true)
   };
 
   return (
@@ -24,16 +25,17 @@ export const ContactModal = ({ isOpen, setIsOpen, gtin, productName }: any) => {
             source={require('@/assets/images/popup/BubbleIImage.png')}
             style={styles.bubbleIcon}
           />
-          <Text style={styles.title}>Contact</Text>
+          <Text style={styles.title} className='text-custom-blue'>Contact</Text>
 
           <TouchableOpacity onPress={OpenContactTiCO} style={styles.option}>
-            <Text style={styles.optionText}>
-              Contacter <Text style={styles.bold}>TiCO</Text>
-            </Text>
+            
             <Image
               source={require('@/assets/images/popup/flecheleft.png')}
-              style={styles.arrow}
+              style={styles.arrowLeft}
             />
+            <Text style={styles.optionText} className='text-custom-blue Archivo  leading-archivo'>
+              Contacter <Text style={styles.bold}>TiCO</Text>
+            </Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={OpenContactSolliciter} style={styles.option}>
@@ -41,7 +43,7 @@ export const ContactModal = ({ isOpen, setIsOpen, gtin, productName }: any) => {
               source={require('@/assets/images/popup/flecheleft.png')}
               style={styles.arrow}
             />
-            <Text style={styles.optionText}>
+            <Text style={styles.optionText}  className='text-custom-blue Archivo leading-archivo'>
               Encourager la marque à faire la transparence <Text style={styles.bold}>TiCO</Text>
             </Text>
           </TouchableOpacity>
@@ -56,36 +58,47 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 24,
+    paddingHorizontal: 30,
   },
   bubbleIcon: {
-    width: 80,
-    height: 80,
+    width: 70,
+    height: 70,
     resizeMode: 'contain',
-    marginBottom: 20,
+    marginBottom: 15,
   },
   title: {
     fontSize: 24,
-    color: '#003366', // Example blue
-    fontWeight: 'bold',
-    marginBottom: 30,
+    fontFamily:"ArchivoBold",
+    marginBottom: 10,
   },
   option: {
     flexDirection: 'row',
     alignItems: 'center',
     marginVertical: 10,
+    position:"relative",
+    textAlign:'center'
   },
   optionText: {
     fontSize: 18,
-    color: '#003366',
+    textAlign:"center"
   },
   bold: {
     fontWeight: 'bold',
   },
   arrow: {
+    position:'absolute',
     width: 24,
     height: 24,
-    marginLeft: 10,
+    resizeMode: 'contain',
+    left:-10,
+    top:-7,
+  },
+    arrowLeft: {
+    position:'absolute',
+    width: 24,
+    height: 24,
+    left:-30,
+    top:-7,
     resizeMode: 'contain',
   },
 });

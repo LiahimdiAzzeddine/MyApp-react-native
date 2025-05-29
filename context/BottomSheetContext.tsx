@@ -29,7 +29,13 @@ type BottomSheetContextType = {
   setIsModalEncourager: (value: boolean) => void;
    isModalNutrition: boolean;
   setIsModalNutrition: (value: boolean) => void;
-    scrollRef: React.RefObject<ScrollView |null>;
+   isModalAdditif: boolean;
+  setIsModalAdditif: (value: boolean) => void;
+  isModalContact: boolean;
+  setIsModalContact: (value: boolean) => void;
+  isModalContactTico: boolean;
+  setIsModalContactTico: (value: boolean) => void;
+  scrollRef: React.RefObject<ScrollView |null>;
   targetRef: React.RefObject<View |null>;
 };
 
@@ -57,6 +63,11 @@ export const BottomSheetProvider: React.FC<{ children: ReactNode }> = ({
   const [isCourager, setIsCourager] = useState(false);
   const [isModalEncourager, setIsModalEncourager] = useState(false);
 const [isModalNutrition, setIsModalNutrition] = useState(false);
+const [isModalAdditif, setIsModalAdditif] = useState(false);
+const [isModalContact, setIsModalContact] = useState(false);
+
+const [isModalContactTico, setIsModalContactTico] = useState(false);
+
 const scrollRef = useRef<ScrollView>(null);
   const targetRef = useRef<View>(null);
 
@@ -93,8 +104,12 @@ const scrollRef = useRef<ScrollView>(null);
         setProductName,
         isModalNutrition, 
         setIsModalNutrition,
+        isModalAdditif, setIsModalAdditif,
         scrollRef,
-         targetRef
+         targetRef,
+         isModalContact,
+          setIsModalContact,
+          isModalContactTico, setIsModalContactTico
       }}
     >
       {children}

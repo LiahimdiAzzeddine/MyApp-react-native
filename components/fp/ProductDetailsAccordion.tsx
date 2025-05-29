@@ -12,10 +12,13 @@ import Naturalite from "./accordion/Naturalite";
 import PackagingInfo from "./accordion/PackagingInfo";
 import { useBottomSheet } from "@/context/BottomSheetContext";
 import NutrriInfo from "@/components/Modals/NutrriInfo";
+import ContactAdditif from "../Modals/ContactAdditif";
+import { ContactModal } from "../Modals/ContactModal";
+import ContactTiCO from "../Modals/ContactTiCO";
 
 export default function ProductDetailsAccordion({ product }: any) {
   const [openPanel, setOpenPanel] = useState<string | null>(null);
-  const {isModalNutrition,setIsModalNutrition,scrollRef } = useBottomSheet();
+  const {isModalNutrition,setIsModalNutrition,scrollRef,isModalAdditif, setIsModalAdditif,isModalContact, setIsModalContact,isModalContactTico, setIsModalContactTico } = useBottomSheet();
 
   const togglePanel = (id: string) => {
     setOpenPanel(openPanel === id ? null : id);
@@ -173,6 +176,14 @@ export default function ProductDetailsAccordion({ product }: any) {
     </ScrollView>
     
     <NutrriInfo isOpen={isModalNutrition} setIsOpen={setIsModalNutrition } nutriscore={"A"} togglePanel={()=>togglePanel("1") }/>
+      <ContactAdditif
+        isOpen={isModalAdditif}
+        setIsOpen={setIsModalAdditif}
+        additifs={product?.additifs}
+        
+      />
+      <ContactModal isOpen={isModalContact} setIsOpen={setIsModalContact}/>
+      <ContactTiCO isOpen={isModalContactTico} setIsOpen={setIsModalContactTico} gtin={product?.gtin}/>
     </>
   );
 }

@@ -22,7 +22,8 @@ import { Dimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 // Replace with the correct API URL
-const apiUrl = "https://your-api-url.com";
+const apiUrl = "https://tico.foodhea.com";
+
 
 interface RecipeDetailsProps {
   recipe: any;
@@ -48,7 +49,7 @@ const RecipeDetails = ({ recipe = {}, custom = true }: RecipeDetailsProps) => {
 
   const shareRecipe = async () => {
     try {
-      const deepLink = `${apiUrl}/tico/recipe/${id}`;
+      const deepLink = `${apiUrl}/recipetab/recipe/${id}`;
       await Share.share({
         message: `Découvre cette recette : ${title} - ${deepLink}`,
         title: `Partager la recette: ${title}`,
@@ -202,7 +203,7 @@ const RecipeDetails = ({ recipe = {}, custom = true }: RecipeDetailsProps) => {
             className="bg-custom-red rounded-xl py-3 px-4 p-2 m-auto "
             onPress={shareRecipe}
           >
-            <Text className="text-base text-white">Proposer une recette</Text>
+            <Text className="text-base text-white">Partager</Text>
           </TouchableOpacity>
         </View>
       </View>

@@ -1,5 +1,6 @@
 import React, { useCallback, useContext, useEffect, useMemo } from "react";
 import { StyleSheet, View, Alert, Text, TouchableOpacity } from "react-native";
+
 import BottomSheet, {
   BottomSheetScrollView,
   BottomSheetView,
@@ -23,6 +24,7 @@ const CustomBottomSheet: React.FC = () => {
     scannedBarcode,
     setHasRequested,
     setProductName,
+    setIsModalEncourager,
   } = useBottomSheet();
   const { userInfo } = useContext(AuthContext);
   const { isOnline } = useAppContext();

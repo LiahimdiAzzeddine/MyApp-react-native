@@ -12,12 +12,13 @@ import CustomModal from "./Modal";
 import styles from "./style";
 import { useBottomSheet } from "@/context/BottomSheetContext";
 import useTransparencyRequests from "@/hooks/useTransparencyRequests"; // <-- importe ton hook
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 const ArrowLeft = require("@/assets/images/popup/flecheleft.png");
 
 const Solliciter = ({ isOpen, setIsOpen, authUser }: any) => {
-  const { hasRequested, productName, scannedBarcode } = useBottomSheet();
+  const { hasRequested, productName, scannedBarcode,closeBottomSheet } = useBottomSheet();
   const { handleSubmit, loading, error, sended } = useTransparencyRequests();
+  const router = useRouter();
 
   const handleRequest = async () => {
     const formValues = {
@@ -76,15 +77,15 @@ const Solliciter = ({ isOpen, setIsOpen, authUser }: any) => {
               Demande effectuée
             </Text>
             <TouchableOpacity
-              onPress={() => Linking.openURL("app://mesDemandes")}
+             onPress={()=>{closeBottomSheet();setIsOpen(false);router.push('/hometab/demands')}}
             >
-              <Link
-                href="/hometab/demands"
+              <Text
                 style={styles.link}
                 className="text-custom-blue"
+                
               >
                 Suivre l’état de mes demandes
-              </Link>
+              </Text>
             </TouchableOpacity>
           </View>
         )}

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, TouchableOpacity, Image, StyleSheet, Share as RNShare } from 'react-native';
 import { useBottomSheet } from '@/context/BottomSheetContext';
 const BubbleImg = require('@/assets/images/fp/BubbleImg.png');
-const RecettesImg = require('@/assets/images/fp/BubbleImg.png');
+const RecettesImg = require('@/assets/images/fp/recettes.png');
 const PartageImg = require('@/assets/images/fp/top.png');
 interface SectionsProps {
   scrollToTarget?: (ref: React.RefObject<any>) => void;
@@ -14,8 +14,7 @@ interface SectionsProps {
 const backendUrl = process.env.EXPO_PUBLIC_BACKEND_URL; // Assure-toi de le définir dans ton .env
 
 const ShareSection: React.FC<SectionsProps> = ({ scrollToTarget, targetRefRecettes, gtin, productName }) => {
-  const [isOpen, setIsOpen] = useState(false);
-const {  setHasRequested, hasRequested } = useBottomSheet();
+const {  setIsModalContact } = useBottomSheet();
   const handleShare = async () => {
     try {
       await RNShare.share({
@@ -38,7 +37,7 @@ const {  setHasRequested, hasRequested } = useBottomSheet();
           <Image source={RecettesImg} style={styles.icon} resizeMode="contain" />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button} onPress={() => setIsOpen(true)}>
+        <TouchableOpacity style={styles.button} onPress={() => setIsModalContact(true)}>
           <Image source={BubbleImg} style={styles.icon} resizeMode="contain" />
         </TouchableOpacity>
       </View>

@@ -34,9 +34,8 @@ type Props = {
 };
 
 const InfoSection: React.FC<Props> = ({ product }) => {  
-  const [isOpenAdd, setIsOpenAdd] = useState<boolean>(false);
   const scaleAnim = useRef(new Animated.Value(1)).current;
-  const { hasRequested, setIsModalEncourager, isModalEncourager,isModalNutrition,setIsModalNutrition } =
+  const { hasRequested, setIsModalEncourager, isModalEncourager,isModalNutrition,setIsModalNutrition,setIsModalAdditif } =
     useBottomSheet();
   const { userInfo } = useContext(AuthContext);
   const isAuthenticated: boolean = !!userInfo;
@@ -50,12 +49,12 @@ const InfoSection: React.FC<Props> = ({ product }) => {
         Animated.sequence([
           Animated.timing(scaleAnim, {
             toValue: 1.2,
-            duration: 1250,
+            duration: 500,
             useNativeDriver: true,
           }),
           Animated.timing(scaleAnim, {
             toValue: 1,
-            duration: 1250,
+            duration: 500,
             useNativeDriver: true,
           }),
         ])
@@ -148,7 +147,7 @@ const InfoSection: React.FC<Props> = ({ product }) => {
       {/* Header avec badge arrondi */}
       <View style={styles.headerContainer}>
         <View style={styles.header}>
-          <Text style={styles.title}>LA SYNTHÈSE SUR LE PRODUIT</Text>
+          <Text style={styles.title} className="text-custom-blue">LA SYNTHÈSE SUR LE PRODUIT</Text>
         </View>
       </View>
 
@@ -157,9 +156,11 @@ const InfoSection: React.FC<Props> = ({ product }) => {
         <View style={styles.gridContainer}>
           {/* Section Nutrition - Top Left */}
           <View style={[styles.gridItem, styles.topLeft]}>
-            <Text style={styles.sectionTitle}>
-              Informations nutritionnelles
-            </Text>
+
+            <View style={styles.marker}>
+      <View style={styles.highlight} />
+      <Text style={styles.sectionTitle} className='text-custom-blue'>Informations nutritionnelles</Text>
+    </View>
 
             {selectedNutriImg ? (
               <TouchableOpacity
@@ -192,11 +193,14 @@ const InfoSection: React.FC<Props> = ({ product }) => {
 
           {/* Section Naturalité - Top Right */}
           <View style={[styles.gridItemRight, styles.topRight]}>
-            <Text style={styles.sectionTitle}>Degré de transformation</Text>
+            <View style={styles.marker}>
+      <View style={styles.highlight} />
+      <Text style={styles.sectionTitle} className='text-custom-blue'>Degré de transformation</Text>
+    </View>
 
             <TouchableOpacity
               style={styles.contentContainer}
-              onPress={() => setIsOpenAdd(true)}
+              onPress={() => setIsModalAdditif(true)}
             >
               <View style={styles.additifsContainer}>
                 <View style={styles.additifsIconContainer}>
@@ -226,7 +230,10 @@ const InfoSection: React.FC<Props> = ({ product }) => {
 
           {/* Section Impact environnemental - Bottom Left */}
           <View style={[styles.gridItem, styles.bottomLeft]}>
-            <Text style={styles.sectionTitle}>Impact environnemental</Text>
+            <View style={styles.marker}>
+      <View style={styles.highlight} />
+      <Text style={styles.sectionTitle} className='text-custom-blue'>Impact environnemental</Text>
+    </View>
 
             {product.commentaire && product.planetScore ? (
               <TouchableOpacity style={styles.contentContainer}>
@@ -254,8 +261,10 @@ const InfoSection: React.FC<Props> = ({ product }) => {
 
           {/* Section Origines - Bottom Right */}
           <View style={[styles.gridItemRight, styles.bottomRight]}>
-            <Text style={styles.sectionTitle}>Origines</Text>
-
+  <View style={styles.marker}>
+      <View style={styles.highlight} />
+      <Text style={styles.sectionTitle} className='text-custom-blue'>Origines</Text>
+    </View>
             {product.commentaire ? (
               <TouchableOpacity style={styles.contentContainer}>
                 <View style={styles.originesContainer}>
@@ -293,6 +302,21 @@ const styles = StyleSheet.create({
     position: "relative",
     zIndex: 1,
   },
+   marker: {
+    position: 'relative',
+    alignSelf: 'flex-start', // adapte selon le layout
+  },
+  highlight: {
+    position: 'absolute',
+    bottom:8,
+    left: 0,
+    right: 0,
+    height: 8,
+    backgroundColor: '#66ccc2', // cyan/mint marker color
+    borderRadius: 10,
+    transform: [{ rotate: '-2deg' }],
+    zIndex: 0,
+  },
   header: {
     backgroundColor: "#a9d7d4",
     paddingHorizontal: 10,
@@ -300,10 +324,9 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     borderBottomRightRadius: 20,
     alignSelf: "flex-start",
-    marginBottom: -19,
+    marginBottom: -18.5,
   },
   title: {
-    color: "#2c5f70",
     fontSize: 14,
     textAlign: "left",
     fontFamily: "ArchivoBold",
@@ -354,11 +377,12 @@ const styles = StyleSheet.create({
     marginLeft: 0,
   },
   sectionTitle: {
-    color: "#2c5f70",
+    color: "#0F548D",
     fontSize: 12,
     marginBottom: 8,
     lineHeight: 14,
-    fontFamily: "ArchivoBold",
+    fontFamily:"ArchivoBold",
+    zIndex: 1,
   },
   contentContainer: {
     flexDirection: "row",
