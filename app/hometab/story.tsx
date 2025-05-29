@@ -14,8 +14,9 @@ import * as FileSystem from "expo-file-system";
 import { Asset } from "expo-asset";
 import CustomButton from "@/components/ui/CustomButton";
 import { useTheme } from "@react-navigation/native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-const { width } = Dimensions.get('window');
+const { width,height } = Dimensions.get('window');
 
 interface Story {
   id: number;
@@ -121,7 +122,7 @@ export default function Story(): JSX.Element {
   };
 
   return (
-    <View className="flex-1 bg-white w-full">
+    <SafeAreaView className="flex-1 bg-white w-full"  edges={['bottom', 'left', 'right']}>
       {/* Header with background image */}
       <ImageBackground
         source={require('@/assets/images/profil/backgroundProfil.png')}
@@ -146,11 +147,11 @@ export default function Story(): JSX.Element {
         </Text>
 
         {/* Story slider */}
-        <View className="flex-1 justify-start items-center">
+        <View className="flex-1 justify-around items-center">
           <PagerView
             style={{
               width: width - 60,
-              height: 360,
+              height: height/2.7,
               marginBottom: 10,
             }}
             initialPage={0}
@@ -245,6 +246,6 @@ export default function Story(): JSX.Element {
           </Text>
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }

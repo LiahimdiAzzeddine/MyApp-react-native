@@ -1,11 +1,13 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import api from '@/utils/axiosInstance';
 import { CreateUserLevelPayload, UserLevel } from '@/types/UserLevel';
+import { AuthContext } from '@/context/AuthContext';
 
 const useCreateUserLevel = () => {
   const [loading, setLoading] = useState(false);
   const [createdUserLevel, setCreatedUserLevel] = useState<UserLevel | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const { updateUserLevel } = useContext(AuthContext);
 
   const createUserLevel = async (payload: CreateUserLevelPayload): Promise<UserLevel | false> => {
     setLoading(true);
@@ -16,11 +18,14 @@ const useCreateUserLevel = () => {
 
       if (response.status === 201) {
         setCreatedUserLevel(response.data);
+        //console.log("🚀 ~ createUserLevel ~ response.data:", response.data.level)
+        updateUserLevel(response.data.level)
         return response.data;
       } else {
         setError("Échec lors de la création de la relation utilisateur-niveau.");
         return false;
       }
+        
     } catch (err: any) {
       if (err.response?.status === 422) {
         setError("Validation échouée : user_id ou level_id invalide.");

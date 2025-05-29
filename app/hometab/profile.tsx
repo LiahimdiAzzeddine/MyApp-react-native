@@ -1,4 +1,11 @@
-import { View, Text, ImageBackground, ActivityIndicator, GestureResponderEvent } from "react-native";
+import {
+  View,
+  Text,
+  ImageBackground,
+  ActivityIndicator,
+  GestureResponderEvent,
+  Share,
+} from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import useGetTotalRequests from "@/hooks/demand/useGetTotalRequests";
 import CustomButton from "@/components/ui/CustomButton";
@@ -7,6 +14,7 @@ import { Route, useRouter } from "expo-router";
 import { AuthContext } from "@/context/AuthContext";
 import useCreateUserLevel from "@/hooks/demand/useCreateUserLevel";
 import { Level } from "@/types/Level";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const customInfo = [
   {
@@ -20,9 +28,10 @@ const customInfo = [
   {
     id: 3,
     title: "Ti’Défricheur",
-    reward: "3 Ti’Conseils exclusifs tous les mois",
+    reward:
+      "Débloquez vos 3 Ti’conseils exclusifs mensuels si vous avez appris quelque chose d’intéressant dites-le ! ​",
     route: "/hometab/story",
-    btnText: "Débloquer les stories​",
+    btnText: "Débloquer les Ti’Conseils​",
   },
   {
     id: 4,
@@ -76,6 +85,7 @@ export default function Profile(): JSX.Element {
   const router = useRouter();
   const { userInfo } = useContext(AuthContext);
   const userId: number | undefined = userInfo?.id;
+  const apiUrl = "https://tico.foodhea.com";
 
   const {
     loading,
@@ -88,6 +98,7 @@ export default function Profile(): JSX.Element {
 
   const {
     createUserLevel,
+    createdUserLevel,
     loading: createLoading,
     error: createError,
   } = useCreateUserLevel();
@@ -95,7 +106,28 @@ export default function Profile(): JSX.Element {
   const [nextEligibleLevel, setNextEligibleLevel] = useState<Level | null>(
     null
   );
+  const handleShare = async () => {
+    try {
+      const result = await Share.share({
+        message: `J’ai découvert une appli pour obliger les marques à dire toute la vérité sur les produits alimentaires !\n\nJ’ai déjà fait ${totalRequests} demandes, c’est hyper simple, il suffit de scanner les codes-barres et d’un clic tu peux demander aux marques de dévoiler toutes les infos sur leurs produits. Plus on demande plus elles sont obligées de répondre ! À toi de jouer ;) ${apiUrl}`,
+      });
 
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // Shared with activity type of result.activityType
+          console.log("Shared with activity type:", result.activityType);
+        } else {
+          // Shared
+          console.log("Content shared successfully");
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // Dismissed
+        console.log("Share dialog dismissed");
+      }
+    } catch (error) {
+      console.error("Error sharing content:", error);
+    }
+  };
   useEffect(() => {
     fetchTotalRequests();
   }, []);
@@ -132,10 +164,12 @@ export default function Profile(): JSX.Element {
       user_id: userId,
       level_id: nextEligibleLevel.id,
     });
-    console.log("🚀 ~ handleAssignLevel ~ result:", result)
 
+    router.push(
+      customInfo[currentLevel?.id ? currentLevel?.id - 2 : 0].route as Route
+    );
     if (result) {
-      fetchTotalRequests(); // Recharger les données pour mettre à jour currentLevel
+      fetchTotalRequests();
     }
   };
 
@@ -150,7 +184,10 @@ export default function Profile(): JSX.Element {
   };
 
   return (
-    <View className="flex-1 bg-white w-full">
+    <SafeAreaView
+      className="flex-1 bg-white w-full"
+      edges={["bottom", "left", "right"]}
+    >
       <ImageBackground
         source={require("@/assets/images/profil/backgroundProfil.png")}
         resizeMode="contain"
@@ -174,130 +211,147 @@ export default function Profile(): JSX.Element {
       ) : error ? (
         <Text style={{ color: "red" }}>{error}</Text>
       ) : (
-        <View
-          className="flex-1 mt-4 justify-start"
-          style={{ paddingHorizontal: 16 }}
-        >
+        <View className="flex-1 mt-4" style={{ paddingHorizontal: 16 }}>
+          <View className="flex-1">
+            {(currentLevel || nextEligibleLevel) && (
+              <>
+                <Text className="text-xl text-center text-custom-green-text ClashDisplayBold mb-6 mt-2">
+                  {currentLevel?.title ? currentLevel.title : "Ti’Curieux​"}
+                </Text>
+                <Text className="text-center text-custom-blue text-base Archivo mb-4">
+                  Déjà {totalRequests} demandes aux marques, bravo !
+                </Text>
+              </>
+            )}
+            {nextEligibleLevel ? (
+              <>
+                <Text className="text-center text-custom-blue text-base Archivo leading-archivo">
+                  {
+                    customInfo[currentLevel?.id ? currentLevel?.id - 2 : 0]
+                      .reward
+                  }
+                </Text>
+                {/* Bouton débloquer si applicable */}
+                <View className="py-6">
+                  <CustomButton
+                    title={
+                      customInfo[currentLevel?.id ? currentLevel?.id - 2 : 0]
+                        .btnText
+                    }
+                    disabled={createLoading}
+                    style={{
+                      maxWidth: 280,
+                      minWidth: 200,
+                      marginHorizontal: "auto",
+                      backgroundColor: (colors as any)["custom-green-text"],
+                    }}
+                    onPress={() => {
+                      if (
+                        customInfo[currentLevel?.id ? currentLevel?.id - 2 : 0]
+                          .route
+                      ) {
+                        handleAssignLevel();
+                      } else {
+                        console.log("a ajouter");
+                      }
+                    }}
+                  />
+                </View>
+
+                {nextEligibleLevel.goal - (totalRequests ? totalRequests : 0) <=
+                  0 && (
+                  <Text className="text-center text-custom-blue text-base Archivo leading-archivo mb-12">
+                    Clique sur le bouton{" "}
+                    {
+                      customInfo[currentLevel?.id ? currentLevel?.id - 2 : 0]
+                        .btnText
+                    }{" "}
+                    pour passer au profil suivant et{" "}
+                    {
+                      customInfo[currentLevel?.id ? currentLevel?.id - 2 : 0]
+                        .reward
+                    }
+                    {nextEligibleLevel.title}.
+                  </Text>
+                )}
+              </>
+            ) : (
+              (() => {
+                const nextLocked = getNextLockedLevel();
+                if (nextLocked) {
+                  const remaining = getRemainingRequests(nextLocked.goal);
+                  return (
+                    <View className="flex-1">
+                      {currentLevel ? (
+                        <Text className="text-center text-custom-blue text-base Archivo leading-archivo mb-12">
+                          Plus que {remaining} demandes pour passer au profil
+                          suivant et recevoir 3 Ti’Conseils exclusifs pour
+                          briller à l’apéro !​
+                        </Text>
+                      ) : (
+                        <View className="flex-1">
+                          <View style={{ flex: 1 }}>
+                            <Text className="text-center text-custom-blue text-base Archivo leading-archivo mb-8">
+                              Pas encore de demandes de transparence, vous devez
+                              scanner et encourager les marques pour vous lancer
+                              dans l’aventure !
+                            </Text>
+                            <Text className="text-center text-custom-blue text-base Archivo leading-archivo">
+                              Plus que {remaining} demandes pour débloquer les
+                              stories TiCO et passer au profil de :
+                            </Text>
+                          </View>
+                          <Text
+                            className="text-xl text-center text-custom-green-text ArchivoExtraBold "
+                            style={{
+                              paddingBottom: 60,
+                              paddingTop: 30,
+                              flex: 1,
+                            }}
+                          >
+                            {nextLocked.title}
+                          </Text>
+                          <Text
+                            className="text-center text-custom-blue text-base Archivo leading-archivo"
+                            style={{ flex: 1 }}
+                          >
+                            À vos scans, prêt partez !​
+                          </Text>
+                        </View>
+                      )}
+                    </View>
+                  );
+                } else {
+                  return (
+                    <Text className="text-center text-base">
+                      Vous avez atteint le niveau le plus élevé !
+                    </Text>
+                  );
+                }
+              })()
+            )}
+          </View>
+          {/* Section partage */}
           {(currentLevel || nextEligibleLevel) && (
-            <>
-              <Text className="text-xl text-center text-custom-green-text ClashDisplayBold mb-6 mt-2">
-                {currentLevel?.title ? currentLevel.title : "Ti’Curieux​"}
-              </Text>
-              <Text className="text-center text-custom-blue text-base Archivo mb-4">
-                Déjà {totalRequests} demandes aux marques, bravo !
-              </Text>
-            </>
-          )}
-          {nextEligibleLevel ? (
-            <>
+            <View className="items-center">
               <Text className="text-center text-custom-blue text-base Archivo leading-archivo">
-                {customInfo[currentLevel?.id ? currentLevel?.id - 2 : 0].reward}
+                Partagez votre expérience sur TiCO
               </Text>
-              {/* Bouton débloquer si applicable */}
               <View className="py-6">
                 <CustomButton
-                  title={
-                    customInfo[currentLevel?.id ? currentLevel?.id - 2 : 0]
-                      .btnText
-                  }
-                  disabled={createLoading}
+                  title={"Partager"}
                   style={{
                     maxWidth: 280,
-                    minWidth: 200,
-                    marginHorizontal: "auto",
+                    minWidth: 150,
                     backgroundColor: (colors as any)["custom-green-text"],
                   }}
-                  onPress={() => {
-                    if (
-                      customInfo[currentLevel?.id ? currentLevel?.id - 2 : 0]
-                        .route
-                    ) {
-                      handleAssignLevel()
-                      /*router.push(
-                        customInfo[currentLevel?.id ? currentLevel?.id - 2 : 0]
-                          .route as Route
-                      );*/
-                    } else {
-                      console.log("a ajouter");
-                    }
-                  }}
+                  onPress={handleShare}
                 />
               </View>
-              {(nextEligibleLevel.goal-(totalRequests?totalRequests:0))>=0 &&(
-                <Text className="text-center text-custom-blue text-base Archivo leading-archivo mb-12">
-                        Plus que {nextEligibleLevel.goal-(totalRequests?totalRequests:0)} demandes pour passer au profil
-                        suivant : {nextEligibleLevel.title}.
-                      </Text>
-              )}
-              {/* Section partage */}
-                {(currentLevel || nextEligibleLevel) && (
-                  <View className="items-center">
-                    <Text className="text-center text-custom-blue text-base Archivo leading-archivo">
-                      Partagez votre expérience sur TiCO
-                    </Text>
-                    <View className="py-6">
-                      <CustomButton
-                                                  title={"Partager"}
-                                                  style={{
-                                                      maxWidth: 280,
-                                                      minWidth: 150,
-                                                      backgroundColor: (colors as any)["custom-green-text"],
-                                                  }} onPress={function (event: GestureResponderEvent): void {
-                                                      throw new Error("Function not implemented.");
-                                                  } }                      
-                      />
-                    </View>
-                  </View>
-                )}
-              
-            </>
-          ) : (
-            (() => {
-              const nextLocked = getNextLockedLevel();
-              console.log("🚀 ~ Profile ~ nextLocked:", nextLocked)
-              if (nextLocked) {
-                const remaining = getRemainingRequests(nextLocked.goal);
-                return (
-                  <>
-                    {currentLevel ? (
-                      <Text className="text-center text-custom-blue text-base Archivo leading-archivo mb-12">
-                        A voir
-                      </Text>
-                    ) : (
-                      <>
-                        <Text className="text-center text-custom-blue text-base Archivo leading-archivo mb-8">
-                          Pas encore de demandes de transparence, vous devez
-                          scanner et encourager les marques pour vous lancer
-                          dans l’aventure !
-                        </Text>
-                        <Text className="text-center text-custom-blue text-base Archivo leading-archivo">
-                          Plus que {remaining} demandes pour débloquer les
-                          stories TiCO et passer au profil de :
-                        </Text>
-                        <Text
-                          className="text-xl text-center text-custom-green-text ArchivoExtraBold"
-                          style={{ paddingBottom: 60, paddingTop: 30 }}
-                        >
-                          {nextLocked.title}
-                        </Text>
-                        <Text className="text-center text-custom-blue text-base Archivo leading-archivo">
-                          À vos scans, prêt partez !​
-                        </Text>
-                      </>
-                    )}
-                  </>
-                );
-              } else {
-                return (
-                  <Text className="text-center text-base">
-                    Vous avez atteint le niveau le plus élevé !
-                  </Text>
-                );
-              }
-            })()
+            </View>
           )}
         </View>
       )}
-    </View>
+    </SafeAreaView>
   );
 }

@@ -10,6 +10,7 @@ interface AuthContextProps {
   userInfo: User | null;
   login: (token: string, user: User) => Promise<void>;
   logout: () => Promise<void>;
+  updateUserLevel: (newLevel: any) => Promise<void>; 
 }
 
 export const AuthContext = createContext<AuthContextProps>({
@@ -17,6 +18,7 @@ export const AuthContext = createContext<AuthContextProps>({
   userInfo: null,
   login: async () => {},
   logout: async () => {},
+  updateUserLevel: async () => {},
 });
 
 export const AuthProvider = ({ children }: any) => {
@@ -31,6 +33,7 @@ export const AuthProvider = ({ children }: any) => {
       setUserToken(token);
       setUserInfo(user);
     };
+      
     loadAuthData();
   }, []);
 
@@ -45,13 +48,23 @@ export const AuthProvider = ({ children }: any) => {
     await deleteTokens();
     setUserToken(null);
     setUserInfo(null);
-    console.log("🚀 ~ logout ~ login:",userInfo)
     router.replace('/login'); 
   };
     
+const updateUserLevel = async (newLevel: any) => {
+  if (userInfo) {
+    const updatedUser = {
+      ...userInfo,
+      level: newLevel,
+    };
+
+    setUserInfo(updatedUser);
+    await saveTokens(userToken || '', updatedUser); // MAJ dans SecureStore
+  }
+};
 
   return (
-    <AuthContext.Provider value={{ userToken, userInfo, login, logout }}>
+    <AuthContext.Provider value={{ userToken, userInfo, login, logout,updateUserLevel  }}>
       {children}
     </AuthContext.Provider>
   );

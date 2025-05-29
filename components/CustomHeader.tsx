@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { View, StyleSheet, SafeAreaView, StatusBar, Platform, TouchableOpacity, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import { AppContext } from '@/context/AppContext';
+import { AuthContext } from '@/context/AuthContext';
 
 // Images
 const Tico = require('@/assets/images/headers/tico.png');
@@ -14,6 +15,7 @@ const VF = require('@/assets/images/headers/vf.png');
 const FilterConseils = require('@/assets/images/tips/FILTRE_CONSEILS.png');
 const FilterRecettes = require("@/assets/images/recipes/FILTRE_RECETTES.png");
 const ProfilInfo = require("@/assets/images/profil/info.png");
+const Story = require("@/assets/images/storys/story.png");
 const Search = require("@/assets/images/recipes/search.png");
 type Props = {
   color?: string;
@@ -21,7 +23,8 @@ type Props = {
   back?: boolean;
   isRecipes?:boolean;
   isTips?:boolean;
-  isProfil?:boolean
+  isProfil?:boolean;
+  isHome?:boolean
 };
 
 const CustomHeader = ({
@@ -31,8 +34,10 @@ const CustomHeader = ({
   isRecipes = false,
   isTips = false,
   isProfil = false,
+  isHome=false,
 }: Props) => {
   const context = useContext(AppContext);
+  const { userInfo } = useContext(AuthContext);
   
     if (!context) {
       throw new Error("Context must be used within a Provider");
@@ -106,6 +111,18 @@ const CustomHeader = ({
               />
             </TouchableOpacity>
           )}
+          {(isHome && userInfo?.level) &&(
+            <TouchableOpacity style={styles.iconButton}
+              onPress={() => router.push('/hometab/story')}
+            >
+              <Image
+                source={Story}
+                style={styles.filter}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
+          )}
+          
           <TouchableOpacity style={styles.iconButton}>
             <Image source={Tico} style={styles.ticoImage} resizeMode="contain" />
           </TouchableOpacity>

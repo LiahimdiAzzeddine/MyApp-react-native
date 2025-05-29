@@ -1,3 +1,5 @@
+import { Level } from "./Level";
+
 export interface RolePermission {
     id: number;
     name: string;
@@ -18,4 +20,5 @@ export interface RolePermission {
     email: string;
     status: number,
     role: Role;
+    level:Level;
   }

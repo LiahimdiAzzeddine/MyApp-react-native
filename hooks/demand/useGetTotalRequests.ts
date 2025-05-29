@@ -19,7 +19,7 @@ const useGetTotalRequests = () => {
       if (response.status === 200 && response.data.success) {
         const { total_requests, levels, current_level } = response.data;
 
-        setTotalRequests(30);
+        setTotalRequests(80);
         
         setLevels(levels);
         setCurrentLevel(current_level);

@@ -12,7 +12,7 @@ export default function TabLayout() {
         name="home"
         options={{
           title: "Home",
-          header: () => <CustomHeader  color="#c7f0d9" image='vx' back={false}/>,
+          header: () => <CustomHeader  color="#c7f0d9" image='vx' back={false} isHome={true}/>,
         }}
       />
       <Tabs.Screen
