@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -20,22 +20,50 @@ import { AppContext } from "@/context/AppContext";
 const Search = require("@/assets/images/recipes/search.png");
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { getPreferences } from "@/utils/storage";
+import { AuthContext } from "@/context/AuthContext";
 
 
 const Recipes = () => {
+  const [regimePreferences, setRegimePreferences] = useState<any>(null);
+  const [allergenPreferences, setAllergenPreferences] = useState<any>(null);
   const { colors } = useTheme();
   const router = useRouter();
   const backgroundImage = require("@/assets/images/recipes/background.png");
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const context = useContext(AppContext);
+  const { userToken, userInfo } = useContext(AuthContext);
+
+
   if (!context) {
     throw new Error("AppContext must be used within a AppProvider");
   }
+   const { lastUpdatedR } = context;
+    useEffect(() => {
+    const fetchPreferences = async () => {
+      try {
+        const storedPreferences = await getPreferences(String(userInfo?.id));
+        setRegimePreferences([...storedPreferences?.regime]);
+        setAllergenPreferences([...storedPreferences?.allergen]);
+      } catch (error) {
+        console.error(
+          "Erreur lors de la récupération des préférences :",
+          error
+        );
+      }
+    };
+
+    fetchPreferences();
+  }, [userInfo,lastUpdatedR]);
   const { searchRecipes,isOnline } = context;
 
   const itemsPerPage = 10;
-  const { recipes, loading, error } = useRecipesLast(null, null, searchTerm);
+  const { recipes, loading, error } = useRecipesLast(
+    regimePreferences,
+    allergenPreferences,
+      searchTerm);
+   
 
   const paginatedRecipes = (() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -107,7 +135,7 @@ const Recipes = () => {
         </ScrollView>
       </View>
       <View className="bg-[#fdf2f0]" id="footer">
-        {totalPages > 1 && (
+        {totalPages > 1 ? (
           <View style={styles.pagination}>
             <TouchableOpacity
               onPress={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
@@ -140,6 +168,8 @@ const Recipes = () => {
               </Text>
             </TouchableOpacity>
           </View>
+        ):(
+          <Text className="h-3"></Text>
         )}
 
         <TouchableOpacity

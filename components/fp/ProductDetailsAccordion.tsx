@@ -10,16 +10,20 @@ import BrandInfo from "./accordion/BrandInfo";
 import UsageInfo from "./accordion/UsageInfo";
 import Naturalite from "./accordion/Naturalite";
 import PackagingInfo from "./accordion/PackagingInfo";
+import { useBottomSheet } from "@/context/BottomSheetContext";
+import NutrriInfo from "@/components/Modals/NutrriInfo";
 
 export default function ProductDetailsAccordion({ product }: any) {
   const [openPanel, setOpenPanel] = useState<string | null>(null);
+  const {isModalNutrition,setIsModalNutrition,scrollRef } = useBottomSheet();
 
   const togglePanel = (id: string) => {
     setOpenPanel(openPanel === id ? null : id);
   };
 
   return (
-    <ScrollView>
+    <>
+    <ScrollView ref={scrollRef}>
       <AccordionItem
         title="Informations nutritionnelles"
         isOpen={openPanel === "1"}
@@ -167,5 +171,8 @@ export default function ProductDetailsAccordion({ product }: any) {
         )}
       </AccordionItem>
     </ScrollView>
+    
+    <NutrriInfo isOpen={isModalNutrition} setIsOpen={setIsModalNutrition } nutriscore={"A"} togglePanel={()=>togglePanel("1") }/>
+    </>
   );
 }

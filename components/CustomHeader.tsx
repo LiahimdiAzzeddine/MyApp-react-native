@@ -13,6 +13,7 @@ const OF = require('@/assets/images/headers/OFleche.png');
 const VF = require('@/assets/images/headers/vf.png');
 const FilterConseils = require('@/assets/images/tips/FILTRE_CONSEILS.png');
 const FilterRecettes = require("@/assets/images/recipes/FILTRE_RECETTES.png");
+const ProfilInfo = require("@/assets/images/profil/info.png");
 const Search = require("@/assets/images/recipes/search.png");
 type Props = {
   color?: string;
@@ -20,14 +21,16 @@ type Props = {
   back?: boolean;
   isRecipes?:boolean;
   isTips?:boolean;
+  isProfil?:boolean
 };
 
 const CustomHeader = ({
   color = '#fff',
   image,
   back=true,
-   isRecipes = false,
+  isRecipes = false,
   isTips = false,
+  isProfil = false,
 }: Props) => {
   const context = useContext(AppContext);
   
@@ -92,7 +95,17 @@ const CustomHeader = ({
               />
             </TouchableOpacity>
           )}
-           
+            {isProfil && (
+            <TouchableOpacity style={styles.iconButton}
+              onPress={() => router.push('/hometab/infoProfil')}
+            >
+              <Image
+                source={ProfilInfo}
+                style={styles.filter}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
+          )}
           <TouchableOpacity style={styles.iconButton}>
             <Image source={Tico} style={styles.ticoImage} resizeMode="contain" />
           </TouchableOpacity>

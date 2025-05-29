@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { View, Dimensions } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, ViewStyle } from 'react-native';
 import Svg, { 
   Path, 
   Defs, 
@@ -9,12 +9,23 @@ import Svg, {
   Circle 
 } from 'react-native-svg';
 
-export default function GreenLineWithPoint({ demandesCount }: { demandesCount: number }) {
-  const [position, setPosition] = useState(demandesCount);
-  const [pointPosition, setPointPosition] = useState({ x: 400, y: 460 });
-  
-  // Dans React Native, nous ne pouvons pas accéder directement aux méthodes DOM de SVG
-  // donc nous devons calculer la position du point manuellement
+interface GreenLineWithPointProps {
+  demandesCount: number;
+}
+
+interface PointPosition {
+  x: number;
+  y: number;
+}
+
+interface PathPoint {
+  x: number;
+  y: number;
+}
+
+export default function GreenLineWithPoint({ demandesCount }: GreenLineWithPointProps) {
+  const [position, setPosition] = useState<number>(demandesCount);
+  const [pointPosition, setPointPosition] = useState<PointPosition>({ x: 400, y: 460 });
 
   // Mettre à jour la position lorsque demandesCount change
   useEffect(() => {
@@ -26,34 +37,41 @@ export default function GreenLineWithPoint({ demandesCount }: { demandesCount: n
     // Normaliser la valeur entre 0 et 1
     const normalizedValue = Math.max(0, Math.min(1000, position)) / 1000;
     
-    // Nous allons créer une approximation du chemin avec des points clés
-    // et interpoler entre eux pour obtenir la position du point
-    const pathPoints = [
-      { x: 80, y: 642 },    // Début du chemin (à gauche) - valeur 0
-      { x: 145, y: 451 },   // Point près du milieu-gauche
-      { x: 405, y: 457 },   // Point au milieu
-      { x: 690, y: 487 },   // Point près du milieu-droit
-      { x: 833, y: 273 }    // Fin du chemin (à droite) - valeur 1000
+    // Points clés du chemin pour interpolation
+    const pathPoints: PathPoint[] = [
+      { x: 89.53, y: 637.94 },    // Début du chemin (à gauche) - valeur 0
+      { x: 144.65, y: 451.30 },   // Point près du milieu-gauche
+      { x: 405.70, y: 457.44 },   // Point au milieu
+      { x: 691.57, y: 487.46 },   // Point près du milieu-droit
+      { x: 842.84, y: 275.79 }    // Fin du chemin (à droite) - valeur 1000
     ];
     
     // Trouver les points entre lesquels interpoler
-    let startIndex = Math.floor(normalizedValue * (pathPoints.length - 1));
-    startIndex = Math.min(startIndex, pathPoints.length - 2);
+    const segmentIndex = Math.min(
+      Math.floor(normalizedValue * (pathPoints.length - 1)), 
+      pathPoints.length - 2
+    );
     
-    const start = pathPoints[startIndex];
-    const end = pathPoints[startIndex + 1];
+    const startPoint = pathPoints[segmentIndex];
+    const endPoint = pathPoints[segmentIndex + 1];
     
-    // Calculer la position entre ces deux points
-    const segmentNormalizedValue = (normalizedValue * (pathPoints.length - 1)) - startIndex;
+    // Calculer la position locale dans le segment
+    const segmentProgress = (normalizedValue * (pathPoints.length - 1)) - segmentIndex;
     
-    const x = start.x + segmentNormalizedValue * (end.x - start.x);
-    const y = start.y + segmentNormalizedValue * (end.y - start.y);
+    // Interpolation linéaire entre les deux points
+    const x = startPoint.x + segmentProgress * (endPoint.x - startPoint.x);
+    const y = startPoint.y + segmentProgress * (endPoint.y - startPoint.y);
     
     setPointPosition({ x, y });
   }, [position]);
 
+  const containerStyle: ViewStyle = {
+    width: '100%',
+    height: 200
+  };
+
   return (
-    <View style={{ width: '100%', height: '200' }}>
+    <View style={containerStyle}>
       <Svg
         viewBox="0 100 950 700"
         preserveAspectRatio="xMidYMid meet"
@@ -61,44 +79,34 @@ export default function GreenLineWithPoint({ demandesCount }: { demandesCount: n
       >
         <Defs>
           <ClipPath id="ebefa60551">
-            <Path
-              d="M 77 273 L 853 273 L 853 642 L 77 642 Z M 77 273"
-            />
+            <Path d="M 77 273 L 853 273 L 853 642 L 77 642 Z M 77 273" />
           </ClipPath>
           <ClipPath id="e07f5905e9">
-            <Path
-              d="M 392.328125 0 L 875.238281 291.238281 L 507.8125 900.484375 L 24.898438 609.242188 Z M 392.328125 0"
-            />
+            <Path d="M 392.328125 0 L 875.238281 291.238281 L 507.8125 900.484375 L 24.898438 609.242188 Z M 392.328125 0" />
           </ClipPath>
           <ClipPath id="39d92c9a31">
-            <Path
-              d="M 874.921875 291.046875 L 392.007812 -0.191406 L 24.582031 609.050781 L 507.492188 900.289062 Z M 874.921875 291.046875"
-            />
+            <Path d="M 874.921875 291.046875 L 392.007812 -0.191406 L 24.582031 609.050781 L 507.492188 900.289062 Z M 874.921875 291.046875" />
           </ClipPath>
           <ClipPath id="de3e2d0b2e">
-            <Path
-              d="M 79.78125 628.1875 L 99.285156 628.1875 L 99.285156 647.695312 L 79.78125 647.695312 Z M 79.78125 628.1875"
-            />
+            <Path d="M 79.78125 628.1875 L 99.285156 628.1875 L 99.285156 647.695312 L 79.78125 647.695312 Z M 79.78125 628.1875" />
           </ClipPath>
           <ClipPath id="7cef591f73">
-            <Path
-              d="M 89.53125 628.1875 C 84.144531 628.1875 79.78125 632.554688 79.78125 637.941406 C 79.78125 643.328125 84.144531 647.695312 89.53125 647.695312 C 94.917969 647.695312 99.285156 643.328125 99.285156 637.941406 C 99.285156 632.554688 94.917969 628.1875 89.53125 628.1875 Z M 89.53125 628.1875"
-            />
+            <Path d="M 89.53125 628.1875 C 84.144531 628.1875 79.78125 632.554688 79.78125 637.941406 C 79.78125 643.328125 84.144531 647.695312 89.53125 647.695312 C 94.917969 647.695312 99.285156 643.328125 99.285156 637.941406 C 99.285156 632.554688 94.917969 628.1875 89.53125 628.1875 Z M 89.53125 628.1875" />
           </ClipPath>
           <ClipPath id="b8d2b2eb15">
-            <Path
-              d="M 833.082031 266.03125 L 852.585938 266.03125 L 852.585938 285.539062 L 833.082031 285.539062 Z M 833.082031 266.03125"
-            />
+            <Path d="M 833.082031 266.03125 L 852.585938 266.03125 L 852.585938 285.539062 L 833.082031 285.539062 Z M 833.082031 266.03125" />
           </ClipPath>
           <ClipPath id="bd7ce63134">
-            <Path
-              d="M 842.835938 266.03125 C 837.449219 266.03125 833.082031 270.398438 833.082031 275.785156 C 833.082031 281.171875 837.449219 285.539062 842.835938 285.539062 C 848.222656 285.539062 852.585938 281.171875 852.585938 275.785156 C 852.585938 270.398438 848.222656 266.03125 842.835938 266.03125 Z M 842.835938 266.03125"
-            />
+            <Path d="M 842.835938 266.03125 C 837.449219 266.03125 833.082031 270.398438 833.082031 275.785156 C 833.082031 281.171875 837.449219 285.539062 842.835938 285.539062 C 848.222656 285.539062 852.585938 281.171875 852.585938 275.785156 C 852.585938 270.398438 848.222656 266.03125 842.835938 266.03125 Z M 842.835938 266.03125" />
+          </ClipPath>
+          <ClipPath id="6c2770fa45">
+            <Path d="M 301 301 L 599 301 L 599 599 L 301 599 Z M 301 301" />
           </ClipPath>
         </Defs>
 
         <Rect x="-90" y="-90" width="1080" height="1080" fill="#ffffff" />
 
+        {/* Ligne verte principale */}
         <G clipPath="url(#ebefa60551)">
           <G clipPath="url(#e07f5905e9)">
             <G clipPath="url(#39d92c9a31)">
@@ -112,6 +120,7 @@ export default function GreenLineWithPoint({ demandesCount }: { demandesCount: n
           </G>
         </G>
 
+        {/* Point de début (gauche) */}
         <G clipPath="url(#de3e2d0b2e)">
           <G clipPath="url(#7cef591f73)">
             <Path
@@ -123,6 +132,7 @@ export default function GreenLineWithPoint({ demandesCount }: { demandesCount: n
           </G>
         </G>
 
+        {/* Point de fin (droite) */}
         <G clipPath="url(#b8d2b2eb15)">
           <G clipPath="url(#bd7ce63134)">
             <Path
@@ -134,8 +144,8 @@ export default function GreenLineWithPoint({ demandesCount }: { demandesCount: n
           </G>
         </G>
 
-        {/* SVG de cible verte - adapté pour React Native SVG et repositionné à droite */}
-        <G x="380" y="-140" width="1" height="1">
+        {/* Icône de cible */}
+        <G transform="translate(380, -140)">
           <G clipPath="url(#6c2770fa45)">
             <Path 
               fill="#4e986d" 
@@ -144,26 +154,16 @@ export default function GreenLineWithPoint({ demandesCount }: { demandesCount: n
               fillRule="nonzero"
             />
           </G>
-          <G clipPath="url(#fa308579f7)">
-            <G clipPath="url(#f714fee54e)">
-              <Path 
-                fill="#4e986d" 
-                d="M 390.085938 390.085938 L 509.914062 390.085938 L 509.914062 509.914062 L 390.085938 509.914062 Z M 390.085938 390.085938" 
-                fillOpacity="1" 
-                fillRule="nonzero"
-              />
-            </G>
-          </G>
         </G>
 
-        {/* Point orange positionnable */}
+        {/* Point orange positionnable sur la ligne */}
         <Circle
           cx={pointPosition.x}
           cy={pointPosition.y}
-          r="15"
-          fill="none"
-          stroke="orange"
-          strokeWidth="30"
+          r="8"
+          fill="#ff6b35"
+          stroke="#ffffff"
+          strokeWidth="3"
         />
       </Svg>
     </View>

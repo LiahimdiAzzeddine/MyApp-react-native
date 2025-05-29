@@ -65,7 +65,7 @@ const DemandDetail = () => {
             </Text>
 
             <View style={styles.lineContainer}>
-              <GreenLineWithPoint demandesCount={demand.same_gtin_count} />
+              <GreenLineWithPoint demandesCount={500} />
             </View>
 
             <Text style={styles.goalText}>Objectif 1000 demandes</Text>
@@ -79,7 +79,7 @@ const DemandDetail = () => {
             </Text>
 
             <TouchableOpacity style={styles.button} onPress={handleShare}>
-              <Text style={styles.buttonText}>Envoyer</Text>
+              <Text style={styles.buttonText}>Partager</Text>
             </TouchableOpacity>
           </>
         )}

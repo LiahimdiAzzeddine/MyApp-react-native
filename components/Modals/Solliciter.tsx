@@ -13,7 +13,7 @@ import styles from "./style";
 import { useBottomSheet } from "@/context/BottomSheetContext";
 import useTransparencyRequests from "@/hooks/useTransparencyRequests"; // <-- importe ton hook
 import { Link } from "expo-router";
-const ArrowLeft = require('@/assets/images/popup/flecheleft.png');
+const ArrowLeft = require("@/assets/images/popup/flecheleft.png");
 
 const Solliciter = ({ isOpen, setIsOpen, authUser }: any) => {
   const { hasRequested, productName, scannedBarcode } = useBottomSheet();
@@ -25,7 +25,6 @@ const Solliciter = ({ isOpen, setIsOpen, authUser }: any) => {
       productName: productName,
       user_id: authUser?.id, // ou tout autre champ utile
     };
-    console.log("🚀 ~ handleRequest ~ formValues:", formValues);
 
     await handleSubmit(formValues);
   };
@@ -46,25 +45,25 @@ const Solliciter = ({ isOpen, setIsOpen, authUser }: any) => {
               fiables, alors afin de garantir les données dans TiCO nous avons
               choisi de travailler avec les marques&nbsp;!{" "}
             </Text>
- <View style={styles.container}>
-      <Image
-        source={ArrowLeft}
-        style={styles.arrowImage}
-      />
-            <TouchableOpacity
-              onPress={handleRequest}
-              style={styles.button}
-              className="bg-custom-blue"
-              disabled={loading}
-            >
-              {loading ? (
-                <ActivityIndicator color="#fff" />
-              ) : (
-                <Text style={styles.buttonText} className="text-lg leading-archivo">
-                  Encourager {'\n'} la marque
-                </Text>
-              )}
-            </TouchableOpacity>
+            <View style={styles.container}>
+              <Image source={ArrowLeft} style={styles.arrowImage} />
+              <TouchableOpacity
+                onPress={handleRequest}
+                style={styles.button}
+                className="bg-custom-blue"
+                disabled={loading}
+              >
+                {loading ? (
+                  <ActivityIndicator color="#fff" />
+                ) : (
+                  <Text
+                    style={styles.buttonText}
+                    className="text-lg leading-archivo"
+                  >
+                    Encourager {"\n"} la marque
+                  </Text>
+                )}
+              </TouchableOpacity>
             </View>
 
             {error && (

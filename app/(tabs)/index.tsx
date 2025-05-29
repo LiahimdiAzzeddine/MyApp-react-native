@@ -10,13 +10,14 @@ import CustomButton from "@/components/ui/CustomButton";
 import { useBottomSheet } from "@/context/BottomSheetContext";
 import Solliciter from "@/components/Modals/Solliciter";
 import { AuthContext } from "@/context/AuthContext";
+import NutrriInfo from "@/components/Modals/NutrriInfo";
 
 export default function Scanner() {
   const [permission, requestPermission] = useCameraPermissions();
   const [flashMode, setFlashMode] = useState<FlashMode>("off");
   const [isCameraActive, setIsCameraActive] = useState(true);
   const { colors } = useTheme();
-  const { openBottomSheet, setScannedBarcode, isScanning,isModalEncourager,setIsModalEncourager,scannedBarcode } = useBottomSheet();
+  const { openBottomSheet, setScannedBarcode, isScanning,isModalEncourager,setIsModalEncourager,isModalNutrition,setIsModalNutrition } = useBottomSheet();
  const { userInfo } = useContext(AuthContext);
   // Utiliser useFocusEffect pour détecter quand l'écran est activé/désactivé
   useFocusEffect(
@@ -110,6 +111,7 @@ export default function Scanner() {
       </View>
     </View>
     <Solliciter isOpen={isModalEncourager}  setIsOpen={setIsModalEncourager} authUser={userInfo} />
+    
     </>
   );
 }

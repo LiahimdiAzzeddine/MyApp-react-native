@@ -53,6 +53,7 @@ const Home = () => {
           {/* Boutons */}
           <View style={styles.buttonsContainer} className="w-[80%]">
             {[
+               { title: "Profil et récompenses", route: "hometab/profile" },
               { title: "La mission de TiCO", route: "hometab/mission" },
               { title: "Historique de scan", route: "/hometab/history" },
               { title: "Produits à consulter", route: "hometab/laterProducts" },

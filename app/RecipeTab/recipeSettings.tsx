@@ -13,6 +13,7 @@ import { AuthContext } from "@/context/AuthContext";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSpinner } from "@/context/LoadingContext";
 import { useRouter } from "expo-router";
+import { AppContext } from "@/context/AppContext";
 
 const DIET_OPTIONS = {
   ALL: "Aucun régime spécial",
@@ -44,6 +45,12 @@ const ALLERGEN_OPTIONS = {
 
 const RecipeSettings: React.FC = () => {
   const authUser = useContext(AuthContext);
+  const context = useContext(AppContext);
+       if (!context) {
+      throw new Error('TipContext must be used within a TipProvider');
+    }
+  
+    const { refreshRecipes } = context;
   const userId = authUser.userInfo?.id;
     const { setSpinner  } = useSpinner();
 const router = useRouter();
@@ -113,6 +120,7 @@ const router = useRouter();
       }
 
       await storePreferences(String(userId), values);
+      refreshRecipes()
     } catch (error) {
       console.error("Erreur lors de la sauvegarde :", error);
       Alert.alert(

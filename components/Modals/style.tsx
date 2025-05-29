@@ -52,15 +52,16 @@ const styles = StyleSheet.create({
     maxWidth:310
   },
   button: {
-    paddingVertical: 8,
-    paddingHorizontal: 25,
+    paddingVertical: 5,
+    paddingHorizontal: 30,
     borderRadius: 10,
-    marginTop: 10,
+    marginTop: 8,
      shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.5,
     shadowRadius: 6,
     borderWidth: 2,
     borderColor: 'rgba(0, 123, 255, 0.1)',
+    margin:"auto"
   },
   buttonText: {
     color: 'white',
@@ -83,7 +84,7 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     position: 'absolute',
-    left: -35,
+    left: -38,
   },
 });
 export default  styles;

@@ -24,13 +24,13 @@ const Encourager = ({ product }:any) => {
       animation = Animated.loop(
         Animated.sequence([
           Animated.timing(scaleAnim, {
-            toValue: 1.2,
-            duration: 1250,
+            toValue: 1,
+            duration: 100,
             useNativeDriver: true,
           }),
           Animated.timing(scaleAnim, {
             toValue: 1,
-            duration: 1250,
+            duration: 100,
             useNativeDriver: true,
           }),
         ])

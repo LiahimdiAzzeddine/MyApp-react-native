@@ -8,6 +8,7 @@ interface CustomButtonProps {
   textStyle?: TextStyle;
   accessibilityLabel?: string;
   accessibilityHint?: string;
+  disabled?:any
 }
 
 const CustomButton: React.FC<CustomButtonProps> = ({
@@ -17,6 +18,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
   textStyle,
   accessibilityLabel,
   accessibilityHint,
+  disabled
 }) => {
   
   return (
@@ -27,6 +29,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
       accessibilityLabel={accessibilityLabel}
       accessibilityHint={accessibilityHint}
       className="bg-custom-blue text-white"
+      disabled={disabled}
     >
       <Text style={[styles.buttonText, textStyle]} >{title}</Text>
     </TouchableOpacity>

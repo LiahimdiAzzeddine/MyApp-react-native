@@ -12,6 +12,8 @@ import NetInfo from '@react-native-community/netinfo';
 export interface AppContextType {
   refreshTips: () => void;
   lastUpdated: Date | null;
+  refreshRecipes: () => void;
+  lastUpdatedR: Date | null;
   searchRecipes: boolean;
   setSearchRecipes: (value: boolean) => void;
   isOnline: boolean;
@@ -22,6 +24,7 @@ export const AppContext = createContext<AppContextType | undefined>(undefined);
 // Provider du contexte
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+   const [lastUpdatedR, setLastUpdatedR] = useState<Date | null>(null);
   const [searchRecipes, setSearchRecipes] = useState<boolean>(false);
   const [isOnline, setIsOnline] = useState<boolean>(true);
 
@@ -41,6 +44,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const refreshTips = useCallback(() => {
     setLastUpdated(new Date());
   }, []);
+   const refreshRecipes= useCallback(() => {
+    setLastUpdatedR(new Date());
+  }, []);
 
   return (
     <AppContext.Provider
@@ -49,6 +55,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         lastUpdated,
         searchRecipes,
         setSearchRecipes,
+        lastUpdatedR,
+        refreshRecipes,
         isOnline
       }}
     >

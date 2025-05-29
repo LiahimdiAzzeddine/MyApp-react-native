@@ -8,6 +8,7 @@ import React, {
   SetStateAction,
 } from "react";
 import BottomSheet from "@gorhom/bottom-sheet";
+import { ScrollView, View } from "react-native";
 
 type BottomSheetContextType = {
   openBottomSheet: () => void;
@@ -26,6 +27,10 @@ type BottomSheetContextType = {
   setIsCourager: (value: boolean) => void;
    isModalEncourager: boolean;
   setIsModalEncourager: (value: boolean) => void;
+   isModalNutrition: boolean;
+  setIsModalNutrition: (value: boolean) => void;
+    scrollRef: React.RefObject<ScrollView |null>;
+  targetRef: React.RefObject<View |null>;
 };
 
 const BottomSheetContext = createContext<BottomSheetContextType | undefined>(
@@ -51,7 +56,9 @@ export const BottomSheetProvider: React.FC<{ children: ReactNode }> = ({
   const [hasRequested, setHasRequested] = useState(false);
   const [isCourager, setIsCourager] = useState(false);
   const [isModalEncourager, setIsModalEncourager] = useState(false);
-
+const [isModalNutrition, setIsModalNutrition] = useState(false);
+const scrollRef = useRef<ScrollView>(null);
+  const targetRef = useRef<View>(null);
 
   const openBottomSheet = () => {
     bottomSheetRef.current?.snapToIndex(0);
@@ -83,7 +90,11 @@ export const BottomSheetProvider: React.FC<{ children: ReactNode }> = ({
         isModalEncourager, 
         setIsModalEncourager,
         productName, 
-        setProductName
+        setProductName,
+        isModalNutrition, 
+        setIsModalNutrition,
+        scrollRef,
+         targetRef
       }}
     >
       {children}

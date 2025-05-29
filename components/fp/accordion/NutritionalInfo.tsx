@@ -3,6 +3,7 @@ import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 import NutritionTable from "./NutritionTable";
 import Scores from "./Scores";
 import { Product } from "@/types/product";
+import { useBottomSheet } from "@/context/BottomSheetContext";
 
 const FICHETOP = require("@/assets/images/fp/FICHETOP.png");
 
@@ -17,9 +18,10 @@ const NutritionalInfo: React.FC<Props> = ({ product,onToggle }) => {
   const portioneq = product?.portioneq || "Non spécifiée";
   const nutriscore = product?.nutriscore;
   const linesSize = Object.keys(product?.lines || {}).length || 0;
+  const {targetRef } = useBottomSheet();
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} ref={targetRef}>
       <View style={{ paddingVertical: 16, paddingHorizontal: 16 }}>
         <View style={{ paddingBottom: 45 }}>
           <Text className="text-sm text-custom-blue font-normal Archivo">
