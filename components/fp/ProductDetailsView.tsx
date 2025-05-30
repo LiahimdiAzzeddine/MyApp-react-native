@@ -8,6 +8,7 @@ import InfoSection from './InfoSection';
 import ProductDetailsAccordion from './ProductDetailsAccordion';
 import { Product } from '@/types/product';
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import Recettes from './Recettes';
 
 interface ProductDetailsViewProps {
   productData: Product | null;
@@ -44,6 +45,7 @@ const ProductDetailsView: React.FC<ProductDetailsViewProps> = ({
       
       <InfoSection product={productData} />
       <ProductDetailsAccordion product={productData} />
+      <Recettes recettes={[]}/>
     </ >
   );
 };

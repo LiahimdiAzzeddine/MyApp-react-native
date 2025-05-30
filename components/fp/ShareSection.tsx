@@ -15,11 +15,14 @@ const backendUrl = process.env.EXPO_PUBLIC_BACKEND_URL; // Assure-toi de le déf
 
 const ShareSection: React.FC<SectionsProps> = ({ scrollToTarget, targetRefRecettes, gtin, productName }) => {
 const {  setIsModalContact } = useBottomSheet();
-  const handleShare = async () => {
+ const handleShare = async () => {
     try {
+      // Construire l'URL de partage avec les paramètres
+      const fullUrl = `${backendUrl}/fp/productDetailsScreen?gtin=${gtin}&search=true`;
+
       await RNShare.share({
         title: 'Découvrez cette fiche produit',
-        message: `Découvrez les infos nutritionnelles ici : ${backendUrl}/tico/fp/${gtin}`,
+        message: `Découvrez les infos nutritionnelles ici : ${fullUrl}`,
       });
     } catch (error) {
       console.error('Erreur lors du partage :', error);

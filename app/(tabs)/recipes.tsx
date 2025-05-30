@@ -79,7 +79,7 @@ const Recipes = () => {
 
   const goToRecipeDetails = (recipe: any) => {
     router.push({
-      pathname: "/recipetab/recipe",
+      pathname: "/recipetab/recipe/[id]",
       params: { id: recipe.id.toString() }, 
     });
   };

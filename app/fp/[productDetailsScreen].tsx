@@ -10,6 +10,7 @@ import useGetProduct from '@/hooks/fp/useGetProduct';
 import { AuthContext } from '@/context/AuthContext';
 import { ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useLocalSearchParams } from 'expo-router';
 
 type RouteParams = {
   ProductDetails: {
@@ -19,19 +20,18 @@ type RouteParams = {
 };
 
 const ProductDetailsScreen = () => {
-  const { params } = useRoute<RouteProp<RouteParams, 'ProductDetails'>>();
+  const { gtin, search } = useLocalSearchParams();
   const [isOnline, setIsOnline] = useState<boolean>(true);
   const { userInfo, logout } = useContext(AuthContext);
     const isAuthenticated = !!userInfo;
 
-  const { gtin, search } = params;
 
   const {
     productData,
     loading,
     error,
     fetchProduct,
-  } = useGetProduct(gtin); // Hook personnalisé pour recherche en ligne
+  } = useGetProduct(String(gtin)); // Hook personnalisé pour recherche en ligne
 
   const [localProduct, setLocalProduct] = useState<Product | null>(null);
   const [localLoading, setLocalLoading] = useState(true);
@@ -40,7 +40,7 @@ const ProductDetailsScreen = () => {
   useEffect(() => {
     if (search !== 'true') {
       const fetchLocal = async () => {
-        const product = await getProductByBarcode(gtin);
+        const product = await getProductByBarcode(String(gtin));
         setLocalProduct(product);
         setLocalLoading(false);
       };

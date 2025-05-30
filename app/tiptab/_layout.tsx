@@ -9,7 +9,7 @@ export default function _layout() {
         header: (props) => <CustomHeader color={"#ffeda3"} image={"of"}  />,
       }}
     >
-      <Stack.Screen name="tip" />
+      <Stack.Screen name="tip/[id]" />
       <Stack.Screen name="tipSettings" />
     </Stack>
   );

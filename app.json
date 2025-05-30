@@ -2,19 +2,19 @@
   "expo": {
     "name": "tico",
     "slug": "tico",
-    "version": "1.0.0",
+    "version": "1.4",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "tico",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
+      "buildNumber": "9.0.3",
       "supportsTablet": true,
       "bundleIdentifier": "com.tico.foodhea.tico",
       "associatedDomains": [
         "applinks:tico.foodhea.com"
       ],
-      "buildNumber": "1.0.0",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }

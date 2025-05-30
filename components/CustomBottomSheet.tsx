@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
-    paddingBottom: 50, // Ajouter de l'espace en bas pour le scroll
+    paddingBottom: 700, // Ajouter de l'espace en bas pour le scroll
   },
   handleStyle: {
     paddingTop: 12,

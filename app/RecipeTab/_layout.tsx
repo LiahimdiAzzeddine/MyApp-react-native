@@ -5,11 +5,12 @@ export default function _layout() {
   return (
     <Stack>
       <Stack.Screen
-        name="recipe"
+        name="recipe/[id]"
         options={{
           header: (props) => <CustomHeader image="rf" color="#fad4ce" />,
         }}
       />
+   
       <Stack.Screen
         name="suggestrecipe"
         options={{

@@ -29,10 +29,10 @@ export default function LoginScreen() {
   const [passwordError, setPasswordError] = useState("");
   const [emailTouched, setEmailTouched] = useState(false);
   const [passwordTouched, setPasswordTouched] = useState(false);
-
+const [isInactive, setisInactive] = useState(false);
   const { sendValidationEmail } = useSendValidationEmail({
     to_email: email,
-    setStatus,
+    setStatus:setisInactive,
   });
 
   // Vérifie si l'email est valide
@@ -80,6 +80,12 @@ export default function LoginScreen() {
       }
     }
   };
+  useEffect(() => {
+    if(errorMessage){
+setisInactive((errorMessage?.account[0]=="Le compte utilisateur est inactif. Veuillez valider l'inscription via votre boîte email." || errorMessage?.message=="Le compte utilisateur est inactif. Veuillez valider l'inscription via votre boîte email."))
+
+    }
+  },[errorMessage])
 
   return (
     <KeyboardAvoidingView
@@ -224,7 +230,7 @@ export default function LoginScreen() {
               </Text>
             )}
 
-            {status == 404 && (
+            {isInactive && (
               <Pressable className="mt-2">
                 <Text
                   className="text-custom-text-orange text-base Archivo text-center"

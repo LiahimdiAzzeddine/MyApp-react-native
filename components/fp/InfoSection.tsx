@@ -27,16 +27,22 @@ const Illustration = require("@/assets/images/fp/BubbleImg.png");
 const FlecheLeft = require("@/assets/images/fp/FICHEFleche.png");
 
 // Types pour améliorer la type safety
-type NutriscoreGrade = 'A' | 'B' | 'C' | 'D' | 'E';
+type NutriscoreGrade = "A" | "B" | "C" | "D" | "E";
 
 type Props = {
   product: Product;
 };
 
-const InfoSection: React.FC<Props> = ({ product }) => {  
+const InfoSection: React.FC<Props> = ({ product }) => {
   const scaleAnim = useRef(new Animated.Value(1)).current;
-  const { hasRequested, setIsModalEncourager, isModalEncourager,isModalNutrition,setIsModalNutrition,setIsModalAdditif } =
-    useBottomSheet();
+  const {
+    hasRequested,
+    setIsModalEncourager,
+    isModalEncourager,
+    isModalNutrition,
+    setIsModalNutrition,
+    setIsModalAdditif,
+  } = useBottomSheet();
   const { userInfo } = useContext(AuthContext);
   const isAuthenticated: boolean = !!userInfo;
   const router = useRouter();
@@ -48,13 +54,13 @@ const InfoSection: React.FC<Props> = ({ product }) => {
       animation = Animated.loop(
         Animated.sequence([
           Animated.timing(scaleAnim, {
-            toValue: 1.2,
-            duration: 500,
+            toValue: 1.1,
+            duration: 900,
             useNativeDriver: true,
           }),
           Animated.timing(scaleAnim, {
             toValue: 1,
-            duration: 500,
+            duration: 300,
             useNativeDriver: true,
           }),
         ])
@@ -70,8 +76,6 @@ const InfoSection: React.FC<Props> = ({ product }) => {
   }, [hasRequested, scaleAnim]);
 
   const openContactSolliciter = (): void => {
-    console.log("🚀 ~ isModalEncourager:", isModalEncourager);
-
     if (!isAuthenticated) {
       Alert.alert("Attention", "Se connecter pour encourager la marque", [
         {
@@ -104,13 +108,17 @@ const InfoSection: React.FC<Props> = ({ product }) => {
     E: "A consommer avec parcimonie et vérifier si les ingrédients sont naturels !",
   };
 
-  const selectedNutriImg = product.nutriscore && (product.nutriscore as NutriscoreGrade) in nutriscoreImages
-    ? nutriscoreImages[product.nutriscore as NutriscoreGrade]
-    : null;
-    
-  const selectedComment = product.nutriscore && (product.nutriscore as NutriscoreGrade) in nutriscoreComment
-    ? nutriscoreComment[product.nutriscore as NutriscoreGrade]
-    : null;
+  const selectedNutriImg =
+    product.nutriscore &&
+    (product.nutriscore as NutriscoreGrade) in nutriscoreImages
+      ? nutriscoreImages[product.nutriscore as NutriscoreGrade]
+      : null;
+
+  const selectedComment =
+    product.nutriscore &&
+    (product.nutriscore as NutriscoreGrade) in nutriscoreComment
+      ? nutriscoreComment[product.nutriscore as NutriscoreGrade]
+      : null;
 
   const openEmail = (): void => {
     Linking.openURL("mailto:contact@example.com");
@@ -147,7 +155,9 @@ const InfoSection: React.FC<Props> = ({ product }) => {
       {/* Header avec badge arrondi */}
       <View style={styles.headerContainer}>
         <View style={styles.header}>
-          <Text style={styles.title} className="text-custom-blue">LA SYNTHÈSE SUR LE PRODUIT</Text>
+          <Text style={styles.title} className="text-custom-blue">
+            LA SYNTHÈSE SUR LE PRODUIT
+          </Text>
         </View>
       </View>
 
@@ -156,11 +166,12 @@ const InfoSection: React.FC<Props> = ({ product }) => {
         <View style={styles.gridContainer}>
           {/* Section Nutrition - Top Left */}
           <View style={[styles.gridItem, styles.topLeft]}>
-
             <View style={styles.marker}>
-      <View style={styles.highlight} />
-      <Text style={styles.sectionTitle} className='text-custom-blue'>Informations nutritionnelles</Text>
-    </View>
+              <View style={styles.highlight} />
+              <Text style={styles.sectionTitle} className="text-custom-blue">
+                Informations nutritionnelles
+              </Text>
+            </View>
 
             {selectedNutriImg ? (
               <TouchableOpacity
@@ -184,19 +195,22 @@ const InfoSection: React.FC<Props> = ({ product }) => {
             <Text style={styles.commentText}>
               {selectedComment ?? "Données non communiquées par le fabricant"}
             </Text>
-            {product.transparency_scale != null && Number(product.transparency_scale) > 1 && (
-              <Text style={styles.transparentText}>
-                Produit 100% transparent !
-              </Text>
-            )}
+            {product.transparency_scale != null &&
+              Number(product.transparency_scale) > 1 && (
+                <Text style={styles.transparentText}>
+                  Produit 100% transparent !
+                </Text>
+              )}
           </View>
 
           {/* Section Naturalité - Top Right */}
           <View style={[styles.gridItemRight, styles.topRight]}>
             <View style={styles.marker}>
-      <View style={styles.highlight} />
-      <Text style={styles.sectionTitle} className='text-custom-blue'>Degré de transformation</Text>
-    </View>
+              <View style={styles.highlight} />
+              <Text style={styles.sectionTitle} className="text-custom-blue">
+                Degré de transformation
+              </Text>
+            </View>
 
             <TouchableOpacity
               style={styles.contentContainer}
@@ -231,9 +245,11 @@ const InfoSection: React.FC<Props> = ({ product }) => {
           {/* Section Impact environnemental - Bottom Left */}
           <View style={[styles.gridItem, styles.bottomLeft]}>
             <View style={styles.marker}>
-      <View style={styles.highlight} />
-      <Text style={styles.sectionTitle} className='text-custom-blue'>Impact environnemental</Text>
-    </View>
+              <View style={styles.highlight} />
+              <Text style={styles.sectionTitle} className="text-custom-blue">
+                Impact environnemental
+              </Text>
+            </View>
 
             {product.commentaire && product.planetScore ? (
               <TouchableOpacity style={styles.contentContainer}>
@@ -261,10 +277,12 @@ const InfoSection: React.FC<Props> = ({ product }) => {
 
           {/* Section Origines - Bottom Right */}
           <View style={[styles.gridItemRight, styles.bottomRight]}>
-  <View style={styles.marker}>
-      <View style={styles.highlight} />
-      <Text style={styles.sectionTitle} className='text-custom-blue'>Origines</Text>
-    </View>
+            <View style={styles.marker}>
+              <View style={styles.highlight} />
+              <Text style={styles.sectionTitle} className="text-custom-blue">
+                Origines
+              </Text>
+            </View>
             {product.commentaire ? (
               <TouchableOpacity style={styles.contentContainer}>
                 <View style={styles.originesContainer}>
@@ -302,19 +320,19 @@ const styles = StyleSheet.create({
     position: "relative",
     zIndex: 1,
   },
-   marker: {
-    position: 'relative',
-    alignSelf: 'flex-start', // adapte selon le layout
+  marker: {
+    position: "relative",
+    alignSelf: "flex-start", // adapte selon le layout
   },
   highlight: {
-    position: 'absolute',
-    bottom:8,
+    position: "absolute",
+    bottom: 8,
     left: 0,
     right: 0,
     height: 8,
-    backgroundColor: '#66ccc2', // cyan/mint marker color
+    backgroundColor: "#66ccc2", // cyan/mint marker color
     borderRadius: 10,
-    transform: [{ rotate: '-2deg' }],
+    transform: [{ rotate: "-0.3deg" }],
     zIndex: 0,
   },
   header: {
@@ -381,7 +399,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginBottom: 8,
     lineHeight: 14,
-    fontFamily:"ArchivoBold",
+    fontFamily: "ArchivoBold",
     zIndex: 1,
   },
   contentContainer: {

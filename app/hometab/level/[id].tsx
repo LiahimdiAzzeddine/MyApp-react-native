@@ -66,7 +66,6 @@ const levels = [
 ];
 
 export default function Profile() {
-  const { colors } = useTheme();
   const { id } = useLocalSearchParams();
 
   const getLevel = (requests: number | undefined) =>

@@ -70,7 +70,7 @@ const Tips = () => {
 
   const handleTipClick = (tip: Tip) => {
     router.push({
-      pathname: "/tiptab/tip",
+      pathname: "/tiptab/tip/[id]",
       params: { id: tip.id.toString() },
     });
   };

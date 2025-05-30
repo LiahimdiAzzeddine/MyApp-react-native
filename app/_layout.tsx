@@ -28,7 +28,7 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-   const [isFirstLaunch, setIsFirstLaunch] = useState<null | boolean>(null);
+  const [isFirstLaunch, setIsFirstLaunch] = useState<null | boolean>(null);
   const router = useRouter();
 
   const [loaded] = useFonts({
@@ -47,8 +47,6 @@ export default function RootLayout() {
     ArchivoLightItalic: require("../assets/fonts/Archivo-Italic.otf"),
     pallybold: require("../assets/fonts/Pally-Bold.ttf"),
   });
-
- 
 
   useEffect(() => {
     if (loaded) {
@@ -80,8 +78,6 @@ export default function RootLayout() {
     }
   }, [isFirstLaunch]);
 
- 
-
   // Pendant la vérification, ne rien afficher
   if (isFirstLaunch === null || !loaded) {
     return null;
@@ -91,61 +87,76 @@ export default function RootLayout() {
     <ThemeProvider
       value={colorScheme === "dark" ? CustomDarkTheme : LightTheme}
     >
-          <LoadingProvider>
-
-      <AuthProvider>
-        <AppProvider>
-          <BottomSheetProvider>
-            <GestureHandlerRootView style={{ flex: 1 }}>
-              <Stack>
-                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                <Stack.Screen
-                  name="hometab"
-                  options={{ headerShown: false, animation: "fade" }}
-                />
-                <Stack.Screen
-                  name="recipetab"
-                  options={{ headerShown: false, animation: "fade" }}
-                />
-                <Stack.Screen
-                  name="tiptab"
-                  options={{ headerShown: false, animation: "fade" }}
-                />
-                <Stack.Screen
-                  name="fp"
-                  options={{ headerShown: false, animation: "fade" }}
-                />
-                <Stack.Screen name="(auth)" options={{ headerShown: false, animation: "fade" }} />
-                <Stack.Screen
-                  name="settings"
-                  options={{
-                    title: "Paramètres",
-                    animation: "fade",
-                    header: (props) => (
-                      <CustomHeader color={"#ffeda3"} image={"bx"} />
-                    ),
-                  }}
-                />
-                <Stack.Screen
-                  name="settingsPage"
-                  options={{ headerShown: false, animation: "fade" }}
-                />
-                <Stack.Screen
-                  name="welcomeSlider"
-                  options={{
-                    title: "welcome",
-                    animation: "fade",
-                    headerShown: false,
-                  }}
-                />
-                <Stack.Screen name="+not-found" />
-              </Stack>
-              <CustomBottomSheet />
-            </GestureHandlerRootView>
-          </BottomSheetProvider>
-          <StatusBar style="auto" />
-        </AppProvider>
-      </AuthProvider>
+      <LoadingProvider>
+        <AuthProvider>
+          <AppProvider>
+            <BottomSheetProvider>
+              <GestureHandlerRootView style={{ flex: 1 }}>
+                <Stack>
+                  <Stack.Screen
+                    name="(tabs)"
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="hometab"
+                    options={{ headerShown: false, animation: "fade" }}
+                  />
+                  <Stack.Screen
+                    name="recipetab"
+                    options={{ headerShown: false, animation: "fade" }}
+                  />
+                  <Stack.Screen
+                    name="tiptab"
+                    options={{ headerShown: false, animation: "fade" }}
+                  />
+                  <Stack.Screen
+                    name="fp/[productDetailsScreen]"
+                    options={{
+                      animation: "fade",
+                      header: (props) => <CustomHeader image="vf" />,
+                    }}
+                  />
+                  <Stack.Screen
+                    name="(auth)"
+                    options={{ headerShown: false, animation: "fade" }}
+                  />
+                  <Stack.Screen
+                    name="settings"
+                    options={{
+                      title: "Paramètres",
+                      animation: "fade",
+                      header: (props) => (
+                        <CustomHeader color={"#ffeda3"} image={"bx"} />
+                      ),
+                    }}
+                  />
+                  <Stack.Screen
+                    name="settingsPage"
+                    options={{ headerShown: false, animation: "fade" }}
+                  />
+                  <Stack.Screen
+                    name="welcomeSlider"
+                    options={{
+                      title: "welcome",
+                      animation: "fade",
+                      headerShown: false,
+                    }}
+                  />
+                   <Stack.Screen
+                    name="validation/[token]"
+                    options={{
+                      animation: "fade",
+                      header: (props) => <CustomHeader image="vf" />,
+                    }}
+                  />
+                  <Stack.Screen name="+not-found" />
+                </Stack>
+                <CustomBottomSheet />
+              </GestureHandlerRootView>
+            </BottomSheetProvider>
+            <StatusBar style="auto" />
+          </AppProvider>
+        </AuthProvider>
       </LoadingProvider>
       <Toast />
     </ThemeProvider>

@@ -39,7 +39,7 @@ const TipDetails: React.FC<TipProps> = ({ tip }) => {
   const shareTip = async () => {
     try {
       // Construisez votre deep link
-      const deepLink = `${apiUrl}/tico/tip/${id}`;
+      const deepLink = `${apiUrl}/tiptab/tip/${id}`;
 
       await Share.share({
         title: title,

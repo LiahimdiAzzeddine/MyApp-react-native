@@ -32,7 +32,7 @@ export default function History() {
   }, []);
 
   const handleOpenProduct = (product: Product) => {
-    router.push({ pathname: '/fp/productDetailsScreen', params: { gtin: (product.gtin).toString() } });
+    router.push({ pathname: '/fp/[productDetailsScreen]', params: { gtin: (product.gtin).toString() } });
   };
   const handleDeleteProduct = async (gtin: string) => {
     try {

@@ -5,7 +5,7 @@ const LOGIN_URL = "/api/send-registration-validation";
 
 type UseSendValidationEmailProps = {
   to_email: string;
-  setStatus: React.Dispatch<React.SetStateAction<any>>;
+  setStatus: any;
 };
 
 const useSendValidationEmail = ({ to_email, setStatus }: UseSendValidationEmailProps) => {
@@ -26,7 +26,7 @@ const useSendValidationEmail = ({ to_email, setStatus }: UseSendValidationEmailP
       if (response.status === 200) {
         setSuccess(true);
         triggerToast("Email de validation envoyé avec succès", "success");
-        setStatus(null);
+        setStatus(false);
       }
     } catch (err: any) {
       const message = err.response?.data?.message || "Une erreur est survenue";

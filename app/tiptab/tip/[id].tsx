@@ -8,27 +8,22 @@ import useTipById from '@/hooks/tips/useTipById';
 import TipDetails from '@/components/tips/TipDetails';
 import ErrorMessage from '@/components/tips/ErrorMessage';
 import { createTip } from '@/utils/createTips';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 
-type RootStackParamList = {
-  Tab3: undefined;
-  TipScreen: { id: string };
-};
-
-type TipScreenRouteProp = RouteProp<RootStackParamList, 'TipScreen'>;
-type TipScreenNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 const Tip: React.FC = () => {
-  const route = useRoute<TipScreenRouteProp>();
-  const navigation = useNavigation<TipScreenNavigationProp>();
-  const id = route.params?.id;
+   const { id } = useLocalSearchParams();
+     const router = useRouter();
+   
+ 
 
   // Si l'id est manquant, redirection immédiate
   if (!id) {
-    navigation.replace('Tab3');
+    router.replace('/(tabs)/tips');
     return null;
   }
 
-  const { tip, loading, error } = useTipById(id);
+  const { tip, loading, error } = useTipById(String(id));
   const tipForme = tip ? createTip(tip) : null;
 
   
@@ -47,7 +42,7 @@ const Tip: React.FC = () => {
         <ErrorMessage
           message={error || "Aucun conseil trouvé."}
           icon={<Ionicons name="alert-circle" size={24} color="#FF6B35" />}
-          onClose={() => navigation.replace('Tab3')}
+          onClose={() => router.replace('/(tabs)/tips')}
         />
       </View>
     );

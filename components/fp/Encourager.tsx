@@ -13,9 +13,8 @@ const Encourager = ({ product }:any) => {
   const isAuthenticated = !!userInfo;
 
   const router = useRouter();
-  const { hasRequested, setIsModalEncourager, isModalEncourager } = useBottomSheet();
-
-  const scaleAnim = useRef(new Animated.Value(1)).current;
+ const scaleAnim = useRef(new Animated.Value(1)).current;
+  const { hasRequested, setIsModalEncourager} = useBottomSheet();
 
   useEffect(() => {
     let animation: Animated.CompositeAnimation;
@@ -24,13 +23,13 @@ const Encourager = ({ product }:any) => {
       animation = Animated.loop(
         Animated.sequence([
           Animated.timing(scaleAnim, {
-            toValue: 1,
-            duration: 100,
+            toValue: 1.1,
+            duration: 900,
             useNativeDriver: true,
           }),
           Animated.timing(scaleAnim, {
             toValue: 1,
-            duration: 100,
+            duration: 300,
             useNativeDriver: true,
           }),
         ])
@@ -44,8 +43,6 @@ const Encourager = ({ product }:any) => {
   }, [hasRequested, scaleAnim]);
 
   const openContactSolliciter = () => {
-    console.log("🚀 ~ isModalEncourager:", isModalEncourager);
-
     if (!isAuthenticated) {
       Alert.alert(
         'Attention',

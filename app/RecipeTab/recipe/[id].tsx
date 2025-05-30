@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { View, ActivityIndicator } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams, usePathname, useRouter } from 'expo-router';
 import useRecipeById from '@/hooks/recipes/useRecipeById';
 import RecipeDetails from '@/components/recipes/RecipeDetails';
 import ErrorMessage from '@/components/recipes/ErrorMessage';
@@ -9,12 +9,12 @@ const Recipe: React.FC = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
   const recipeId = parseInt(id, 10);
   const router = useRouter();
-
+  const pathname = usePathname(); // 👈 Add this line
   const { recipe, loading, error } = useRecipeById(recipeId);
-  
-  useEffect(()=>{
-console.log("🚀 ~ recipe:", recipe)
-  },[recipe])
+  useEffect(() => {
+    console.log("🚀 ~ Current URL path:", pathname); // 👈 This will log the current route path
+  }, [recipe]);
+
 
   if (loading) {
     return (
