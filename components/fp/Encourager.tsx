@@ -13,8 +13,8 @@ const Encourager = ({ product }:any) => {
   const isAuthenticated = !!userInfo;
 
   const router = useRouter();
- const scaleAnim = useRef(new Animated.Value(1)).current;
-  const { hasRequested, setIsModalEncourager} = useBottomSheet();
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+  const { hasRequested, setIsModalEncourager,closeBottomSheet} = useBottomSheet();
 
   useEffect(() => {
     let animation: Animated.CompositeAnimation;
@@ -38,7 +38,7 @@ const Encourager = ({ product }:any) => {
     }
 
     return () => {
-      animation?.stop?.(); // ✅ Nettoyage propre de l’animation
+      animation?.stop?.();
     };
   }, [hasRequested, scaleAnim]);
 
@@ -54,7 +54,8 @@ const Encourager = ({ product }:any) => {
           },
           {
             text: 'Se connecter',
-            onPress: () => router.push('/login'),
+           
+            onPress: () => { closeBottomSheet(),router.push('/login')},
           },
         ]
       );
@@ -62,6 +63,7 @@ const Encourager = ({ product }:any) => {
       setIsModalEncourager(true);
     }
   };
+
   return (
     <View style={styles.container}>
       <Pressable onPress={openContactSolliciter} style={styles.textContainer}>
@@ -70,7 +72,7 @@ const Encourager = ({ product }:any) => {
         </Text>
         <View style={styles.imageRow}>
           <Text className='text-custom-blue ArchivoLight underline text-sl underline-offset-2 leading-tight'>toutes les informations</Text>
-          <Image resizeMode="contain" source={flecheLeft} style={styles.arrowImage}  />
+          <Image resizeMode="contain" source={flecheLeft} style={styles.arrowImage} />
         </View>
       </Pressable>
 
@@ -83,38 +85,41 @@ const Encourager = ({ product }:any) => {
           />
         </Pressable>
       </View>
-     
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 6,
-    paddingTop:10,
+    paddingTop: 10,
     marginBottom: 35,
+    justifyContent: "space-between", // Changed from flex-start
   },
   textContainer: {
-    flex: 1,
+    flex: 2,
     justifyContent: 'center',
+    position: 'relative', // Added for arrow positioning
   },
-
-  
   imageRow: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   arrowImage: {
-    position:"absolute",
+    position: "absolute",
     width: 35,
     height: 35,
-    marginLeft: 220,
+    right: 0, // Changed from marginLeft to right positioning
     transform: [{ rotate: '-30deg' }],
   },
   imageContainer: {
+    flex: 1,
     alignItems: 'center',
+    justifyContent: 'center',
+    // Removed margin: "auto" and marginLeft from illustrationImage
   },
   illustrationImage: {
     width: 50,

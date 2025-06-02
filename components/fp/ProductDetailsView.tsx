@@ -30,7 +30,7 @@ const ProductDetailsView: React.FC<ProductDetailsViewProps> = ({
 
   // Affichage du produit
   return (
-    <>
+    <View style={styles.container}>
      <View style={styles.innerContainer}>
         <TransparencyScale currentPosition={productData.transparency_scale} />
         <GlobalInfo 
@@ -46,7 +46,7 @@ const ProductDetailsView: React.FC<ProductDetailsViewProps> = ({
       <InfoSection product={productData} />
       <ProductDetailsAccordion product={productData} />
       <Recettes recettes={[]}/>
-    </ >
+    </View>
   );
 };
 
@@ -54,7 +54,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
-    paddingBottom:16
   },
   
   innerContainer: {

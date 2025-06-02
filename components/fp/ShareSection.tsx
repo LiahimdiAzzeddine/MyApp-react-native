@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
-import { View, TouchableOpacity, Image, StyleSheet, Share as RNShare } from 'react-native';
+import React, { useContext, useState } from 'react';
+import { View, TouchableOpacity, Image, StyleSheet, Share as RNShare, Alert } from 'react-native';
 import { useBottomSheet } from '@/context/BottomSheetContext';
+import { AuthContext } from '@/context/AuthContext';
+import { useRouter } from 'expo-router';
 const BubbleImg = require('@/assets/images/fp/BubbleImg.png');
 const RecettesImg = require('@/assets/images/fp/recettes.png');
 const PartageImg = require('@/assets/images/fp/top.png');
@@ -14,7 +16,32 @@ interface SectionsProps {
 const backendUrl = process.env.EXPO_PUBLIC_BACKEND_URL; // Assure-toi de le définir dans ton .env
 
 const ShareSection: React.FC<SectionsProps> = ({ scrollToTarget, targetRefRecettes, gtin, productName }) => {
-const {  setIsModalContact } = useBottomSheet();
+const {  setIsModalContact,closeBottomSheet } = useBottomSheet();
+  const { userInfo } = useContext(AuthContext);
+  const isAuthenticated = !!userInfo;
+    const router = useRouter();
+  
+  const openModalContact = () => {
+    if (!isAuthenticated) {
+      Alert.alert(
+        'Attention',
+        'Se connecter pour encourager la marque',
+        [
+          {
+            text: 'Annuler',
+            style: 'cancel',
+          },
+          {
+            text: 'Se connecter',
+           
+            onPress: () => { closeBottomSheet(),router.push('/login')},
+          },
+        ]
+      );
+    } else {
+      setIsModalContact(true);
+    }
+  };
  const handleShare = async () => {
     try {
       // Construire l'URL de partage avec les paramètres
@@ -40,11 +67,10 @@ const {  setIsModalContact } = useBottomSheet();
           <Image source={RecettesImg} style={styles.icon} resizeMode="contain" />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button} onPress={() => setIsModalContact(true)}>
+        <TouchableOpacity style={styles.button} onPress={() => openModalContact()}>
           <Image source={BubbleImg} style={styles.icon} resizeMode="contain" />
         </TouchableOpacity>
       </View>
-
       
     </View>
   );

@@ -65,7 +65,7 @@ const DemandDetail = () => {
             </Text>
 
             <View style={styles.lineContainer}>
-              <GreenLineWithPoint demandesCount={500} />
+              <GreenLineWithPoint demandesCount={demand.same_gtin_count} />
             </View>
 
             <Text style={styles.goalText}>Objectif 1000 demandes</Text>

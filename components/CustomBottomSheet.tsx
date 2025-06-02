@@ -1,9 +1,16 @@
-import React, { useCallback, useContext, useEffect, useMemo } from "react";
-import { StyleSheet, View, Alert, Text, TouchableOpacity } from "react-native";
+import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import {
+  StyleSheet,
+  View,
+  Alert,
+  Text,
+  TouchableOpacity,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
+} from "react-native";
 
 import BottomSheet, {
   BottomSheetScrollView,
-  BottomSheetView,
 } from "@gorhom/bottom-sheet";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useBottomSheet } from "@/context/BottomSheetContext";
@@ -17,6 +24,8 @@ import ProductDetailsView from "./fp/ProductDetailsView";
 import { Easing } from "react-native-reanimated";
 
 const CustomBottomSheet: React.FC = () => {
+  const [hasScrolledDown, setHasScrolledDown] = useState(false);
+
   const insets = useSafeAreaInsets();
   const {
     bottomSheetRef,
@@ -25,15 +34,17 @@ const CustomBottomSheet: React.FC = () => {
     setHasRequested,
     setProductName,
     setIsModalEncourager,
+    hasRequested
   } = useBottomSheet();
   const { userInfo } = useContext(AuthContext);
+  const isAuthenticated = !!userInfo;
   const { isOnline } = useAppContext();
   const { productData, loading, error, fetchProduct } = useGetProduct(
     scannedBarcode || ""
   );
 
   // Définir les snap points avec useMemo pour éviter les re-renders
-  const snapPoints = useMemo(() => ["40%", "90%"], []);
+  const snapPoints = useMemo(() => ["40%", "100%"], []);
 
   const handleSheetChanges = useCallback(
     (index: number) => {
@@ -47,6 +58,7 @@ const CustomBottomSheet: React.FC = () => {
   useEffect(() => {
     if (scannedBarcode && isOnline) {
       fetchProduct();
+      setHasScrolledDown(false);
     }
   }, [scannedBarcode]);
 
@@ -60,6 +72,7 @@ const CustomBottomSheet: React.FC = () => {
       if (productData.name !== undefined) {
         setProductName(productData.name);
       }
+      
     }
   }, [userInfo, productData]);
 
@@ -76,16 +89,26 @@ const CustomBottomSheet: React.FC = () => {
     }
   };
 
+
+  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+   const yOffset = event.nativeEvent.contentOffset.y;
+
+      if (yOffset > 0 && !hasScrolledDown && !hasRequested && isAuthenticated) {
+        setHasScrolledDown(true);
+        setIsModalEncourager(true)
+      }
+  };
+
   return (
     <BottomSheet
       ref={bottomSheetRef}
-      onChange={handleSheetChanges}
+      index={-1}
       snapPoints={snapPoints}
+      enableDynamicSizing={false}
+      onChange={handleSheetChanges}
       topInset={insets.top}
       enablePanDownToClose={true}
       handleStyle={styles.handleStyle}
-      index={-1}
-      enableContentPanningGesture={false} // Désactiver le pan gesture sur le contenu
       keyboardBehavior="interactive"
       keyboardBlurBehavior="restore"
       animationConfigs={{
@@ -93,15 +116,15 @@ const CustomBottomSheet: React.FC = () => {
         easing: Easing.out(Easing.exp),
       }}
     >
-      {/* Option 1: Utiliser BottomSheetView avec BottomSheetScrollView */}
-      <BottomSheetView style={styles.container}>
-        <ModalHeader goToPage={closeBottomSheet} />
-        <BottomSheetScrollView
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={true}
-          keyboardShouldPersistTaps="handled"
-        >
-          {loading ? (
+      <ModalHeader goToPage={closeBottomSheet} />
+      <BottomSheetScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="always"
+         onScroll={handleScroll}  
+      >
+         {loading ? (
             <ProductSkeletonLoader />
           ) : isOnline ? (
             productData ? (
@@ -136,24 +159,44 @@ const CustomBottomSheet: React.FC = () => {
               )}
             </View>
           )}
-        </BottomSheetScrollView>
-      </BottomSheetView>
+      </BottomSheetScrollView>
     </BottomSheet>
   );
 };
 
 const styles = StyleSheet.create({
+  testContent: {
+    backgroundColor: "#e3f2fd",
+    padding: 20,
+    margin: 10,
+    borderRadius: 8,
+  },
+  testText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  testItem: {
+    backgroundColor: "#f5f5f5",
+    padding: 15,
+    margin: 5,
+    borderRadius: 5,
+  },
+
   container: {
     flex: 1,
     backgroundColor: "white",
   },
+
   scrollContent: {
+    paddingBottom: 100, // suffisant pour éviter la coupure
+    minHeight: 600,
     flexGrow: 1,
-    paddingBottom: 700, // Ajouter de l'espace en bas pour le scroll
   },
+
   handleStyle: {
-    paddingTop: 12,
-    paddingBottom: 12,
+    paddingTop: 8,
+    paddingBottom: 5,
     backgroundColor: "transparent",
   },
   messageContainer: {

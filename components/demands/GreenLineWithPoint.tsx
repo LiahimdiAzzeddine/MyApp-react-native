@@ -18,14 +18,108 @@ interface PointPosition {
   y: number;
 }
 
-interface PathPoint {
-  x: number;
-  y: number;
+// Fonction pour calculer un point sur une courbe de Bézier cubique
+function cubicBezierPoint(t: number, p0: PointPosition, p1: PointPosition, p2: PointPosition, p3: PointPosition): PointPosition {
+  const u = 1 - t;
+  const tt = t * t;
+  const uu = u * u;
+  const uuu = uu * u;
+  const ttt = tt * t;
+
+  return {
+    x: uuu * p0.x + 3 * uu * t * p1.x + 3 * u * tt * p2.x + ttt * p3.x,
+    y: uuu * p0.y + 3 * uu * t * p1.y + 3 * u * tt * p2.y + ttt * p3.y
+  };
+}
+
+// Fonction pour calculer un point sur une courbe de Bézier quadratique
+function quadraticBezierPoint(t: number, p0: PointPosition, p1: PointPosition, p2: PointPosition): PointPosition {
+  const u = 1 - t;
+  const tt = t * t;
+  const uu = u * u;
+
+  return {
+    x: uu * p0.x + 2 * u * t * p1.x + tt * p2.x,
+    y: uu * p0.y + 2 * u * t * p1.y + tt * p2.y
+  };
+}
+
+// Fonction pour approximer la position sur le chemin SVG complexe
+function getPointOnPath(normalizedValue: number): PointPosition {
+  // Points de contrôle approximatifs basés sur votre chemin SVG
+  // Ces points sont extraits du chemin d'origine pour créer une approximation plus précise
+  const pathSegments = [
+    // Segment 1: Début de la courbe
+    {
+      start: { x: 87.24, y: 641.90 },
+      control1: { x: 90, y: 600 },
+      control2: { x: 110, y: 500 },
+      end: { x: 144.65, y: 451.30 }
+    },
+    // Segment 2: Montée vers le milieu
+    {
+      start: { x: 160.65, y: 451.30 },
+      control1: { x: 180, y: 430 },
+      control2: { x: 200, y: 420 },
+      end: { x: 230.66, y: 417.37 }
+    },
+    // Segment 3: Partie centrale descendante
+    {
+      start: { x: 230.66, y: 417.37 },
+      control1: { x: 300, y: 430 },
+      control2: { x: 350, y: 450 },
+      end: { x: 397.34, y: 475.65 }
+    },
+    // Segment 4: Remontée
+    {
+      start: { x: 397.34, y: 475.65 },
+      control1: { x: 450, y: 490 },
+      control2: { x: 500, y: 520 },
+      end: { x: 556.65, y: 524.79 }
+    },
+    // Segment 5: Plateau
+    {
+      start: { x: 556.65, y: 524.79 },
+      control1: { x: 620, y: 525 },
+      control2: { x: 660, y: 515 },
+      end: { x: 700.25, y: 505.47 }
+    },
+    // Segment 6: Descente finale
+    {
+      start: { x: 700.25, y: 505.47 },
+      control1: { x: 740, y: 480 },
+      control2: { x: 770, y: 450 },
+      end: { x: 790.69, y: 425.39 }
+    },
+    // Segment 7: Fin de la courbe
+    {
+      start: { x: 790.69, y: 425.39 },
+      control1: { x: 810, y: 380 },
+      control2: { x: 825, y: 320 },
+      end: { x: 839.25, y: 265.07 }
+    }
+  ];
+
+  const totalSegments = pathSegments.length;
+  const segmentProgress = normalizedValue * totalSegments;
+  const segmentIndex = Math.min(Math.floor(segmentProgress), totalSegments - 1);
+  const localT = segmentProgress - segmentIndex;
+
+  const segment = pathSegments[segmentIndex];
+  
+  // Utilisation d'une courbe de Bézier cubique pour chaque segment
+  return cubicBezierPoint(
+    localT,
+    segment.start,
+    segment.control1,
+    segment.control2,
+    segment.end
+  );
 }
 
 export default function GreenLineWithPoint({ demandesCount }: GreenLineWithPointProps) {
   const [position, setPosition] = useState<number>(demandesCount);
-  const [pointPosition, setPointPosition] = useState<PointPosition>({ x: 400, y: 460 });
+  const [pointPosition, setPointPosition] = useState<PointPosition>({ x: 80.24, y: 641.90 });
 
   // Mettre à jour la position lorsque demandesCount change
   useEffect(() => {
@@ -37,32 +131,11 @@ export default function GreenLineWithPoint({ demandesCount }: GreenLineWithPoint
     // Normaliser la valeur entre 0 et 1
     const normalizedValue = Math.max(0, Math.min(1000, position)) / 1000;
     
-    // Points clés du chemin pour interpolation
-    const pathPoints: PathPoint[] = [
-      { x: 89.53, y: 637.94 },    // Début du chemin (à gauche) - valeur 0
-      { x: 144.65, y: 451.30 },   // Point près du milieu-gauche
-      { x: 405.70, y: 457.44 },   // Point au milieu
-      { x: 691.57, y: 487.46 },   // Point près du milieu-droit
-      { x: 842.84, y: 275.79 }    // Fin du chemin (à droite) - valeur 1000
-    ];
+    // Calculer la position réelle sur la courbe
+    const newPosition = getPointOnPath(normalizedValue);
     
-    // Trouver les points entre lesquels interpoler
-    const segmentIndex = Math.min(
-      Math.floor(normalizedValue * (pathPoints.length - 1)), 
-      pathPoints.length - 2
-    );
-    
-    const startPoint = pathPoints[segmentIndex];
-    const endPoint = pathPoints[segmentIndex + 1];
-    
-    // Calculer la position locale dans le segment
-    const segmentProgress = (normalizedValue * (pathPoints.length - 1)) - segmentIndex;
-    
-    // Interpolation linéaire entre les deux points
-    const x = startPoint.x + segmentProgress * (endPoint.x - startPoint.x);
-    const y = startPoint.y + segmentProgress * (endPoint.y - startPoint.y);
-    
-    setPointPosition({ x, y });
+    setPointPosition(newPosition);
+    console.log("🚀 Position sur la courbe:", newPosition);
   }, [position]);
 
   const containerStyle: ViewStyle = {
@@ -75,7 +148,7 @@ export default function GreenLineWithPoint({ demandesCount }: GreenLineWithPoint
       <Svg
         viewBox="0 100 950 700"
         preserveAspectRatio="xMidYMid meet"
-        style={{ width: '100%', height: '100%' }}
+        style={{ width: 350, height: 230, justifyContent: 'flex-start', alignItems: 'flex-start' }}
       >
         <Defs>
           <ClipPath id="ebefa60551">
@@ -145,7 +218,7 @@ export default function GreenLineWithPoint({ demandesCount }: GreenLineWithPoint
         </G>
 
         {/* Icône de cible */}
-        <G transform="translate(380, -140)">
+        <G transform="translate(389, -185)">
           <G clipPath="url(#6c2770fa45)">
             <Path 
               fill="#4e986d" 
@@ -156,14 +229,25 @@ export default function GreenLineWithPoint({ demandesCount }: GreenLineWithPoint
           </G>
         </G>
 
-        {/* Point orange positionnable sur la ligne */}
+        {/* Point orange positionnable sur la ligne avec animation fluide */}
+      
+        {/* Halo autour du point pour plus de visibilité */}
+       
+         <Circle
+          cx="839.25"
+          cy="265.07"
+          r="50"
+          fill="#4e986d"
+          opacity="0.8"
+        /> 
         <Circle
           cx={pointPosition.x}
           cy={pointPosition.y}
-          r="8"
-          fill="#ff6b35"
-          stroke="#ffffff"
-          strokeWidth="3"
+          r="30"
+          fill="#fff"
+          stroke="#ff6b35"
+          strokeWidth="20"
+          opacity="1"
         />
       </Svg>
     </View>

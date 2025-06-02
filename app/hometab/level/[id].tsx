@@ -12,25 +12,28 @@ const levels = [
   {
     id: 1,
     title: "Ti’Curieux",
-    message:
-      "Déblocage des stories et posts pour les réseaux Insta, FB, LinkedIn",
-    image: require("@/assets/images/storys/1.png"),
+    soubTitle:"À partir de 30 demandes​",
+    message: "Débloquez des stories TiCO à partager sur vos réseaux",
+    image: require("@/assets/images/storys/16.png"),
   },
   {
     id: 2,
     title: "Ti’Défricheur",
+    soubTitle:"",
     message: "3 Ti’Conseils exclusifs tous les mois",
     image: require("@/assets/images/storys/2.png"),
   },
   {
     id: 3,
     title: "Ti’Conso engagé",
+    soubTitle:"",
     message: "Calendrier F&L",
     image: require("@/assets/images/storys/4.png"),
   },
   {
     id: 4,
     title: "Ti’Décrypteur",
+    soubTitle:"",
     message:
       "Pas encore de demandes de transparence, vous devez scanner et encourager les marques pour vous lancer dans l’aventure !​",
     image: require("@/assets/images/storys/8.png"),
@@ -38,6 +41,7 @@ const levels = [
   {
     id: 5,
     title: "Ti’Veilleur",
+    soubTitle:"",
     message:
       "Acteur engagé pour encourager les marques, recevez gratuitement notre guide de décryptage.\n\nGrâce à ce guide déjouez les pièges marketing sur les produits alimentaires.\n\nEn attendant que les marques dévoilent toutes les informations sur leurs produits dans TiCO, vous apprendrez à comprendre rapidement les étiquettes pour faire des choix rapides dans les rayons !​",
     image: require("@/assets/images/storys/1.png"),
@@ -45,6 +49,7 @@ const levels = [
   {
     id: 6,
     title: "Ti’Héro de la transparence",
+    soubTitle:"",
     message:
       "Pas encore de demandes de transparence, vous devez scanner et encourager les marques pour vous lancer dans l’aventure !​",
     image: require("@/assets/images/storys/2.png"),
@@ -52,6 +57,7 @@ const levels = [
   {
     id: 7,
     title: "Tit’Légende TiCO",
+    soubTitle:"",
     message:
       "Pas encore de demandes de transparence, vous devez scanner et encourager les marques pour vous lancer dans l’aventure !​",
     image: require("@/assets/images/storys/4.png"),
@@ -59,6 +65,7 @@ const levels = [
   {
     id: 8,
     title: "Ti’Champion de la transparence",
+    soubTitle:"",
     message:
       "Pas encore de demandes de transparence, vous devez scanner et encourager les marques pour vous lancer dans l’aventure !​",
     image: require("@/assets/images/storys/8.png"),

@@ -5,6 +5,7 @@ import {
   ActivityIndicator,
   GestureResponderEvent,
   Share,
+  Image,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import useGetTotalRequests from "@/hooks/demand/useGetTotalRequests";
@@ -15,6 +16,7 @@ import { AuthContext } from "@/context/AuthContext";
 import useCreateUserLevel from "@/hooks/demand/useCreateUserLevel";
 import { Level } from "@/types/Level";
 import { SafeAreaView } from "react-native-safe-area-context";
+const illustrationOrigines = require("@/assets/images/profil/29.png");
 
 const customInfo = [
   {
@@ -284,126 +286,138 @@ export default function Profile(): JSX.Element {
                   </View>
                 </View>
               ) : (
-               <View style={{ flex: 2 }} className="px-4">
-  <Text  className="text-base Archivo leading-archivo text-center text-custom-blue flex-1">
-    Vous avez déjà activé le niveau{" "}
-    <Text className="ArchivoBold text-custom-green-text">"Ti’Défricheur"</Text>.
-  </Text>
-</View>
-
+                <View style={{ flex: 2 }} className="px-4">
+                  <Text className="text-base Archivo leading-archivo text-center text-custom-blue flex-1">
+                    Vous avez déjà activé le niveau{" "}
+                    <Text className="ArchivoBold text-custom-green-text">
+                      "Ti’Défricheur"
+                    </Text>
+                    .
+                  </Text>
+                </View>
               )}
             </View>
           ) : (
-              <View className="flex-1 mt-4" style={{ paddingHorizontal: 16 }}>
-                {CurrentEligibleLevel && (
-                  <View className="flex-1">
-                    <Text className="text-2xl text-center text-custom-green-text ClashDisplayBold mb-6 mt-2">
-                      {CurrentEligibleLevel?.title}
-                    </Text>
-                    <Text className="text-center text-custom-blue text-base Archivo mb-4">
-                      Déjà {totalRequests} demandes aux marques, bravo !
-                    </Text>
-                  </View>
-                )}
-                {CurrentEligibleLevel && !CurrentEligibleLevelIsActive && (
-                  <View style={{flex:2.5}}>
-                    <Text className="text-center text-custom-blue text-base Archivo leading-archivo">
-                      {customInfo[CurrentEligibleLevel?.id - 2].reward}
-                    </Text>
-                    {/* Bouton débloquer si applicable */}
-                    <View className="py-6">
-                      <CustomButton
-                        title={customInfo[CurrentEligibleLevel?.id - 2].btnText}
-                        disabled={createLoading}
-                        style={{
-                          maxWidth: 280,
-                          minWidth: 200,
-                          marginHorizontal: "auto",
-                          backgroundColor: (colors as any)["custom-green-text"],
-                        }}
-                        onPress={() => {
-                          if (customInfo[CurrentEligibleLevel?.id - 2].route) {
-                            handleAssignLevel();
-                          } else {
-                            console.log("a ajouter");
-                          }
-                        }}
-                      />
-                    </View>
-                    <Text className="text-center text-custom-blue text-base Archivo leading-archivo mb-12">
-                      Plus que{" "}
-                      {getRemainingRequests(nextEligibleLevel?.goal ?? 0)}{" "}
-                      demandes pour passer au profl suivant et recevoir{" "}
-                      {customInfo[CurrentEligibleLevel?.id - 2].rewardNext}
-                    </Text>
-                  </View>
-                )}
-                {CurrentEligibleLevel && CurrentEligibleLevelIsActive && (
-                  <View className="flex-1">
-                    <Text className="text-center text-custom-blue text-base Archivo leading-archivo mb-12">
-                      Plus que{" "}
-                      {getRemainingRequests(nextEligibleLevel?.goal ?? 0)}{" "}
-                      demandes pour passer au profl suivant et{" "}
-                      {customInfo[CurrentEligibleLevel?.id - 2].rewardNext}
-                    </Text>
-                  </View>
-                )}
-
-                <View className="flex-1">
-                  {CurrentEligibleLevel == null && (
-                    <View className="flex-1">
-                      <View style={{ flex: 1.7 }}>
-                        <Text className="text-center text-custom-blue text-base Archivo leading-archivo mb-8">
-                          Pas encore de demandes de transparence, vous devez
-                          scanner et encourager les marques pour vous lancer
-                          dans l’aventure !
-                        </Text>
-                        <Text className="text-center text-custom-blue text-base Archivo leading-archivo">
-                          Plus que{" "}
-                          {getRemainingRequests(nextEligibleLevel?.goal ?? 0)}{" "}
-                          demandes pour débloquer les stories TiCO et passer au
-                          profil de :
-                        </Text>
-                      </View>
-                      <Text
-                        className="text-2xl text-center text-custom-green-text ArchivoExtraBold "
-                        style={{
-                          paddingBottom: 60,
-                          paddingTop: 30,
-                          flex: 1,
-                        }}
-                      >
-                        {nextEligibleLevel?.title}
-                      </Text>
-                      <Text
-                        className="text-center text-custom-blue text-base Archivo leading-archivo"
-                        style={{ flex: 2 }}
-                      >
-                        À vos scans, prêt partez !​
-                      </Text>
-                    </View>
-                  )}
+            <View className=" mt-4" style={{ paddingHorizontal: 16 }}>
+              <Text
+                className="text-3xl text-center text-custom-green-text"
+                style={{
+                  paddingBottom: 30,
+                  fontFamily:'comicoFont'
+                }}
+              >
+                {totalRequests} Demande
+              </Text>
+              {/*CurrentEligibleLevel && (
+                <View className="">
+                 
+                  <Text className="text-center text-custom-blue text-base Archivo mb-4">
+                    Déjà {totalRequests} demandes aux marques, bravo !
+                  </Text>
                 </View>
-              </View>
-          )} 
-          {CurrentEligibleLevel && totalRequests && (
-                <View className="items-center">
+              )*/}
+              {/*CurrentEligibleLevel && !CurrentEligibleLevelIsActive && (
+                <View >
                   <Text className="text-center text-custom-blue text-base Archivo leading-archivo">
-                    Partagez votre expérience sur TiCO
+                    {customInfo[CurrentEligibleLevel?.id - 2].reward}
                   </Text>
                   <View className="py-6">
                     <CustomButton
-                      title={"Partager"}
+                      title={customInfo[CurrentEligibleLevel?.id - 2].btnText}
+                      disabled={createLoading}
                       style={{
                         maxWidth: 280,
-                        minWidth: 150,
+                        minWidth: 200,
+                        marginHorizontal: "auto",
                         backgroundColor: (colors as any)["custom-green-text"],
                       }}
-                      onPress={handleShare}
+                      onPress={() => {
+                        if (customInfo[CurrentEligibleLevel?.id - 2].route) {
+                          handleAssignLevel();
+                        } else {
+                          console.log("a ajouter");
+                        }
+                      }}
                     />
                   </View>
+
+                  <Text className="text-center text-custom-blue text-base Archivo leading-archivo mb-12">
+                    Plus que{" "}
+                    {getRemainingRequests(nextEligibleLevel?.goal ?? 0)}{" "}
+                    demandes pour passer au profl suivant et recevoir{" "}
+                    {customInfo[CurrentEligibleLevel?.id - 2].rewardNext}
+                  </Text>
                 </View>
-              )}
+              )*/}
+              {/*CurrentEligibleLevel && CurrentEligibleLevelIsActive && (
+                <View className="flex-1">
+                  <Text className="text-center text-custom-blue text-base Archivo leading-archivo mb-12">
+                    Plus que{" "}
+                    {getRemainingRequests(nextEligibleLevel?.goal ?? 0)}{" "}
+                    demandes pour passer au profl suivant et{" "}
+                    {customInfo[CurrentEligibleLevel?.id - 2].rewardNext}
+                  </Text>
+                </View>
+              )*/}
+
+              <View className="">
+              {/*CurrentEligibleLevel == null && ()*/}
+                  <View>
+                    <View>
+                      <Text className="text-center text-custom-blue text-xl Archivo leading-archivo " style={{marginBottom:25}}>
+                        Scannez des produits et demandez la transparence aux
+                        marques pour démarrer votre aventure sur TiCO !​
+                      </Text>
+                     
+                      {Number(totalRequests)>0 &&(
+                      <Text className="text-center text-custom-blue text-xl Archivo leading-archivo">
+                        Plus que{" "}
+                        {getRemainingRequests(nextEligibleLevel?.goal ?? 0)}{" "}
+                        demandes et vous débloquerez la récompense réservée aux ​{nextEligibleLevel?.title}
+                      </Text>)}
+                    </View>
+                    {Number(totalRequests)==0 &&(<Image
+                      source={illustrationOrigines}
+                      style={{ width:260, height: 260, margin: "auto" }}
+                      resizeMode="contain"
+                    />)}
+                     {Number(totalRequests)>0 &&(
+                     <View style={{paddingTop:60,margin:"auto"}}>
+                <CustomButton
+                  title={"En savoir plus​"}
+                  style={{
+                    maxWidth: 280,
+                    minWidth: 180,
+                    backgroundColor: (colors as any)["custom-green-text"],
+                  }}
+                  onPress={()=>router.push("/hometab/infoProfil")}
+                /></View>)}
+
+                    
+                  </View>
+                
+              </View>
+              
+            </View>
+          )}
+          {/*CurrentEligibleLevel && totalRequests && (
+            <View className="items-center">
+              <Text className="text-center text-custom-blue text-base Archivo leading-archivo">
+                Partagez votre expérience sur TiCO
+              </Text>
+              <View className="py-6">
+                <CustomButton
+                  title={"Partager"}
+                  style={{
+                    maxWidth: 280,
+                    minWidth: 150,
+                    backgroundColor: (colors as any)["custom-green-text"],
+                  }}
+                  onPress={handleShare}
+                />
+              </View>
+            </View>
+          )*/}
         </>
       )}
     </SafeAreaView>

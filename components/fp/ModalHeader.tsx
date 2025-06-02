@@ -12,7 +12,7 @@ const ModalHeader: React.FC<ModalHeaderProps> = ({ goToPage }) => {
         <Image source={require('@/assets/images/flech.png')} style={styles.icon} />
       </TouchableOpacity>
       <View style={styles.titleContainer}>
-        <Image source={require('@/assets/icons/tico.png')} style={styles.ticoIcon} />
+        <Image source={require('@/assets/icons/tico.png')} style={styles.ticoIcon} resizeMode='contain'/>
       </View>
     </View>
   );
@@ -30,8 +30,8 @@ const styles = StyleSheet.create({
   },
 
   icon: {
-    width: 36,
-    height: 36,
+    width: 37,
+    height: 37,
     resizeMode: 'contain',
   },
   titleContainer: {

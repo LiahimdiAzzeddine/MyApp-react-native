@@ -46,6 +46,7 @@ export default function RootLayout() {
     ArchivoItalic: require("../assets/fonts/Archivo-Italic.otf"),
     ArchivoLightItalic: require("../assets/fonts/Archivo-Italic.otf"),
     pallybold: require("../assets/fonts/Pally-Bold.ttf"),
+    comicoFont: require("../assets/fonts/Comico-Regular.ttf"),
   });
 
   useEffect(() => {
@@ -90,8 +91,9 @@ export default function RootLayout() {
       <LoadingProvider>
         <AuthProvider>
           <AppProvider>
+            <GestureHandlerRootView style={{ flex: 1 }}>
             <BottomSheetProvider>
-              <GestureHandlerRootView style={{ flex: 1 }}>
+              
                 <Stack>
                   <Stack.Screen
                     name="(tabs)"
@@ -152,8 +154,9 @@ export default function RootLayout() {
                   <Stack.Screen name="+not-found" />
                 </Stack>
                 <CustomBottomSheet />
-              </GestureHandlerRootView>
+              
             </BottomSheetProvider>
+            </GestureHandlerRootView>
             <StatusBar style="auto" />
           </AppProvider>
         </AuthProvider>

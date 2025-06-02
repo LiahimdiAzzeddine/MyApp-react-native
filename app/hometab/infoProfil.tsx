@@ -4,6 +4,7 @@ import {
   StyleSheet,
   ImageBackground,
   ActivityIndicator,
+  Image,
 } from "react-native";
 import React, { useEffect } from "react";
 import useGetTotalRequests from "@/hooks/demand/useGetTotalRequests";
@@ -22,7 +23,7 @@ export default function InfoProfil() {
   }, []);
 
   const profiles: Profile[] = [
-    { level: 30, title: "Ti'curieux" },
+    { level: 30, title: "Ti'Curieux" },
     { level: 80, title: "Ti'Défricheur" },
     { level: 120, title: "Ti'Conso engagé" },
     { level: 250, title: "Ti'Décrypteur" },
@@ -144,17 +145,20 @@ export default function InfoProfil() {
               },
             ]}
           />
+       
 
-          <View
-            style={[
+       
+          <Image
+         source={require("@/assets/images/profil/27.png")}
+        resizeMode="contain"
+        style={[
               styles.orangePoint,
               {
                 top: orangePositionTop,
-                backgroundColor: totalRequests < 20 ? "#ff8200" : undefined,
-                opacity: 0.8,
+                opacity: 5,
               },
             ]}
-          />
+        />
 
           {/* Rest of your existing code remains the same */}
           <View style={styles.labelContainer}>
@@ -225,7 +229,7 @@ const styles = StyleSheet.create({
    dashedUnderline: {
     textDecorationLine: "underline",
     textDecorationStyle: "dashed",
-    textDecorationColor: "#000", 
+    textDecorationColor: "#4e976d", 
   },
 
   timelineContainer: {
@@ -242,30 +246,22 @@ const styles = StyleSheet.create({
   },
   orangePoint: {
     position: "absolute",
-    left: 49, // Ajusté pour s'aligner avec la nouvelle position de la ligne
-    width: 25,
-    height: 25,
-    borderRadius: 12,
-    borderWidth: 6,
-    borderColor: "#ff8200",
+    left: 44.5, // Ajusté pour s'aligner avec la nouvelle position de la ligne
+    width: 33,
+    height: 33,
     zIndex: 10,
-    shadowColor: "#ea580c",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    elevation: 5,
   },
 
   labelContainer: {
     position: "absolute",
-    left: -45,
+    left:-72,
     top: 200,
     transform: [{ rotate: "-90deg" }],
   },
   labelText: {
     color: "#15803d",
-    fontSize: 12,
-    fontFamily: "ArchivoLight",
+    fontSize: 18,
+    fontFamily: "comicoFont",
   },
   profileItem: {
     position: "absolute",
