@@ -44,7 +44,7 @@ const Demand = ({ demande, incrementInsistCount, press }: DemandeProps) => {
     setError(null);
     try {
       await incrementInsistCount(demandeState.id, setDemandeState);
-      Alert.alert("Succès", "Votre demande d'insistance a bien été envoyée.");
+      Alert.alert("Succès", "Votre relance à bien été envoyée.Vous pouvez relancer les marques 1 fois par mois. \n Chaque relance compte comme une demande.");
     } catch (error) {
       setError("Erreur lors de l'incrémentation.");
       Alert.alert(

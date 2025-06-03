@@ -10,25 +10,33 @@ const DemandDetail = () => {
   const { id }:any = params;
   const { demand, loading, error }=useDemandDetails(Number(id))
   const handleShare = async () => {
-    try {
-      const result = await Share.share({
-        message:
-          "J'ai soutenu cette initiative ! Rejoins-moi pour faire bouger les choses. 💪\n\n👉 Demande à cette marque de s'engager ici : https://votresite.com/initiative/123",
-      });
-  
-      if (result.action === Share.sharedAction) {
-        if (result.activityType) {
-          console.log('Partagé via', result.activityType);
-        } else {
-          console.log('Partage effectué');
-        }
-      } else if (result.action === Share.dismissedAction) {
-        console.log('Partage annulé');
+    const apiUrl = "https://tico.foodhea.com";
+  try {
+    const result = await Share.share({
+      message:
+        "J’ai demandé à cette marque de faire décrypter par des experts indépendants les informations sur son produit !\n\n" +
+        "Si tu le fais aussi nous aurons plus de pouvoir pour obliger les marques à dire la vérité.\n\n" +
+        "Plus on fait des demandes plus on est récompensé et ça c’est cool !\n\n" +
+        "Essaye, demande à cette marque de s’engager ici:"+apiUrl+"/fp/productDetailsScreen?gtin="+demand?.gtin+"&search=true \n\n" +
+        "Si tu n’as pas encore TiCO scan télécharge là et reviens sur mon message cliquer sur le lien plus haut pour arriver directement sur la page produit.\n\n" +
+        "📲 TiCO sur l'App Store : https://apps.apple.com/fr/app/tico-scan/id6739306595 \n" +
+        "📲 TiCO sur le Play Store : https://play.google.com/store/apps/details?id=com.tico.foodhea.tico&hl=fr \n\n" +
+        "À toi de jouer et n’hésite pas à partager ! 💥",
+    });
+
+    if (result.action === Share.sharedAction) {
+      if (result.activityType) {
+        console.log('Partagé via', result.activityType);
+      } else {
+        console.log('Partage effectué');
       }
-    } catch (error) {
-      console.error('Erreur de partage:', error);
+    } else if (result.action === Share.dismissedAction) {
+      console.log('Partage annulé');
     }
-  };
+  } catch (error) {
+    console.error('Erreur de partage:', error);
+  }
+};
 
 
   return (
@@ -152,11 +160,12 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
     },
     inviteText: {
-      color: '#1D4ED8',
+      color: '#0F548D',
       fontStyle: 'italic',
       fontSize: 17,
       marginVertical: 12,
       textAlign: 'center',
+      paddingBottom:10
     },
     button: {
       backgroundColor: '#4E986D',

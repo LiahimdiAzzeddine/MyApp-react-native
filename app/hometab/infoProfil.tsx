@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
   timelineContainer: {
     flex: 1,
     position: "relative",
-    marginLeft: 20,
+    marginLeft: 28,
     height: 450,
   },
   timelineLine: {
@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
 
   labelContainer: {
     position: "absolute",
-    left:-72,
+    left:-75,
     top: 200,
     transform: [{ rotate: "-90deg" }],
   },

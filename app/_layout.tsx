@@ -32,6 +32,7 @@ export default function RootLayout() {
   const router = useRouter();
 
   const [loaded] = useFonts({
+    comicoFont: require("../assets/fonts/Comico-Regular.otf"),
     Archivo: require("../assets/fonts/Archivo-Regular.otf"),
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
     ClashDisplayBold: require("../assets/fonts/ClashDisplay-Bold.ttf"),
@@ -46,7 +47,7 @@ export default function RootLayout() {
     ArchivoItalic: require("../assets/fonts/Archivo-Italic.otf"),
     ArchivoLightItalic: require("../assets/fonts/Archivo-Italic.otf"),
     pallybold: require("../assets/fonts/Pally-Bold.ttf"),
-    comicoFont: require("../assets/fonts/Comico-Regular.ttf"),
+    
   });
 
   useEffect(() => {

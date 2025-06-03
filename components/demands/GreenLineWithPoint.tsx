@@ -148,7 +148,7 @@ export default function GreenLineWithPoint({ demandesCount }: GreenLineWithPoint
       <Svg
         viewBox="0 100 950 700"
         preserveAspectRatio="xMidYMid meet"
-        style={{ width: 350, height: 230, justifyContent: 'flex-start', alignItems: 'flex-start' }}
+        style={{ width: 350, height: 200, justifyContent: 'flex-start', alignItems: 'flex-start' }}
       >
         <Defs>
           <ClipPath id="ebefa60551">
