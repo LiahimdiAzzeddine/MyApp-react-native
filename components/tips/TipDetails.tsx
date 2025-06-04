@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -12,27 +12,19 @@ import {
 } from "react-native";
 import Constants from "expo-constants";
 import { SafeAreaView } from "react-native-safe-area-context";
+import {
+  addFavorite,
+  removeFavorite,
+  isFavorite,
+} from "@/utils/favoritesController";
 
-// TypeScript interfaces
-interface Category {
-  name?: string;
-  image?: string;
-}
 
-interface TipProps {
-  tip: {
-    id: any;
-    title: string;
-    image?: string;
-    details: string;
-    category?: Category;
-  };
-}
 
 const apiUrl = Constants.expoConfig?.extra?.BACKEND_URL || "";
 
-const TipDetails: React.FC<TipProps> = ({ tip }) => {
+const TipDetails: React.FC<any> = ({ tip }:any) => {
   const { id, title, details } = tip;
+  const [favorite, setFavorite] = useState(false);
 
   // Méthode de partage avec deep link
   const shareTip = async () => {
@@ -49,9 +41,26 @@ const TipDetails: React.FC<TipProps> = ({ tip }) => {
       console.error("Erreur lors du partage", error);
     }
   };
+  const toggleFavorite = async () => {
+    if (favorite) {
+      await removeFavorite(id);
+      setFavorite(false);
+    } else {
+      await addFavorite(tip);
+      setFavorite(true);
+    }
+  };
+
+  useEffect(() => {
+    const checkFavorite = async () => {
+      const fav = await isFavorite(id);
+      setFavorite(fav);
+    };
+    checkFavorite();
+  }, [id]);
 
   return (
-    <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
+    <SafeAreaView style={styles.container} edges={["bottom", "left", "right"]}>
       {/* Contenu principal */}
       <View style={styles.scrollView} id="partiesScorllable">
         <View style={styles.mainContent}>
@@ -73,21 +82,37 @@ const TipDetails: React.FC<TipProps> = ({ tip }) => {
                 />
               </View>
             </ImageBackground>
+            <TouchableOpacity
+              onPress={toggleFavorite}
+              style={{
+                position: "absolute",
+                bottom: 10,
+                left: 10,
+                padding: 6,
+              }}
+            >
+              <Image
+                source={
+                  favorite
+                    ? require("@/assets/images/tips/33.png")
+                    : require("@/assets/images/tips/32.png")
+                }
+                style={{ width: 50, height: 50 }}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
           </View>
 
           {/* Section Détails */}
 
-<ScrollView style={styles.detailsSection}>
-  <Text style={styles.categoryTitle}>
-    {tip?.category?.name || "Notre ti'conseil"}
-  </Text>
+          <ScrollView style={styles.detailsSection}>
+            <Text style={styles.categoryTitle}>
+              {tip?.category?.name || "Notre ti'conseil"}
+            </Text>
 
-  {/* Afficher le HTML comme un texte brut */}
-  <Text style={styles.plainText}>
-    {details}
-  </Text>
-</ScrollView>
-
+            {/* Afficher le HTML comme un texte brut */}
+            <Text style={styles.plainText}>{details}</Text>
+          </ScrollView>
         </View>
       </View>
 
@@ -113,11 +138,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffeda3",
   },
   plainText: {
-  color: '#0F548D',
-  fontSize: 16,
-  lineHeight: 24,
-  marginTop: 10,
-},
+    color: "#0F548D",
+    fontSize: 16,
+    lineHeight: 24,
+    marginTop: 10,
+  },
   mainContent: {
     flex: 1,
     backgroundColor: "#fff",

@@ -1,3 +1,5 @@
+import { FormattedTip } from "@/types/tip";
+
 /**
  * Interface pour les données brutes d'un conseil provenant de l'API
  */
@@ -17,18 +19,7 @@ interface RawTipData {
   /**
    * Interface pour un conseil formaté
    */
-  export interface FormattedTip {
-    id: string | number | null;
-    title: string;
-    image: string;
-    details: string;
-    createdAt: string;
-    category: {
-      name: string;
-      image: string;
-    };
-    publicationDate: string;
-  }
+
   
   /**
    * Formate les données brutes d'un conseil en un format utilisable par l'application

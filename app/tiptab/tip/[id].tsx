@@ -1,34 +1,47 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
-import { RouteProp, useRoute, useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 
-import useTipById from '@/hooks/tips/useTipById';
 import TipDetails from '@/components/tips/TipDetails';
 import ErrorMessage from '@/components/tips/ErrorMessage';
 import { createTip } from '@/utils/createTips';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-
+import { getFavorite } from '@/utils/favoritesController';
+import useTipById from '@/hooks/tips/useTipById';
+import { FormattedTip } from '@/types/tip';
 
 const Tip: React.FC = () => {
-   const { id } = useLocalSearchParams();
-     const router = useRouter();
-   
- 
+  const { id } = useLocalSearchParams();
+  const router = useRouter();
+  const tipId = String(id);
 
-  // Si l'id est manquant, redirection immédiate
-  if (!id) {
-    router.replace('/(tabs)/tips');
-    return null;
-  }
+  const [localTip, setLocalTip] = useState<FormattedTip | null>(null);
+  const [checkingLocal, setCheckingLocal] = useState(true);
 
-  const { tip, loading, error } = useTipById(String(id));
+  const { tip, loading, error } = useTipById(tipId);
   const tipForme = tip ? createTip(tip) : null;
 
-  
+  useEffect(() => {
+    if (!id) {
+      router.replace('/(tabs)/tips');
+      return;
+    }
 
-  if (loading) {
+    const checkLocalFavorite = async () => {
+      try {
+        const favoriteTip = await getFavorite(tipId);
+        if (favoriteTip) setLocalTip(favoriteTip);
+      } catch {
+        // Silently ignore error
+      } finally {
+        setCheckingLocal(false);
+      }
+    };
+
+    checkLocalFavorite();
+  }, [id]);
+
+  if (!id || checkingLocal || loading) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#FF6B35" />
@@ -36,19 +49,19 @@ const Tip: React.FC = () => {
     );
   }
 
-  if (error || !tipForme) {
+  if (!localTip && (error || !tipForme)) {
     return (
       <View style={styles.container}>
         <ErrorMessage
-          message={error || "Aucun conseil trouvé."}
+          message={error || 'Aucun conseil trouvé.'}
           icon={<Ionicons name="alert-circle" size={24} color="#FF6B35" />}
           onClose={() => router.replace('/(tabs)/tips')}
         />
       </View>
     );
   }
-
-  return <TipDetails tip={tipForme} />;
+ const tipo=localTip || tipForme;
+  return <TipDetails tip={tipo} />;
 };
 
 const styles = StyleSheet.create({

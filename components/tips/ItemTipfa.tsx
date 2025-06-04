@@ -1,14 +1,14 @@
-import { Tip } from '@/types/tip';
+import { FormattedTip, Tip } from '@/types/tip';
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, useWindowDimensions } from 'react-native';
 
 
 
 interface ItemProps {
-  tip: Tip;
+  tip: FormattedTip;
   index: number;
   length: number;
-  OpenTip: (tip: Tip) => void;
+  OpenTip: (tip: FormattedTip) => void;
 }
 
 const Item = ({ tip, index, length, OpenTip }: ItemProps) => {
@@ -19,7 +19,7 @@ const Item = ({ tip, index, length, OpenTip }: ItemProps) => {
     return null;
   }
 
-  const imageSrc = tip.category.image_url ? { uri: 'https://'+tip.category.image_url } : require('@/assets/images/recipes/64.png');
+  const imageSrc = tip.category.image ? { uri:tip.category.image } : require('@/assets/images/recipes/64.png');
   const { width } = useWindowDimensions();
 
   return (
@@ -32,7 +32,7 @@ const Item = ({ tip, index, length, OpenTip }: ItemProps) => {
 
         {/* Détails du conseil */}
         <View style={styles.detailsContainer}>
-          <Text style={styles.title} className="leading-archivo ArchivoExtraBold" >{tip.titre}</Text>
+          <Text style={styles.title} className="leading-archivo ArchivoExtraBold" >{tip.title}</Text>
           <Text style={styles.details} className='leading-archivo Archivo'>
           {tip.details ? stripHtml(tip.details).substring(0, 50) + '...' : ''}
           </Text>

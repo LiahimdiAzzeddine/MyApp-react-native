@@ -23,11 +23,10 @@ const RenderHeaderTab = ({
     }}
   >
     <Text
-    
       style={{
         textAlign: 'center',
         color: titleColor,
-        fontSize: 24,
+        fontSize: 26,
         fontFamily: 'ClashDisplayBold',
       }}
     >

@@ -111,7 +111,7 @@ const CustomHeader = ({
               />
             </TouchableOpacity>
           )}
-          {(isHome && userInfo?.level) &&(
+          {(isHome ) &&(
             <TouchableOpacity style={styles.iconButton}
               onPress={() => router.push('/hometab/story')}
             >

@@ -22,3 +22,15 @@ export interface UseLastTipsResult {
     loading: boolean;
     error: string | null;
   }
+    export interface FormattedTip {
+      id: string | number | null;
+      title: string;
+      image: string;
+      details: string;
+      createdAt: string;
+      category: {
+        name: string;
+        image: string;
+      };
+      publicationDate: string;
+    }

@@ -41,7 +41,7 @@ export default function TabLayout() {
         name="tips"
         options={{
           title: "Tips",
-          header: () => <CustomHeader image="of" isTips={true}/>,
+          header: () => <CustomHeader image="of" />,
           tabBarStyle: { display: 'none' },
         }}
         
