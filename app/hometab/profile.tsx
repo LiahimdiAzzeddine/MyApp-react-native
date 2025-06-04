@@ -306,7 +306,7 @@ export default function Profile(): JSX.Element {
                   fontFamily:'comicoFont'
                 }}
               >
-                {totalRequests} Demande
+                {totalRequests} Demandes
               </Text>
               {/*CurrentEligibleLevel && (
                 <View className="">
@@ -364,10 +364,11 @@ export default function Profile(): JSX.Element {
               {/*CurrentEligibleLevel == null && ()*/}
                   <View>
                     <View>
+                      {Number(totalRequests)==0 &&(
                       <Text className="text-center text-custom-blue text-xl Archivo leading-archivo " style={{marginBottom:25}}>
                         Scannez des produits et demandez la transparence aux
                         marques pour démarrer votre aventure sur TiCO !​
-                      </Text>
+                      </Text>)}
                      
                       {Number(totalRequests)>0 &&(
                       <Text className="text-center text-custom-blue text-xl Archivo leading-archivo">

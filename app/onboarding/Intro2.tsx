@@ -10,7 +10,7 @@ import {
   Dimensions,
 } from 'react-native';
 
-import { styles } from './styles';
+import  styles from './styles';
 const features = ['claires', 'complètes', 'accessibles'];
 
 const Intro2 = () => {

@@ -44,8 +44,8 @@ const Recipes = () => {
     const fetchPreferences = async () => {
       try {
         const storedPreferences = await getPreferences(String(userInfo?.id));
-        setRegimePreferences([...storedPreferences?.regime]);
-        setAllergenPreferences([...storedPreferences?.allergen]);
+        setRegimePreferences([...storedPreferences?.regime??[]]);
+        setAllergenPreferences([...storedPreferences?.allergen??[]]);
       } catch (error) {
         console.error(
           "Erreur lors de la récupération des préférences :",
@@ -63,7 +63,6 @@ const Recipes = () => {
     regimePreferences,
     allergenPreferences,
       searchTerm);
-   
 
   const paginatedRecipes = (() => {
     const startIndex = (currentPage - 1) * itemsPerPage;

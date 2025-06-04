@@ -12,7 +12,7 @@ type Preferences = Record<string, any>;
 // ✅ Enregistre si c’est la première visite
 export const setFirstVisit = async (isFirstVisit: boolean): Promise<void> => {
   try {
-    await AsyncStorage.setItem('firstVisit', JSON.stringify(isFirstVisit));
+    await AsyncStorage.setItem('firstVisittest', JSON.stringify(isFirstVisit));
   } catch (error) {
     console.error("Erreur lors de l'enregistrement de la première visite :", error);
   }
@@ -21,7 +21,7 @@ export const setFirstVisit = async (isFirstVisit: boolean): Promise<void> => {
 // ✅ Récupère l’état de première visite
 export const getFirstVisit = async (): Promise<boolean | null> => {
   try {
-    const value = await AsyncStorage.getItem('firstVisit');
+    const value = await AsyncStorage.getItem('firstVisittest');
     return value !== null ? JSON.parse(value) : null;
   } catch (error) {
     console.error("Erreur lors de la récupération de la première visite :", error);

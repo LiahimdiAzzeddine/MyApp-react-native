@@ -10,7 +10,6 @@ import {
   Share,
   ImageBackground,
 } from "react-native";
-import { WebView } from "react-native-webview";
 import Constants from "expo-constants";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -54,7 +53,7 @@ const TipDetails: React.FC<TipProps> = ({ tip }) => {
   return (
     <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
       {/* Contenu principal */}
-      <View style={styles.scrollView}>
+      <View style={styles.scrollView} id="partiesScorllable">
         <View style={styles.mainContent}>
           {/* Section Titre et Image */}
           <View style={styles.headerSection}>
@@ -77,25 +76,18 @@ const TipDetails: React.FC<TipProps> = ({ tip }) => {
           </View>
 
           {/* Section Détails */}
-          <ScrollView style={styles.detailsSection}>
-            <Text style={styles.categoryTitle}>
-              {tip?.category?.name || "Notre ti'conseil"}
-            </Text>
-            {/* Utilisation de WebView pour afficher le contenu HTML */}
-            <WebView
-              originWhitelist={["*"]}
-              source={{
-                html: `<html><head><meta name="viewport" content="width=device-width, initial-scale=1.0"><style>body { font-family: Arial, sans-serif; color: #0F548D; line-height: 1.5; padding: 0; margin: 0; }</style></head><body>${details}</body></html>`,
-              }}
-              style={styles.webView}
-              scrollEnabled={false}
-              onNavigationStateChange={(event) => {
-                if (event.url !== "about:blank") {
-                  // Gérer les liens externes si nécessaire
-                }
-              }}
-            />
-          </ScrollView>
+
+<ScrollView style={styles.detailsSection}>
+  <Text style={styles.categoryTitle}>
+    {tip?.category?.name || "Notre ti'conseil"}
+  </Text>
+
+  {/* Afficher le HTML comme un texte brut */}
+  <Text style={styles.plainText}>
+    {details}
+  </Text>
+</ScrollView>
+
         </View>
       </View>
 
@@ -120,6 +112,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#ffeda3",
   },
+  plainText: {
+  color: '#0F548D',
+  fontSize: 16,
+  lineHeight: 24,
+  marginTop: 10,
+},
   mainContent: {
     flex: 1,
     backgroundColor: "#fff",

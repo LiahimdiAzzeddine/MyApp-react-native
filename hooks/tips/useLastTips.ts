@@ -28,6 +28,8 @@ const useLastTips = (
         });
 
         if (isMounted) {
+       
+          
           setTips(response.data);
         }
       } catch (err: any) {

@@ -1,4 +1,4 @@
-import { View, Text, ImageBackground, Image } from "react-native";
+import { View, Text, ImageBackground, Image, ScrollView } from "react-native";
 import React from "react";
 import { useTheme } from "@react-navigation/native";
 import { useLocalSearchParams } from "expo-router";
@@ -38,25 +38,24 @@ const levels = [
   {
     id: 5,
     title: "Ti’Veilleur",
-    soubTitle: "À partir de 400 demandes​",
+    soubTitle2: "À partir de 400 demandes​",
     Text: "Pendant 1h30, cette consultation individuelle permet de faire le point sur vos habitudes actuelles pour enclencher des changements vers une alimentation saine et durable. Marion Honoré prend en compte vos envies, vos contraintes et votre contexte de santé pour vous proposer des conseils concrets et personnalisés tant sur le contenu de votre assiette que sur la répartition des repas sur la journée. Elle abordera également le reste de votre mode de vie, et vous proposera éventuellement un protocole de compléments alimentaires adapté à vos besoins.",
     image1: require("@/assets/images/storys/30.png"),
     image2: require("@/assets/images/storys/20.png"),
   },
   {
     id: 6,
-    title: "À partir de 600 demandes​",
-    soubTitle: "À partir de 600 demandes​",
-    message:
-      "Débloquer gratuitement le jeu Info ou Pipeau pour pimenter vos apéros tout en apprenant de manière ludique à déjouer les pièges sur l’alimentation.\n Prenez-vous au jeu, mettez vous dans la peau d’un influenceur, d’un lobbyiste ou d’un consommateur pour trouver la vérité sur les produits alimentaires !​",
+    title: "Ti'Héros de la transparence",
+    soubTitle2: "À partir de 600 demandes​",
+    message:"Débloquer gratuitement le jeu Info ou Pipeau pour pimenter vos apéros tout en apprenant de manière ludique à déjouer les pièges sur l’alimentation.\n Prenez-vous au jeu, mettez vous dans la peau d’un influenceur, d’un lobbyiste ou d’un consommateur pour trouver la vérité sur les produits alimentaires !​",
     image: require("@/assets/images/storys/22.png"),
   },
   {
     id: 7,
     title: "Tit’Légende TiCO",
-    soubTitle: "À partir de 800 demandes​",
+    soubTitle2: "À partir de 800 demandes​",
     Text: "Il est temps de faire le point sur les changements que vous avez opérés dans votre alimentation et votre mode de vie. Cette séance de 45min permet d'ajuster les recommandations en fonction de votre ressenti : identifier ce qui est facile à mettre en place et ce qui l'est moins, ajuster la stratégie avec des applications différentes des recommandations, approfondir les causes de vos éventuels désagréments (digestion, hormones, immunité, régulation de la glycémie...).",
-        image1: require("@/assets/images/storys/30.png"),
+    image1: require("@/assets/images/storys/30.png"),
     image2: require("@/assets/images/storys/21.png"),
   },
   {
@@ -91,6 +90,7 @@ export default function Profile() {
       className="flex-1 bg-white"
       edges={["bottom", "left", "right"]}
     >
+      
       {/* En-tête avec image de fond */}
       <ImageBackground
         source={require("@/assets/images/profil/backgroundProfil.png")}
@@ -109,10 +109,19 @@ export default function Profile() {
       </ImageBackground>
 
       {/* Contenu du niveau */}
-      <View className="flex-1  justify-start px-4">
-        <Text className="text-center text-custom-green-text text-2xl ArchivoBold mb-4 leading-archivo">
+      
+      <View className="flex-1  justify-start" style={{paddingHorizontal:16}}>
+        {level?.soubTitle&&(
+          <Text className="text-center text-custom-green-text text-2xl ArchivoBold mb-4 leading-archivo">
           {level.soubTitle}
         </Text>
+        )}
+        {level?.soubTitle2 &&(
+          <Text className="text-start text-custom-green-text text-2xl ArchivoBold mb-4 leading-archivo">
+          {level.soubTitle2}
+        </Text>
+        )}
+        
         {level.message && (
           <Text className="text-center text-custom-green-text text-lg Archivo  leading-archivo">
             {level.message}
@@ -133,31 +142,36 @@ export default function Profile() {
         {level.image1 && level.image2 && (
           <View
             style={{
-              flex: 1,
               flexDirection: "row",
               justifyContent: "center",
               alignItems: "center",
-              paddingHorizontal:5
+              paddingHorizontal:16,
+              paddingBottom:5
             }}
           >
             <Image
               source={level.image1}
-              style={{ width: "50%", height: 120 }}
+              style={{ width: "50%", height: 130 }}
               resizeMode="contain"
             />
             <Image
               source={level.image2}
-              style={{ width: "50%", height: 200 }}
+              style={{ width: "50%", height: 130 }}
               resizeMode="contain"
             />
           </View>
         )}
+        
         {level.Text && (
-          <Text className="text-start text-custom-green-text text-lg Archivo  leading-archivo" style={{flex:2,alignItems:"center"}}>
+          <ScrollView showsVerticalScrollIndicator={false} >
+          <Text className="text-start text-custom-green-text text-lg Archivo  leading-archivo" style={{flex:2,alignItems:"center",padding:16}}>
             {level.Text}
           </Text>
+          </ScrollView>
         )}
+        
       </View>
+      
     </SafeAreaView>
   );
 }

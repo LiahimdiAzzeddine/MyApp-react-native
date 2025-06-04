@@ -7,7 +7,7 @@ import {
   StyleSheet,
   Dimensions,
 } from "react-native";
-import {styles} from './styles'
+import styles from './styles'
 
 const { height: screenHeight, width: screenWidth } = Dimensions.get("window");
 

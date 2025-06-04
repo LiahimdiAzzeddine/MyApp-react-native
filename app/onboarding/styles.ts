@@ -2,7 +2,7 @@ import { Dimensions, StyleSheet } from "react-native";
 
 const { height: screenHeight, width: screenWidth } = Dimensions.get("window");
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: '#ffffff',
@@ -270,3 +270,4 @@ export const styles = StyleSheet.create({
     aspectRatio: 1, // Maintient les proportions
   },
 });
+export default styles;

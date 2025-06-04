@@ -49,13 +49,23 @@ interface RawTipData {
       
       return formattedUrl;
     };
+const stripHtml = (html:any) => {
+  return html
+    .replace(/<br\s*\/?>/gi, '\n')     // Remplace <br> par 1 saut de ligne
+    .replace(/<\/p>/gi, '\n')          // Remplace </p> par 1 saut de ligne
+    .replace(/<[^>]+>/g, '')           // Supprime toutes les autres balises HTML
+    .replace(/\n{2,}/g, '\n\n ')          // Remplace plusieurs sauts de ligne par un seul
+    .trim();
+};
+
+
   
     // Retourner le conseil formaté
     return {
       id: tipData.id ?? null,
       title: tipData.titre ?? "Titre du conseil",
       image: formatImageUrl(tipData.category?.image_url), // Formater l'image principale
-      details: tipData.details ?? "Détails non disponibles",
+      details: stripHtml(tipData.details) ?? "Détails non disponibles",
       createdAt: tipData.created_at ?? "Date inconnue",
       category: {
         name: tipData.category?.label ?? "Catégorie inconnue",  // Nom de la catégorie

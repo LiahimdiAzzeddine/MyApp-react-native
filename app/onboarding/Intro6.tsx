@@ -8,7 +8,7 @@ import {
   SafeAreaView,
   Dimensions,
 } from 'react-native';
-import {styles} from './styles'
+import styles from './styles'
 
 const Intro6 = () => {
   return (

@@ -11,7 +11,7 @@ import Intro5 from './onboarding/Intro5';
 import Intro6 from './onboarding/Intro6';
 import Intro7 from './onboarding/Intro7';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import {styles} from "./onboarding/styles";
+import styles from "./onboarding/styles";
 
 
 const WelcomeSlider = () => {
@@ -22,7 +22,6 @@ const WelcomeSlider = () => {
   };
   return (
     <SafeAreaView style={styles.container}  edges={['bottom', 'left', 'right']}>
-      <StatusBar style="dark" />
       <PagerView
         style={styles.pager}
         initialPage={0}

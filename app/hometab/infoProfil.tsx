@@ -162,7 +162,7 @@ export default function InfoProfil() {
 
           {/* Rest of your existing code remains the same */}
           <View style={styles.labelContainer}>
-            <Text style={styles.labelText}>{totalRequests} demandes</Text>
+            <Text style={styles.labelText}>Nombre de demandes</Text>
           </View>
 
           {profiles.map((profile, index) => {
@@ -228,14 +228,15 @@ const styles = StyleSheet.create({
   },
    dashedUnderline: {
     textDecorationLine: "underline",
-    textDecorationStyle: "dashed",
-    textDecorationColor: "#4e976d", 
+    textDecorationStyle: "solid",
+    textDecorationColor: "#4e976d",
+     
   },
 
   timelineContainer: {
     flex: 1,
     position: "relative",
-    marginLeft: 28,
+    marginLeft: 30,
     height: 450,
   },
   timelineLine: {
@@ -254,8 +255,8 @@ const styles = StyleSheet.create({
 
   labelContainer: {
     position: "absolute",
-    left:-75,
-    top: 200,
+    left:-120,
+    top: 230,
     transform: [{ rotate: "-90deg" }],
   },
   labelText: {
@@ -280,10 +281,10 @@ const styles = StyleSheet.create({
   },
   levelNumber: {
     fontSize: 16,
-    fontWeight: "bold",
-    width: 40,
+    fontFamily:"comicoFont",
+    width: 43,
     textAlign: "right", // Aligné à droite pour être proche de la timeline
-    marginRight: 8, // Espace entre le numéro et le point
+    marginRight: 5, // Espace entre le numéro et le point
   },
   profileTitle: {
     fontSize: 16,
