@@ -68,7 +68,6 @@ const TipSettings = () => {
      if (!context) {
     throw new Error('TipContext must be used within a TipProvider');
   }
-
   const { refreshTips } = context;
 
 

@@ -19,7 +19,7 @@ const useCreateUserLevel = () => {
       if (response.status === 201) {
         setCreatedUserLevel(response.data);
         //console.log("🚀 ~ createUserLevel ~ response.data:", response.data.level)
-        updateUserLevel(response.data.level)
+        updateUserLevel(response.data.user.levels)
         return response.data;
       } else {
         setError("Échec lors de la création de la relation utilisateur-niveau.");

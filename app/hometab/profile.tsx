@@ -6,6 +6,7 @@ import {
   GestureResponderEvent,
   Share,
   Image,
+  Alert,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import useGetTotalRequests from "@/hooks/demand/useGetTotalRequests";
@@ -22,27 +23,27 @@ const customInfo = [
   {
     id: 2,
     title: "Ti’Curieux",
-    reward:
-      "Débloquez les stories TiCO stylées et engagées pour faire bouger les marques.​",
-    rewardNext: "3 Ti’Conseils exclusifs pour briller à l’apéro !​​",
+    reward: "Débloquez les stories TiCO stylées et engagées pour faire bouger les marques.​",
+    rewardNext: "3 Ti’Conseils exclusifs par mois pour briller à l’apéro !​​",
     route: "/hometab/story",
     btnText: "Débloquer les stories​",
   },
   {
     id: 3,
     title: "Ti’Défricheur",
-    reward:
-      "Débloquez vos 3 Ti’conseils exclusifs mensuels si vous avez appris quelque chose d’intéressant dites-le !​",
+    reward: "Débloquez vos 3 Ti'Conseils exclusifs mensuels si vous avez appris quelque chose d’intéressant dites-le !​",
     rewardNext:
-      "votre calendrier perpétuel de fruits et légumes de saison. Ponctué d’astuces, de rappels et de recettes c’est un bel outil à garder à l’œil dans la cuisine​",
-    route: "/hometab/story",
+      "votre calendrier perpétuel de fruits et légumes de saison. Ponctué d’astuces, de rappels et de recettes c’est un bel outil à garder à l’œil dans la cuisine.​",
+    route: "/tips",
     btnText: "Débloquer les Ti’Conseils​​",
   },
   {
     id: 4,
     title: "Ti’Conso engagé",
-    reward: "Calendrier F&L",
-    rewardNext: "recevoir 3 Ti’Conseils exclusifs pour briller à l’apéro !​​",
+    reward:
+      "votre calendrier perpétuel de fruits et légumes de saison. Ponctué d’astuces, de rappels et de recettes c’est un bel outil à garder à l’œil dans la cuisine !",
+    rewardNext:
+      "votre calendrier perpétuel de fruits et légumes de saison. Ponctué d’astuces, de rappels et de recettes c’est un bel outil à garder à l’œil dans la cuisine !​",
     route: "/hometab/story",
     btnText: "Débloquer les stories​",
   },
@@ -58,7 +59,7 @@ const customInfo = [
     id: 6,
     title: "Ti’Veilleur",
     reward: "Jeu Info ou Pipeau",
-    rewardNext: "recevoir 3 Ti’Conseils exclusifs pour briller à l’apéro !​​",
+    rewardNext: "recevoir 3 Ti’Conseils exclusifs pour briller à l’apéro !​​pp",
     route: "/hometab/story",
     btnText: "Débloquer les stories​",
   },
@@ -109,6 +110,7 @@ export default function Profile(): JSX.Element {
     totalRequests,
     error,
     fetchTotalRequests,
+    currentLevels,
     currentLevel,
     levels,
   } = useGetTotalRequests();
@@ -176,6 +178,7 @@ export default function Profile(): JSX.Element {
         //const LevelIndex =levels.findIndex(lvl => lvl === currentLevelgeted);
         setCurrentEligibleLevelIsActive(false);
       }
+      console.log("🚀 ~ useEffect ~ nextLevel:", nextLevel);
     } else {
       setCurrentEligibleLevel(currentLevelgeted);
       setNextEligibleLevel(nextLevel);
@@ -190,8 +193,11 @@ export default function Profile(): JSX.Element {
       user_id: userId,
       level_id: CurrentEligibleLevel.id,
     });
+   
+      router.push(customInfo[CurrentEligibleLevel?.id - 2].route as Route);
+    
 
-    router.push(customInfo[CurrentEligibleLevel?.id - 2].route as Route);
+    
     if (result) {
       fetchTotalRequests();
     }
@@ -226,11 +232,11 @@ export default function Profile(): JSX.Element {
           minHeight: 140,
           justifyContent: "center",
           alignItems: "center",
-          marginBottom: 25,
+          marginBottom: 20,
           marginTop: 15,
         }}
       >
-        <Text className="text-center text-custom-green-text text-2xl ClashDisplayBold">
+        <Text className="text-center text-custom-green-text text-3xl ClashDisplayBold">
           Profil
         </Text>
       </ImageBackground>
@@ -299,31 +305,38 @@ export default function Profile(): JSX.Element {
             </View>
           ) : (
             <View className=" mt-4" style={{ paddingHorizontal: 16 }}>
+              {CurrentEligibleLevel && (
+                <Text
+                  className="text-center text-custom-green-text ClashDisplayBold mb-2 leading-archivo "
+                  style={{ fontSize: 26 }}
+                >
+                  {CurrentEligibleLevel?.title}
+                </Text>
+              )}
               <Text
-                className="text-3xl text-center text-custom-green-text"
+                className="text-3xl text-center text-custom-green-text leading-archivo"
                 style={{
                   paddingBottom: 30,
-                  fontFamily:'comicoFont'
+                  fontFamily: "comicoFont",
                 }}
               >
-                {totalRequests} Demandes
+                {totalRequests} Demande{Number(totalRequests)>1 && 's'}
               </Text>
-              {/*CurrentEligibleLevel && (
-                <View className="">
-                 
-                  <Text className="text-center text-custom-blue text-base Archivo mb-4">
-                    Déjà {totalRequests} demandes aux marques, bravo !
-                  </Text>
-                </View>
-              )*/}
-              {/*CurrentEligibleLevel && !CurrentEligibleLevelIsActive && (
-                <View >
-                  <Text className="text-center text-custom-blue text-base Archivo leading-archivo">
-                    {customInfo[CurrentEligibleLevel?.id - 2].reward}
+              {CurrentEligibleLevel && (
+                <Text className="text-center text-custom-blue text-xl Archivo leading-archivo">
+                  Déjà {totalRequests} demandes aux marques, bravo !
+                </Text>
+              )}
+              {CurrentEligibleLevel && !CurrentEligibleLevelIsActive && (
+                <View>
+                  <Text className="text-center text-custom-blue text-xl Archivo leading-archivo">
+                    {customInfo[Number(CurrentEligibleLevel.id - 2)].reward}
                   </Text>
                   <View className="py-6">
                     <CustomButton
-                      title={customInfo[CurrentEligibleLevel?.id - 2].btnText}
+                      title={
+                        customInfo[Number(CurrentEligibleLevel.id - 2)].btnText
+                      }
                       disabled={createLoading}
                       style={{
                         maxWidth: 280,
@@ -332,7 +345,9 @@ export default function Profile(): JSX.Element {
                         backgroundColor: (colors as any)["custom-green-text"],
                       }}
                       onPress={() => {
-                        if (customInfo[CurrentEligibleLevel?.id - 2].route) {
+                        if (
+                          customInfo[Number(CurrentEligibleLevel.id - 2)].route
+                        ) {
                           handleAssignLevel();
                         } else {
                           console.log("a ajouter");
@@ -340,15 +355,8 @@ export default function Profile(): JSX.Element {
                       }}
                     />
                   </View>
-
-                  <Text className="text-center text-custom-blue text-base Archivo leading-archivo mb-12">
-                    Plus que{" "}
-                    {getRemainingRequests(nextEligibleLevel?.goal ?? 0)}{" "}
-                    demandes pour passer au profl suivant et recevoir{" "}
-                    {customInfo[CurrentEligibleLevel?.id - 2].rewardNext}
-                  </Text>
                 </View>
-              )*/}
+              )}
               {/*CurrentEligibleLevel && CurrentEligibleLevelIsActive && (
                 <View className="flex-1">
                   <Text className="text-center text-custom-blue text-base Archivo leading-archivo mb-12">
@@ -360,50 +368,65 @@ export default function Profile(): JSX.Element {
                 </View>
               )*/}
 
-              <View className="">
-              {/*CurrentEligibleLevel == null && ()*/}
+          
+                {/*CurrentEligibleLevel == null && ()*/}
+                <View>
                   <View>
-                    <View>
-                      {Number(totalRequests)==0 &&(
-                      <Text className="text-center text-custom-blue text-xl Archivo leading-archivo " style={{marginBottom:25}}>
+                    {Number(totalRequests) == 0 && (
+                      <Text
+                        className="text-center text-custom-blue text-xl Archivo leading-archivo "
+                        style={{ marginBottom: 25 }}
+                      >
                         Scannez des produits et demandez la transparence aux
                         marques pour démarrer votre aventure sur TiCO !​
-                      </Text>)}
-                     
-                      {Number(totalRequests)>0 &&(
+                      </Text>
+                    )}
+
+                    {Number(totalRequests) > 0 && (
                       <Text className="text-center text-custom-blue text-xl Archivo leading-archivo">
                         Plus que{" "}
                         {getRemainingRequests(nextEligibleLevel?.goal ?? 0)}{" "}
-                        demandes et vous débloquerez la récompense réservée aux ​{nextEligibleLevel?.title}
-                      </Text>)}
-                    </View>
-                    {Number(totalRequests)==0 &&(<Image
-                      source={illustrationOrigines}
-                      style={{ width:260, height: 260, margin: "auto" }}
-                      resizeMode="contain"
-                    />)}
-                     {Number(totalRequests)>0 &&(
-                     <View style={{paddingTop:60,margin:"auto"}}>
-                <CustomButton
-                  title={"En savoir plus​"}
-                  style={{
-                    maxWidth: 280,
-                    minWidth: 180,
-                    backgroundColor: (colors as any)["custom-green-text"],
-                  }}
-                  onPress={()=>router.push("/hometab/infoProfil")}
-                /></View>)}
-
-                    
+                        demandes pour passer au profil suivant et recevoir{" "}
+                        {
+                          customInfo[
+                            CurrentEligibleLevel ? CurrentEligibleLevel.id - 2 : 0
+                          ].rewardNext
+                        }
+                      </Text>
+                    )}
                   </View>
-                
-              </View>
+                  {Number(totalRequests) == 0 && (
+                    <Image
+                      source={illustrationOrigines}
+                      style={{ width: 260, height: 260, margin: "auto" }}
+                      resizeMode="contain"
+                    />
+                  )}
+                  {Number(totalRequests) > 0 && (
+                    <View style={{ paddingTop: 60, margin: "auto" }}>
+                      {(CurrentEligibleLevelIsActive ||
+                        Number(totalRequests) < 29) && (
+                        <CustomButton
+                          title={"En savoir plus​"}
+                          style={{
+                            maxWidth: 280,
+                            minWidth: 180,
+                            backgroundColor: (colors as any)[
+                              "custom-green-text"
+                            ],
+                          }}
+                          onPress={() => router.push("/hometab/infoProfil")}
+                        />
+                      )}
+                    </View>
+                  )}
               
+              </View>
             </View>
           )}
-          {/*CurrentEligibleLevel && totalRequests && (
-            <View className="items-center">
-              <Text className="text-center text-custom-blue text-base Archivo leading-archivo">
+          
+            <View className="items-center flex-1 justify-center" >
+              <Text className="text-center text-custom-blue text-xl Archivo leading-archivo">
                 Partagez votre expérience sur TiCO
               </Text>
               <View className="py-6">
@@ -418,7 +441,7 @@ export default function Profile(): JSX.Element {
                 />
               </View>
             </View>
-          )*/}
+          
         </>
       )}
     </SafeAreaView>

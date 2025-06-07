@@ -55,7 +55,7 @@ const updateUserLevel = async (newLevel: any) => {
   if (userInfo) {
     const updatedUser = {
       ...userInfo,
-      level: newLevel,
+      levels: newLevel,
     };
 
     setUserInfo(updatedUser);

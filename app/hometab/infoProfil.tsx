@@ -204,6 +204,7 @@ export default function InfoProfil() {
                     {
                       color: isCompleted ? "#c6f1d9" : "#4e976d",
                       fontWeight: isCompleted ? "600" : "400",
+                      textDecorationColor: isCompleted ? "#c6f1d9" : "#4e976d",
                     },
                     styles.dashedUnderline
                   ]}
@@ -228,9 +229,7 @@ const styles = StyleSheet.create({
   },
    dashedUnderline: {
     textDecorationLine: "underline",
-    textDecorationStyle: "solid",
-    textDecorationColor: "#4e976d",
-     
+    textDecorationStyle: "solid",     
   },
 
   timelineContainer: {

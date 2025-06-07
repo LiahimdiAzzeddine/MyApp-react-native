@@ -1,8 +1,13 @@
-import { FormattedTip, Tip } from '@/types/tip';
-import React from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, useWindowDimensions } from 'react-native';
-
-
+import { FormattedTip, Tip } from "@/types/tip";
+import React from "react";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  useWindowDimensions,
+} from "react-native";
 
 interface ItemProps {
   tip: FormattedTip;
@@ -12,19 +17,24 @@ interface ItemProps {
 }
 
 const Item = ({ tip, index, length, OpenTip }: ItemProps) => {
-  const stripHtml = (html:any) => {
-    return html.replace(/<[^>]*>?/gm, '');
+  const stripHtml = (html: any) => {
+    return html.replace(/<[^>]*>?/gm, "");
   };
   if (!tip) {
     return null;
   }
 
-  const imageSrc = tip.category.image ? { uri:tip.category.image } : require('@/assets/images/recipes/64.png');
+  const imageSrc = tip.category.image
+    ? { uri: tip.category.image }
+    : require("@/assets/images/recipes/64.png");
   const { width } = useWindowDimensions();
 
   return (
-    <View key={index} >
-      <TouchableOpacity style={styles.itemContainer} onPress={() => OpenTip(tip)}>
+    <View key={index}>
+      <TouchableOpacity
+        style={styles.itemContainer}
+        onPress={() => OpenTip(tip)}
+      >
         {/* Image du conseil */}
         <View style={styles.imageContainer}>
           <Image source={imageSrc} style={styles.image} />
@@ -32,33 +42,40 @@ const Item = ({ tip, index, length, OpenTip }: ItemProps) => {
 
         {/* Détails du conseil */}
         <View style={styles.detailsContainer}>
-          <Text style={styles.title} className="leading-archivo ArchivoExtraBold" >{tip.title}</Text>
-          <Text style={styles.details} className='leading-archivo Archivo'>
-          {tip.details ? stripHtml(tip.details).substring(0, 50) + '...' : ''}
+          <Text
+            style={styles.title}
+            className="leading-archivo ArchivoExtraBold"
+          >
+            {tip.title}
+          </Text>
+          <Text style={styles.details} className="leading-archivo Archivo">
+            {tip.details ? stripHtml(tip.details).substring(0, 50) + "..." : ""}
           </Text>
         </View>
 
         {/* Flèche */}
-        <TouchableOpacity onPress={() => OpenTip(tip)}
-          >
-          <Image source={require('@/assets/images/tips/elementFleche.png')} style={styles.arrowIcon}  resizeMode="contain" />
+        <TouchableOpacity onPress={() => OpenTip(tip)}>
+          <Image
+            source={require("@/assets/images/tips/elementFleche.png")}
+            style={styles.arrowIcon}
+            resizeMode="contain"
+          />
         </TouchableOpacity>
       </TouchableOpacity>
 
       {/* Séparateur */}
       {index < length - 1 && <View style={styles.separator} />}
-      {index == length - 1 && <View style={{height:120}} />}
+      {index == length - 1 && <View style={{ height: 120 }} />}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-
   itemContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingTop: 12,
-    paddingBottom:10,
+    paddingBottom: 10,
     paddingHorizontal: 12,
   },
   imageContainer: {
@@ -66,27 +83,27 @@ const styles = StyleSheet.create({
     height: 80,
     marginRight: 16,
     borderRadius: 12,
-    overflow: 'hidden',
-    backgroundColor: '#f3f3f3',
-    resizeMode: 'cover',
+    overflow: "hidden",
+    backgroundColor: "#f3f3f3",
+    resizeMode: "cover",
   },
 
   image: {
-    width: '100%',
-    height: '100%',
-    objectFit: 'cover',
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
   },
-  
+
   detailsContainer: {
     flex: 1,
   },
   title: {
-    color: '#FF9E2C',
+    color: "#FF9E2C",
     fontSize: 14,
     marginBottom: 4,
   },
   details: {
-    color: '#4A90E2',
+    color: "#4A90E2",
     fontSize: 13,
   },
   arrowIcon: {
@@ -96,7 +113,7 @@ const styles = StyleSheet.create({
   },
   separator: {
     height: 1,
-    backgroundColor: '#FF9E2C',
+    backgroundColor: "#FF9E2C",
     marginHorizontal: 10,
   },
 });

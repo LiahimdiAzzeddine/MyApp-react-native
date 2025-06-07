@@ -4,39 +4,21 @@ import { useRouter } from "expo-router";
 import RenderHeaderTab from "@/components/ui/renderHeader";
 import { AppContext } from "@/context/AppContext";
 import { SafeAreaView } from "react-native-safe-area-context";
-import useGetTotalRequests from "@/hooks/demand/useGetTotalRequests";
 
 const Tips = () => {
   const router = useRouter();
   const context = useContext(AppContext);
-  const { loading, totalRequests, error, fetchTotalRequests } =
-    useGetTotalRequests();
 
-  useEffect(() => {
-    fetchTotalRequests();
-  }, []);
 
   if (!context) {
     throw new Error("TipContext must be used within a TipProvider");
   }
-   const showTulipMessage = () => {
-    Alert.alert(
-      "Ti’conseils indisponibles",
-      "Tu dois avoir au moins 80 demandes pour débloquer les Ti’conseils exclusifs",
-      [{ text: "OK" }]
-    );
-  };
-  const showUnavailableMessage = () => {
-    Alert.alert(
-      "Fonctionnalité indisponible",
-      "Cette interface n’est pas encore disponible dans cette version de l’application.",
-      [{ text: "OK" }]
-    );
-  };
 
   const isOnline = context.isOnline;
-  const canAccessTips = (totalRequests??0) >= 80;
   
+   const AlertOffLine=()=>{
+    Alert.alert("Hore Ligne","Vous êtes hors ligne. Certaines fonctionnalités sont désactivées.")
+   }
 
   return (
     <SafeAreaView
@@ -44,7 +26,7 @@ const Tips = () => {
       edges={["bottom", "left", "right"]}
     >
       <View style={styles.Radius}>
-        <RenderHeaderTab title="Ti'conseils" />
+        <RenderHeaderTab title="Ti'Conseils" />
         {!isOnline && (
           <View style={styles.offlineMessage}>
             <Text style={styles.offlineText}>
@@ -56,7 +38,6 @@ const Tips = () => {
         <View style={styles.container}>
           <TouchableOpacity
             style={[styles.button]}
-            disabled={!isOnline}
             onPress={()=>router.push("/tiptab/favorites")}
           >
             <Text style={styles.buttonText}>Mes favoris</Text>
@@ -65,26 +46,24 @@ const Tips = () => {
           <TouchableOpacity
               style={[
               styles.button,
-              (!isOnline || !canAccessTips) && styles.buttonDisabled,
+              (!isOnline || !isOnline) && styles.buttonDisabled,
             ]}
             disabled={!isOnline}
              onPress={() => {
-              if (!canAccessTips) {
-                showTulipMessage();
-              } else {
                 router.push("/tiptab/tipsExclusives");
-              }
             }}
           >
-            <Text style={styles.buttonText}>Mes Ti’conseils exclusifs</Text>
+            <Text style={styles.buttonText}>Mes Ti'Conseils exclusifs</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={[styles.button, !isOnline && styles.buttonDisabled]}
-            disabled={!isOnline}
-            onPressIn={() => router.push("/tiptab/tips")}
+            onPressIn={() =>{
+              isOnline?(router.push("/tiptab/tips")):(AlertOffLine())
+              
+            } }
           >
-            <Text style={styles.buttonText}>Tous les Ti’conseils</Text>
+            <Text style={styles.buttonText}>Tous les Ti'Conseils</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -110,7 +89,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     borderRadius: 16,
     marginBottom: 30,
-    width: 250,
+    width: 260,
     alignItems: "center",
   },
   buttonDisabled: {

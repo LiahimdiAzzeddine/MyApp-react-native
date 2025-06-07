@@ -20,5 +20,5 @@ export interface RolePermission {
     email: string;
     status: number,
     role: Role;
-    level:Level;
+    levels:Level[];
   }

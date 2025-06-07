@@ -6,6 +6,7 @@ const useGetTotalRequests = () => {
   const [loading, setLoading] = useState(false);
   const [totalRequests, setTotalRequests] = useState<number | null>(null);
   const [levels, setLevels] = useState<Level[]>([]);
+  const [currentLevels, setCurrentLevels] = useState<Level[] | null>(null);
   const [currentLevel, setCurrentLevel] = useState<Level | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -17,12 +18,13 @@ const useGetTotalRequests = () => {
       const response = await api.get<LevelApiResponse>('/api/requests/total');
 
       if (response.status === 200 && response.data.success) {
-        const { total_requests, levels, current_level } = response.data;
+        const { total_requests, levels, current_levels } = response.data;
 
-        setTotalRequests(total_requests?total_requests:0);
+        setTotalRequests(30);
         
         setLevels(levels);
-        setCurrentLevel(current_level);
+        setCurrentLevel(levels.reduce((max, level) => level.id > max.id ? level : max))
+        setCurrentLevels(current_levels);
 
         return response.data;
       } else {
@@ -45,6 +47,7 @@ const useGetTotalRequests = () => {
     loading,
     totalRequests,
     levels,
+    currentLevels,
     currentLevel,
     error,
     fetchTotalRequests,

@@ -42,6 +42,8 @@ const CustomHeader = ({
     if (!context) {
       throw new Error("Context must be used within a Provider");
     }
+    const hasLevelcurieux = userInfo?.levels?.some(level => level.id === 2);
+
   
     const { setSearchRecipes,searchRecipes } = context;
   const router = useRouter();
@@ -111,7 +113,7 @@ const CustomHeader = ({
               />
             </TouchableOpacity>
           )}
-          {(isHome ) &&(
+          {(isHome && hasLevelcurieux ) &&(
             <TouchableOpacity style={styles.iconButton}
               onPress={() => router.push('/hometab/story')}
             >

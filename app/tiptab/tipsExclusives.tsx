@@ -20,20 +20,24 @@ import Item from "@/components/tips/ItemTip";
 import { Tip } from "@/types/tip";
 import LoadingState from "@/components/tips/LoadingState";
 import ErrorState from "@/components/tips/ErrorState";
+import { Ionicons } from "@expo/vector-icons";
+import { AuthContext } from "@/context/AuthContext";
 
 const Tips = () => {
   const router = useRouter();
   const context = useContext(AppContext);
-  const { fetchTotalRequests } = useGetTotalRequests();
+    const { userInfo } = useContext(AuthContext);
+  
+    useGetTotalRequests();
   const { tips, loading: loadingTips, error: errorTips } = useRandomTips();
 
   const stripHtml = (html: any) => {
-    return html.replace(/<[^>]*>?/gm, '');
+    return html.replace(/<[^>]*>?/gm, "");
   };
 
-  useEffect(() => {
-    fetchTotalRequests();
-  }, []);
+
+      const canAccessTips = userInfo?.levels?.some(level => level.id === 3);
+
 
   if (!context) {
     throw new Error("TipContext must be used within a TipProvider");
@@ -57,9 +61,12 @@ const Tips = () => {
   );
 
   return (
-    <SafeAreaView className="flex-1 bg-[#ffeda3]" edges={["bottom", "left", "right"]}>
+    <SafeAreaView
+      className="flex-1 bg-[#ffeda3]"
+      edges={["bottom", "left", "right"]}
+    >
       <View style={styles.Radius}>
-        <RenderHeaderTab title="Mes Ti'conseils exclusifs" />
+        <RenderHeaderTab title="Mes Ti'Conseils exclusifs" />
 
         {!isOnline && (
           <View style={styles.offlineMessage}>
@@ -70,25 +77,40 @@ const Tips = () => {
         )}
 
         <View className="h-full bg-white">
-           {loadingTips ? (
-          <LoadingState />
-        ) : errorTips ? (
-          <ErrorState message={errorTips} />
-        ) : tips.length > 0 ? (
-          <FlatList
-            data={tips}
-            keyExtractor={(item) => String(item.id)}
-            renderItem={renderItem}
-            contentContainerStyle={styles.listContent}
-          />
-        ) : (
-          <EmptyState
-            title="Aucun conseil pour le moment"
-            iconName="alert-circle"
-            iconColor="#ff8200"
-            textColor="#FF8200"
-          />
-        )}
+          {loadingTips ? (
+            <LoadingState />
+          ) : errorTips ? (
+            <ErrorState message={errorTips} />
+          ) : tips.length > 0 ? (
+           canAccessTips ? (
+              <FlatList
+                data={tips}
+                keyExtractor={(item) => String(item.id)}
+                renderItem={renderItem}
+                contentContainerStyle={styles.listContent}
+              />
+            ) : (
+              <View style={styles.container}>
+                <Ionicons name="alert-circle" size={64} color="#ff8200" style={{paddingBottom:10}}  />
+                <Text style={[styles.title, { color: "#FF8200" }]} className="leading-archivo">
+                  Pour débloquer les Ti'Conseils exclusifs vous devez atteindre
+                  le profil de Ti’défricheur.
+               {'\n'}
+                  Rien de plus simple !
+                {'\n'}
+                  Il vous suffit de faire plus de 80
+                  demandes de transparence !
+                </Text>
+              </View>
+            )
+          ) : (
+            <EmptyState
+              title="Aucun conseil pour le moment"
+              iconName="alert-circle"
+              iconColor="#ff8200"
+              textColor="#FF8200"
+            />
+          )}
         </View>
       </View>
 
@@ -100,8 +122,21 @@ const Tips = () => {
 export default Tips;
 
 const styles = StyleSheet.create({
- listContent: {
+  listContent: {
     padding: 10,
+  },
+  container: {
+    alignItems: "center",
+    padding: 16,
+    textAlign: "center",
+    width: "100%",
+    flex: 1,
+  },
+  title: {
+    fontSize: 17,
+    fontFamily: "ArchivoLight",
+    marginVertical: 2,
+    textAlign: "center",
   },
   Radius: {
     flex: 1,
@@ -123,5 +158,4 @@ const styles = StyleSheet.create({
     fontFamily: "ArchivoBold",
     textAlign: "center",
   },
-
 });

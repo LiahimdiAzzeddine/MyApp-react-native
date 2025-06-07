@@ -5,7 +5,7 @@ import {
   Step,
   groupSteps,
 } from "@/types/recipe";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -20,7 +20,13 @@ import { SwiperFlatList } from "react-native-swiper-flatlist";
 const horloge = require("@/assets/images/recipes/horloge.png");
 import { Dimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Entypo } from '@expo/vector-icons';
+import { Entypo } from "@expo/vector-icons";
+import { useAppContext } from "@/context/AppContext";
+import {
+  addRFavorite,
+  isRFavorite,
+  removeRFavorite,
+} from "@/utils/favoritesController";
 
 // Replace with the correct API URL
 const apiUrl = "https://tico.foodhea.com";
@@ -46,6 +52,8 @@ const RecipeDetails = ({ recipe = {}, custom = true }: RecipeDetailsProps) => {
   const groupedSteps = groupSteps(steps, 3);
   const [currentIndex, setCurrentIndex] = useState(0);
   const { width: largeur } = Dimensions.get("window");
+  const [favorite, setFavorite] = useState(false);
+  const { refreshFRecipes } = useAppContext();
 
   const shareRecipe = async () => {
     try {
@@ -58,6 +66,24 @@ const RecipeDetails = ({ recipe = {}, custom = true }: RecipeDetailsProps) => {
       console.error("Erreur lors du partage", error);
     }
   };
+  const toggleFavorite = async () => {
+    if (favorite) {
+      await removeRFavorite(id);
+      setFavorite(false);
+    } else {
+      await addRFavorite(recipe);
+      setFavorite(true);
+    }
+    refreshFRecipes();
+  };
+
+  useEffect(() => {
+    const checkFavorite = async () => {
+      const fav = await isRFavorite(id);
+      setFavorite(fav);
+    };
+    checkFavorite();
+  }, [id]);
 
   return (
     <SafeAreaView style={styles.container} edges={["bottom", "left", "right"]}>
@@ -97,6 +123,22 @@ const RecipeDetails = ({ recipe = {}, custom = true }: RecipeDetailsProps) => {
 
             <View style={styles.infoRow}>
               <View style={styles.difficultyWrapper}>
+                <TouchableOpacity
+                  onPress={toggleFavorite}
+                  style={{
+                    padding: 0,
+                  }}
+                >
+                  <Image
+                    source={
+                      favorite
+                        ? require("@/assets/images/recipes/34.png")
+                        : require("@/assets/images/recipes/35.png")
+                    }
+                    style={{ width: 50, height: 50 }}
+                    resizeMode="contain"
+                  />
+                </TouchableOpacity>
                 {difficulte && (
                   <Text style={styles.difficultyText}>{difficulte}</Text>
                 )}
@@ -122,118 +164,118 @@ const RecipeDetails = ({ recipe = {}, custom = true }: RecipeDetailsProps) => {
               </View>
             </View>
           </View>
-            <View style={styles.recipeContent}>
-              <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Ingrédients</Text>
-                <View style={styles.ingredientList}>
-                  {ingredients.length > 0 ? (
-                    ingredients.map(
-                      (
-                        ingredient: {
-                          qt: any;
-                          unit: any;
-                          name:
-                            | string
-                            | number
-                            | boolean
-                            | React.ReactElement<
-                                any,
-                                string | React.JSXElementConstructor<any>
-                              >
-                            | Iterable<React.ReactNode>
-                            | React.ReactPortal
-                            | null
-                            | undefined;
-                        },
-                        index: React.Key | null | undefined
-                      ) => (
-                        <Text key={index} style={styles.ingredientText}>
-                          {ingredient.qt ? `${ingredient.qt} ` : ""}
-                          {ingredient.unit ? `${ingredient.unit} ` : ""}
-                          {ingredient.name}
-                        </Text>
-                      )
+          <View style={styles.recipeContent}>
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Ingrédients</Text>
+              <View style={styles.ingredientList}>
+                {ingredients.length > 0 ? (
+                  ingredients.map(
+                    (
+                      ingredient: {
+                        qt: any;
+                        unit: any;
+                        name:
+                          | string
+                          | number
+                          | boolean
+                          | React.ReactElement<
+                              any,
+                              string | React.JSXElementConstructor<any>
+                            >
+                          | Iterable<React.ReactNode>
+                          | React.ReactPortal
+                          | null
+                          | undefined;
+                      },
+                      index: React.Key | null | undefined
+                    ) => (
+                      <Text key={index} style={styles.ingredientText}>
+                        {ingredient.qt ? `${ingredient.qt} ` : ""}
+                        {ingredient.unit ? `${ingredient.unit} ` : ""}
+                        {ingredient.name}
+                      </Text>
                     )
-                  ) : (
-                    <Text style={styles.noIngredientsText}>
-                      Les ingrédients de cette recette, malheureusement, ne sont
-                      pas disponibles. Revisitez cette page ultérieurement pour
-                      l'avoir.
-                    </Text>
-                  )}
-                </View>
-              </View>
-
-              <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Recette</Text>
-                {steps.length > 0 ? (
-                  <View style={{ flex: 1 }}>
-                    <SwiperFlatList
-                      data={groupedSteps}
-                      onChangeIndex={({ index }) => setCurrentIndex(index)}
-                      showPagination={false}
-                      renderItem={({ item }) => (
-                        <View
-                          style={[
-                            styles.slideContainer,
-                            { width: largeur - 41 },
-                          ]}
-                        >
-                          <View style={styles.bulletList}>
-                            {item.map(
-                              (step: {
-                                id: React.Key | null | undefined;
-                                description:
-                                  | string
-                                  | number
-                                  | boolean
-                                  | React.ReactElement<
-                                      any,
-                                      string | React.JSXElementConstructor<any>
-                                    >
-                                  | Iterable<React.ReactNode>
-                                  | React.ReactPortal
-                                  | null
-                                  | undefined;
-                              }) => (
-                                <View key={step.id} style={styles.bulletItem}>
-                                    <Entypo name="dot-single" size={25} color="#c32721" style={{padding:0,margin:0}} />
-
-                                  <Text style={styles.stepText}>
-                                    {step.description}
-                                  </Text>
-                                </View>
-                              )
-                            )}
-                          </View>
-                        </View>
-                      )}
-                      keyExtractor={(_, index) => index.toString()}
-                      paginationStyle={styles.hidden}
-                    />
-
-                    <View style={styles.paginationContainer}>
-                      {groupedSteps.map((_, i) => (
-                        <TouchableOpacity
-                          key={i}
-                          style={[
-                            styles.paginationDot,
-                            currentIndex === i && styles.paginationDotActive,
-                          ]}
-                        />
-                      ))}
-                    </View>
-                  </View>
+                  )
                 ) : (
-                  <Text style={styles.noStepsText}>
-                    Les étapes de cette recette, malheureusement, ne sont pas
-                    disponibles. Revisitez cette page ultérieurement pour
+                  <Text style={styles.noIngredientsText}>
+                    Les ingrédients de cette recette, malheureusement, ne sont
+                    pas disponibles. Revisitez cette page ultérieurement pour
                     l'avoir.
                   </Text>
                 )}
               </View>
             </View>
-         
+
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Recette</Text>
+              {steps.length > 0 ? (
+                <View style={{ flex: 1 }}>
+                  <SwiperFlatList
+                    data={groupedSteps}
+                    onChangeIndex={({ index }) => setCurrentIndex(index)}
+                    showPagination={false}
+                    renderItem={({ item }) => (
+                      <View
+                        style={[styles.slideContainer, { width: largeur - 41 }]}
+                      >
+                        <View style={styles.bulletList}>
+                          {item.map(
+                            (step: {
+                              id: React.Key | null | undefined;
+                              description:
+                                | string
+                                | number
+                                | boolean
+                                | React.ReactElement<
+                                    any,
+                                    string | React.JSXElementConstructor<any>
+                                  >
+                                | Iterable<React.ReactNode>
+                                | React.ReactPortal
+                                | null
+                                | undefined;
+                            }) => (
+                              <View key={step.id} style={styles.bulletItem}>
+                                <Entypo
+                                  name="dot-single"
+                                  size={25}
+                                  color="#c32721"
+                                  style={{ padding: 0, margin: 0 }}
+                                />
+
+                                <Text style={styles.stepText}>
+                                  {step.description}
+                                </Text>
+                              </View>
+                            )
+                          )}
+                        </View>
+                      </View>
+                    )}
+                    keyExtractor={(_, index) => index.toString()}
+                    paginationStyle={styles.hidden}
+                  />
+
+                  <View style={styles.paginationContainer}>
+                    {groupedSteps.map((_, i) => (
+                      <TouchableOpacity
+                        key={i}
+                        style={[
+                          styles.paginationDot,
+                          currentIndex === i && styles.paginationDotActive,
+                        ]}
+                      />
+                    ))}
+                  </View>
+                </View>
+              ) : (
+                <Text style={styles.noStepsText}>
+                  Les étapes de cette recette, malheureusement, ne sont pas
+                  disponibles. Revisitez cette page ultérieurement pour l'avoir.
+                </Text>
+              )}
+            </View>
+          </View>
         </View>
       </ScrollView>
 
@@ -325,6 +367,7 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 30,
     alignItems: "center",
     justifyContent: "center",
+    flex: 1,
   },
   recipeContent: {
     flex: 1,
@@ -341,12 +384,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     paddingBottom: 4,
-    paddingTop: 10,
+    paddingTop: 15,
+    flex: 1,
   },
   difficultyWrapper: {
+    flex: 1,
     flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "flex-start",
+    justifyContent: "space-between",
   },
   difficultyText: {
     backgroundColor: "#fad4ce",
@@ -360,7 +404,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-end",
     justifyContent: "flex-end",
-    width: "100%",
   },
   clockIcon: {
     width: 24,

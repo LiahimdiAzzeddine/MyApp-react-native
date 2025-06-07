@@ -8,15 +8,15 @@ const levels = [
   {
     id: 1,
     title: "Ti’Curieux",
-    soubTitle: "À partir de 30 demandes​",
+    soubTitle: "À partir de 30 demandes",
     message: "Débloquez des stories TiCO à partager sur vos réseaux ",
     image: require("@/assets/images/storys/16.png"),
   },
   {
     id: 2,
     title: "Ti’Défricheur",
-    soubTitle: "À partir de 80 demandes ​",
-    message: "Débloquez 3 Ti’Conseils exclusif par mois.​",
+    soubTitle: "À partir de 80 demandes",
+    message: "Débloquez 3 Ti’Conseils exclusif par mois.",
     image: require("@/assets/images/storys/17.png"),
   },
   {
@@ -38,7 +38,7 @@ const levels = [
   {
     id: 5,
     title: "Ti’Veilleur",
-    soubTitle2: "À partir de 400 demandes​",
+    soubTitle: "À partir de 400 demandes",
     Text: "Pendant 1h30, cette consultation individuelle permet de faire le point sur vos habitudes actuelles pour enclencher des changements vers une alimentation saine et durable. Marion Honoré prend en compte vos envies, vos contraintes et votre contexte de santé pour vous proposer des conseils concrets et personnalisés tant sur le contenu de votre assiette que sur la répartition des repas sur la journée. Elle abordera également le reste de votre mode de vie, et vous proposera éventuellement un protocole de compléments alimentaires adapté à vos besoins.",
     image1: require("@/assets/images/storys/30.png"),
     image2: require("@/assets/images/storys/20.png"),
@@ -46,14 +46,14 @@ const levels = [
   {
     id: 6,
     title: "Ti'Héros de la transparence",
-    soubTitle2: "À partir de 600 demandes​",
+    soubTitle: "À partir de 600 demandes",
     message:"Débloquer gratuitement le jeu Info ou Pipeau pour pimenter vos apéros tout en apprenant de manière ludique à déjouer les pièges sur l’alimentation.\n Prenez-vous au jeu, mettez vous dans la peau d’un influenceur, d’un lobbyiste ou d’un consommateur pour trouver la vérité sur les produits alimentaires !​",
     image: require("@/assets/images/storys/22.png"),
   },
   {
     id: 7,
     title: "Tit’Légende TiCO",
-    soubTitle2: "À partir de 800 demandes​",
+    soubTitle: "À partir de 800 demandes",
     Text: "Il est temps de faire le point sur les changements que vous avez opérés dans votre alimentation et votre mode de vie. Cette séance de 45min permet d'ajuster les recommandations en fonction de votre ressenti : identifier ce qui est facile à mettre en place et ce qui l'est moins, ajuster la stratégie avec des applications différentes des recommandations, approfondir les causes de vos éventuels désagréments (digestion, hormones, immunité, régulation de la glycémie...).",
     image1: require("@/assets/images/storys/30.png"),
     image2: require("@/assets/images/storys/21.png"),
@@ -62,8 +62,7 @@ const levels = [
     id: 8,
     title: "Ti’Champion de la transparence",
     soubTitle: "À partir de 1000 demandes",
-    message:
-      "Commandez gratuitement votre box surprise avec des produits sains et responsables à découvrir !​",
+    message:"Commandez gratuitement votre box surprise avec des produits sains et responsables à découvrir !​",
     image: require("@/assets/images/storys/25.png"),
   },
 ];
@@ -116,11 +115,7 @@ export default function Profile() {
           {level.soubTitle}
         </Text>
         )}
-        {level?.soubTitle2 &&(
-          <Text className="text-start text-custom-green-text text-2xl ArchivoBold mb-4 leading-archivo">
-          {level.soubTitle2}
-        </Text>
-        )}
+       
         
         {level.message && (
           <Text className="text-center text-custom-green-text text-lg Archivo  leading-archivo">

@@ -20,6 +20,7 @@ const RenderHeaderTab = ({
       justifyContent: 'center',
       alignItems: 'center',
       marginVertical: 20,
+      paddingHorizontal:16
     }}
   >
     <Text

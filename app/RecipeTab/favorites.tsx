@@ -4,46 +4,46 @@ import { useRouter } from "expo-router";
 import RenderHeaderTab from "@/components/ui/renderHeader";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import Item from "@/components/tips/ItemTipfa";
-import { FormattedTip, Tip } from "@/types/tip";
+import Item from "@/components/recipes/ItemRecipe";
 import LoadingState from "@/components/tips/LoadingState";
 import ErrorState from "@/components/tips/ErrorState";
 
-import { getFavorites } from "@/utils/favoritesController";
+import { getRFavorites } from "@/utils/favoritesController";
 import { Ionicons } from "@expo/vector-icons";
 import { useAppContext } from "@/context/AppContext";
 
 const Favorites = () => {
   const router = useRouter();
 
-  const [tips, setTips] = useState<FormattedTip[]>([]);
-  const [loadingTips, setLoadingTips] = useState(true);
+  const [tips, setTips] = useState<any[]>([]);
+  const [loadingRecipes, setloadingRecipes] = useState(true);
   const [errorTips, setErrorTips] = useState<string | null>(null);
   const { lastUpdatedF } = useAppContext();
+  const backgroundImage = require("@/assets/images/recipes/background.png");
 
   useEffect(() => {
     console.log("🚀 ~ Favorites ~ lastUpdatedF:", lastUpdatedF);
 
     const fetchFavorites = async () => {
       try {
-        setLoadingTips(true);
-        const favorites = await getFavorites();
+        setloadingRecipes(true);
+        const favorites = await getRFavorites();
         setTips(favorites);
         setErrorTips(null);
       } catch (error) {
         setErrorTips("Erreur lors du chargement des favoris.");
       } finally {
-        setLoadingTips(false);
+        setloadingRecipes(false);
       }
     };
 
     fetchFavorites();
   }, [lastUpdatedF]);
 
-  const OpenTip = (tip: FormattedTip) => {
-    router.push({
-      pathname: "/tiptab/tip/[id]",
-      params: { id: tip.id?.toString() ?? 0 },
+  const OpenRecipe = (recipe: any) => {
+   router.push({
+      pathname: "/recipetab/recipe/[id]",
+      params: { id: recipe.id.toString() }, 
     });
   };
 
@@ -51,15 +51,16 @@ const Favorites = () => {
     item,
     index,
   }: {
-    item: FormattedTip;
+    item: any;
     index: number;
   }) => (
     <Item
-      tip={item}
+      key={item.id}
+      recipe={item}
       index={index}
-      length={tips.length}
-      OpenTip={() => OpenTip(item)}
-    />
+      length={tips.length} 
+      onPress={() => OpenRecipe(item)}
+      />
   );
 
   return (
@@ -68,10 +69,14 @@ const Favorites = () => {
       edges={["bottom", "left", "right"]}
     >
       <View style={styles.Radius}>
-        <RenderHeaderTab title="Mes Ti’Conseils favoris" />
+        <RenderHeaderTab
+          title="Ma sélection de Tit’Recettes"
+          titleColor="#c32721"
+          backgroundImage={backgroundImage}
+        />
 
         <View className="h-full bg-white">
-          {loadingTips ? (
+          {loadingRecipes ? (
             <LoadingState />
           ) : errorTips ? (
             <ErrorState message={errorTips} />
@@ -84,15 +89,14 @@ const Favorites = () => {
             />
           ) : (
             <View style={styles.container}>
-              <Ionicons name={"alert-circle"} size={64} color={"#ff8200"} style={{paddingBottom:10}} />
+              <Ionicons name={"alert-circle"} size={64} color={"#c32721"} style={{paddingBottom:10}} />
 
-              <Text style={[styles.title, { color: "#FF8200" }]} className="leading-archivo">
-                Vous n’avez pas encore de Ti'Conseils{'\n'} enregistrés en favoris.
+              <Text style={[styles.title, { color: "#c32721" }]} className="leading-archivo">
+                Vous n’avez pas encore de Tit’recettes dans votre sélection.
               {'\n'} 
-                Pour retrouver facilement vos astuces et conseils préférés,
-                pensez à les ajouter en favori.
+               Pour retrouver facilement vos Tit’recettes préférées, pensez à les ajouter en favori.
              {'\n'} 
-                Vous y aurez accès à tout moment,{'\n'} même hors ligne !
+                Vous y aurez accès à tout moment, même lorsque vous serez hors ligne !
               </Text>
             </View>
           )}

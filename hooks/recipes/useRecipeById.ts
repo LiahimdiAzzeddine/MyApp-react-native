@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import axios from '@/api/axios';  // Importation d'axios selon votre configuration
+import axios from '@/api/axios';
 import { Recipe } from '@/types/recipe';
-
+import { getRFavorite } from '@/utils/favoritesController';
 
 
 const useRecipeById = (id: number) => {
@@ -13,19 +13,37 @@ const useRecipeById = (id: number) => {
     const fetchRecipe = async () => {
       try {
         setLoading(true);
+        setError(null);
+
+        // Convertir l'id en string pour la recherche
+        const idString = id.toString();
+
+        // Chercher directement la recette dans les favoris locaux
+        const localRecipe = await getRFavorite(idString);
+        
+        if (localRecipe) {
+          setRecipe(localRecipe);
+          setLoading(false);
+          return; // Pas besoin d'appeler le backend
+        }
+
+        // Si la recette n'est pas dans les favoris locaux, appeler le backend
         const response = await axios.get(`/api/recipe/${id}`);
-        console.log('Recipe : ', response.data);
-        setRecipe(response.data); // Assuming the API returns the recipe object directly
+        setRecipe(response.data);
+        
       } catch (err: any) {
-        setError(err?.response?.data?.error || 'An error occurred');
-        setRecipe(null); // Set to null if there's an error
+        console.error('Erreur lors de la récupération de la recette:', err);
+        setError(err?.response?.data?.error || 'Une erreur est survenue');
+        setRecipe(null);
       } finally {
         setLoading(false);
       }
     };
 
     if (id) {
-      fetchRecipe(); // Fetch recipe only if id is provided
+      fetchRecipe();
+    } else {
+      setLoading(false);
     }
   }, [id]);
 

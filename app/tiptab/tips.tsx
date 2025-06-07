@@ -87,7 +87,7 @@ const Tips = () => {
 
   return (
     <SafeAreaView className="flex-1 bg-white">
-      <RenderHeaderTab title="Ti'conseils" />
+      <RenderHeaderTab title="Ti'Conseils" />
       <View className="h-full bg-white">
         {!preferencesLoaded || loading ? (
           <LoadingState />

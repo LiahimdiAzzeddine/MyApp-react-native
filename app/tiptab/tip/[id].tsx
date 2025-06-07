@@ -1,47 +1,30 @@
-import React, { useEffect, useState } from 'react';
+
+// Tip.tsx - Composant simplifié
+import React, { useEffect } from 'react';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
 import TipDetails from '@/components/tips/TipDetails';
 import ErrorMessage from '@/components/tips/ErrorMessage';
-import { createTip } from '@/utils/createTips';
-import { getFavorite } from '@/utils/favoritesController';
 import useTipById from '@/hooks/tips/useTipById';
-import { FormattedTip } from '@/types/tip';
 
 const Tip: React.FC = () => {
   const { id } = useLocalSearchParams();
   const router = useRouter();
   const tipId = String(id);
 
-  const [localTip, setLocalTip] = useState<FormattedTip | null>(null);
-  const [checkingLocal, setCheckingLocal] = useState(true);
-
+  // Le hook gère maintenant toute la logique de recherche
   const { tip, loading, error } = useTipById(tipId);
-  const tipForme = tip ? createTip(tip) : null;
 
   useEffect(() => {
     if (!id) {
       router.replace('/(tabs)/tips');
-      return;
     }
-
-    const checkLocalFavorite = async () => {
-      try {
-        const favoriteTip = await getFavorite(tipId);
-        if (favoriteTip) setLocalTip(favoriteTip);
-      } catch {
-        // Silently ignore error
-      } finally {
-        setCheckingLocal(false);
-      }
-    };
-
-    checkLocalFavorite();
   }, [id]);
 
-  if (!id || checkingLocal || loading) {
+  // État de chargement
+  if (!id || loading) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#FF6B35" />
@@ -49,7 +32,8 @@ const Tip: React.FC = () => {
     );
   }
 
-  if (!localTip && (error || !tipForme)) {
+  // Gestion des erreurs
+  if (error || !tip) {
     return (
       <View style={styles.container}>
         <ErrorMessage
@@ -60,8 +44,9 @@ const Tip: React.FC = () => {
       </View>
     );
   }
- const tipo=localTip || tipForme;
-  return <TipDetails tip={tipo} />;
+
+  // Affichage du tip
+  return <TipDetails tip={tip} />;
 };
 
 const styles = StyleSheet.create({

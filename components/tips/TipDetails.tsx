@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -17,6 +17,7 @@ import {
   removeFavorite,
   isFavorite,
 } from "@/utils/favoritesController";
+import {  useAppContext } from "@/context/AppContext";
 
 
 
@@ -25,6 +26,8 @@ const apiUrl = Constants.expoConfig?.extra?.BACKEND_URL || "";
 const TipDetails: React.FC<any> = ({ tip }:any) => {
   const { id, title, details } = tip;
   const [favorite, setFavorite] = useState(false);
+  const {refreshFTips,lastUpdatedF} = useAppContext()
+     
 
   // Méthode de partage avec deep link
   const shareTip = async () => {
@@ -47,8 +50,10 @@ const TipDetails: React.FC<any> = ({ tip }:any) => {
       setFavorite(false);
     } else {
       await addFavorite(tip);
-      setFavorite(true);
-    }
+      setFavorite(true); 
+    } 
+    refreshFTips()
+    console.log("lastUpdatedF",lastUpdatedF)
   };
 
   useEffect(() => {

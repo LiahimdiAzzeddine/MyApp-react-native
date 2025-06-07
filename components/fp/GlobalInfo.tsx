@@ -20,15 +20,16 @@ const GlobalInfo: React.FC<GlobalInfoProps> = (props) => {
     if (isOpen) {
       setImageLoading(true);
     }
+      console.log("🚀 ~ useEffect ~ setImageLoading:")
+      setTimeout(() => {
+        if (isOpen) {
+        setImageLoading(false);
+        }
+      }, 1000);
   }, [isOpen]);
 
-  const handleImageLoad = () => {
-    setImageLoading(false);
-  };
-  
-  const handleImageError = () => {
-    setImageLoading(false);
-  };
+
+
 
   return (
     <View>
@@ -37,6 +38,7 @@ const GlobalInfo: React.FC<GlobalInfoProps> = (props) => {
           <Image
             source={props.ImageSrc ? { uri: props.ImageSrc } : productDeffaultImg}
             style={styles.productImage}
+       
           />
         </TouchableOpacity>
         <View style={styles.productInfo}>
@@ -49,40 +51,84 @@ const GlobalInfo: React.FC<GlobalInfoProps> = (props) => {
         </View>
       </View>
 
-      {/* Modal */}
       <Modal
-        visible={isOpen}
-        onRequestClose={() => setIsOpen(false)}
-        animationType="fade"
-        transparent={true}
-      >
-        <View style={styles.modalContainer}>
-          <TouchableOpacity onPress={() => setIsOpen(false)} style={styles.closeButton}>
-            <Ionicons
-              name="close-outline"
-              size={30}
-              color="#2196F3"
-            />
-          </TouchableOpacity>
-          
-          <View style={styles.imageWrapper}>
-            {imageLoading && (
-              <ActivityIndicator size="large" color="#2196F3" style={styles.loader} />
-            )}
-            <Image
-              source={props.ImageSrc ? { uri: props.ImageSrc } : productDeffaultImg}
-              style={[styles.modalImage, imageLoading ? styles.hiddenImage : null]}
-              onLoad={handleImageLoad}
-              onError={handleImageError}
-            />
-          </View>
-        </View>
-      </Modal>
+  visible={isOpen}
+  onRequestClose={() => setIsOpen(false)}
+  animationType="fade"
+  transparent={true}
+        key={props.Name}
+
+>
+  <View style={styles.modalContainer}>
+    
+    <View style={styles.imageWrapper}>
+      {imageLoading && (
+        <ActivityIndicator size="large" color="#2196F3" style={styles.loader} />
+      )}
+      <Image
+      key={props.Name}
+        source={props.ImageSrc ? { uri: props.ImageSrc } : productDeffaultImg}
+        style={[styles.modalImage, imageLoading ? styles.hiddenImage : null]}
+        
+      />
+    </View>
+
+    {/* Bouton de fermeture plus visible et en bas */}
+   <TouchableOpacity onPress={() => setIsOpen(false)} style={styles.floatingCloseButton}>
+  <Image
+    source={require('@/assets/images/popup/close.png')}
+    style={styles.closeIconImage}
+    resizeMode='contain'
+  />
+</TouchableOpacity>
+
+    
+  </View>
+</Modal>
+
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  modalContainer: {
+  flex: 1,
+  backgroundColor: 'rgba(0, 0, 0, 0.8)',
+  justifyContent: 'center',
+  alignItems: 'center',
+  paddingHorizontal: 20,
+},
+floatingCloseButton: {
+  position: 'absolute',
+  bottom: 40,
+  alignSelf: 'center',
+  padding: 12,
+  elevation: 5,
+},
+
+closeIconImage: {
+  width: 50,
+  height: 50,
+},
+
+imageWrapper: {
+  width: '100%',
+  alignItems: 'center',
+  justifyContent: 'center',
+},
+
+modalImage: {
+  width: 300,
+  height: 300,
+  resizeMode: 'contain',
+},
+
+hiddenImage: {
+  display: 'none',
+},
+
+
+
   productContainer: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
@@ -121,32 +167,14 @@ const styles = StyleSheet.create({
     color: '#42a29a',
     fontFamily:'ArchivoBold',
   },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-  },
+  
   closeButton: {
     position: 'absolute',
     top: 16,
     right: 16,
     zIndex: 50,
   },
-  imageWrapper: {
-    width: '90%',
-    height: '80%',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalImage: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'contain',
-  },
-  hiddenImage: {
-    opacity: 0,
-  },
+
   loader: {
     position: 'absolute',
     zIndex: 10,

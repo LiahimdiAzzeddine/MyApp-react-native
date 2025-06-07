@@ -33,7 +33,7 @@ export default function TabLayout() {
         name="recipes"
         options={{
           title: "Recipes",
-          header: () => <CustomHeader image="rf" isRecipes={true} />,
+          header: () => <CustomHeader image="rf"  />,
           tabBarStyle: { display: 'none' },
         }}
       />
