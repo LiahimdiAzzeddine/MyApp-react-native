@@ -2,15 +2,19 @@ import { useContext, useState } from 'react';
 import api from '@/utils/axiosInstance';
 import { CreateUserLevelPayload, UserLevel } from '@/types/UserLevel';
 import { AuthContext } from '@/context/AuthContext';
+import { useSpinner } from '@/context/LoadingContext';
 
 const useCreateUserLevel = () => {
   const [loading, setLoading] = useState(false);
   const [createdUserLevel, setCreatedUserLevel] = useState<UserLevel | null>(null);
   const [error, setError] = useState<string | null>(null);
   const { updateUserLevel } = useContext(AuthContext);
+    const { setSpinner  } = useSpinner();
+  
 
   const createUserLevel = async (payload: CreateUserLevelPayload): Promise<UserLevel | false> => {
     setLoading(true);
+    setSpinner(true)
     setError(null);
 
     try {
@@ -18,7 +22,6 @@ const useCreateUserLevel = () => {
 
       if (response.status === 201) {
         setCreatedUserLevel(response.data);
-        //console.log("🚀 ~ createUserLevel ~ response.data:", response.data.level)
         updateUserLevel(response.data.user.levels)
         return response.data;
       } else {
@@ -27,6 +30,7 @@ const useCreateUserLevel = () => {
       }
         
     } catch (err: any) {
+      
       if (err.response?.status === 422) {
         setError("Validation échouée : user_id ou level_id invalide.");
       } else {
@@ -35,6 +39,8 @@ const useCreateUserLevel = () => {
       return false;
     } finally {
       setLoading(false);
+          setSpinner(false)
+
     }
   };
 

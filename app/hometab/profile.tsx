@@ -3,10 +3,10 @@ import {
   Text,
   ImageBackground,
   ActivityIndicator,
-  GestureResponderEvent,
   Share,
   Image,
   Alert,
+  ScrollView,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import useGetTotalRequests from "@/hooks/demand/useGetTotalRequests";
@@ -23,7 +23,8 @@ const customInfo = [
   {
     id: 2,
     title: "Ti’Curieux",
-    reward: "Débloquez les stories TiCO stylées et engagées pour faire bouger les marques.​",
+    reward:
+      "Débloquez les stories TiCO stylées et engagées pour faire bouger les marques.​",
     rewardNext: "3 Ti’Conseils exclusifs par mois pour briller à l’apéro !​​",
     route: "/hometab/story",
     btnText: "Débloquer les stories​",
@@ -31,7 +32,8 @@ const customInfo = [
   {
     id: 3,
     title: "Ti’Défricheur",
-    reward: "Débloquez vos 3 Ti'Conseils exclusifs mensuels si vous avez appris quelque chose d’intéressant dites-le !​",
+    reward:
+      "Débloquez vos 3 Ti'Conseils exclusifs mensuels si vous avez appris quelque chose d’intéressant dites-le !​",
     rewardNext:
       "votre calendrier perpétuel de fruits et légumes de saison. Ponctué d’astuces, de rappels et de recettes c’est un bel outil à garder à l’œil dans la cuisine.​",
     route: "/tips",
@@ -41,19 +43,19 @@ const customInfo = [
     id: 4,
     title: "Ti’Conso engagé",
     reward:
-      "votre calendrier perpétuel de fruits et légumes de saison. Ponctué d’astuces, de rappels et de recettes c’est un bel outil à garder à l’œil dans la cuisine !",
+      "Recevez votre calendrier perpétuel de fruits et légumes de saison avec en bonus des astuces et recettes saines et gourmandes idéales à garder à l’œ",
     rewardNext:
-      "votre calendrier perpétuel de fruits et légumes de saison. Ponctué d’astuces, de rappels et de recettes c’est un bel outil à garder à l’œil dans la cuisine !​",
-    route: "/hometab/story",
-    btnText: "Débloquer les stories​",
+      "votre guide de décryptage pour déjouer les piègessur les produits alimentaires​",
+    btnText: "Recevoir mon calendrier​",
   },
   {
     id: 5,
     title: "Ti’Décrypteur",
-    reward: "Guide de décryptage",
-    rewardNext: "recevoir 3 Ti’Conseils exclusifs pour briller à l’apéro !​​",
-    route: "/hometab/story",
-    btnText: "Débloquer les stories​",
+    reward:
+      "Recevez votre code de réduction pour votre première séance personnalisée avec Marion Honoré, coach en alimentation santé durable.​",
+    rewardNext:
+      "votre Guide de décryptage pour déjouer les pièges sur les produits alimentaires.​​​",
+    btnText: "Recevoir le code​​",
   },
   {
     id: 6,
@@ -110,14 +112,12 @@ export default function Profile(): JSX.Element {
     totalRequests,
     error,
     fetchTotalRequests,
-    currentLevels,
     currentLevel,
     levels,
   } = useGetTotalRequests();
 
   const {
     createUserLevel,
-    createdUserLevel,
     loading: createLoading,
     error: createError,
   } = useCreateUserLevel();
@@ -180,28 +180,49 @@ export default function Profile(): JSX.Element {
       }
       console.log("🚀 ~ useEffect ~ nextLevel:", nextLevel);
     } else {
+      console.log("🚀 ~ useEffect ~ currentLevel:", currentLevel);
+
       setCurrentEligibleLevel(currentLevelgeted);
       setNextEligibleLevel(nextLevel);
       setCurrentEligibleLevelIsActive(currentLevel.id == currentLevelgeted?.id);
     }
   }, [levels, totalRequests, currentLevel]);
 
-  const handleAssignLevel = async (): Promise<void> => {
+  const handleAssignLevel = (): void => {
     if (!CurrentEligibleLevel || !userId) return;
 
-    const result = await createUserLevel({
-      user_id: userId,
-      level_id: CurrentEligibleLevel.id,
-    });
-   
-      router.push(customInfo[CurrentEligibleLevel?.id - 2].route as Route);
-    
+    Alert.alert(
+      "Confirmation",
+      `Souhaitez-vous activer le niveau "${CurrentEligibleLevel.title}" ?`,
+      [
+        {
+          text: "Non",
+          style: "cancel",
+          onPress: () => console.log("Activation annulée"),
+        },
+        {
+          text: "Oui",
+          style: "default",
+          onPress: async () => {
+            const result = await createUserLevel({
+              user_id: userId,
+              level_id: CurrentEligibleLevel.id,
+            });
 
-    
-    if (result) {
-      fetchTotalRequests();
-    }
+            if (result) {
+              fetchTotalRequests();
+              if (customInfo[CurrentEligibleLevel.id - 2].route) {
+                router.replace(
+                  customInfo[CurrentEligibleLevel.id - 2].route as Route
+                );
+              }
+            }
+          },
+        },
+      ]
+    );
   };
+
   const handleAssignLevel2 = async (): Promise<void> => {
     if (!CurrentEligibleLevel || !userId) return;
 
@@ -229,10 +250,10 @@ export default function Profile(): JSX.Element {
         source={require("@/assets/images/profil/backgroundProfil.png")}
         resizeMode="contain"
         style={{
-          minHeight: 140,
+          minHeight: 135,
           justifyContent: "center",
           alignItems: "center",
-          marginBottom: 20,
+          marginBottom: 10,
           marginTop: 15,
         }}
       >
@@ -246,118 +267,128 @@ export default function Profile(): JSX.Element {
           <ActivityIndicator />
         </View>
       ) : error ? (
-        <Text style={{ color: "red" }}>{error}</Text>
+        <Text
+          style={{
+            color: "red",
+            padding: 16,
+            fontFamily: "ArchivoBold",
+            fontSize: 18,
+            textAlign: "center",
+          }}
+        >
+          {error}
+        </Text>
       ) : (
-        <>
-          {Number(totalRequests) > 119 ? (
-            <View className="flex-1 " style={{ padding: 16 }}>
-              <Text className="text-base Archivo leading-archivo text-center text-custom-blue flex-1">
-                Malheureusement, pour le moment, nous ne traitons que les deux
-                niveaux
-                <Text className="ArchivoBold"> "Ti’Curieux" </Text>
-                et
-                <Text className="ArchivoBold"> "Ti’Défricheur"</Text>. {"\n"}
-                Votre score actuel de{" "}
-                <Text className="font-bold">{totalRequests}</Text> est supérieur
-                à ces deux niveaux. Ainsi, vous pouvez débloquer le niveau le
-                plus élevé possible :
-                <Text className="ArchivoBold text-custom-green-text">
-                  {" "}
-                  "Ti’Défricheur"
-                </Text>
-                .
-              </Text>
-              {!currentLevel ? (
-                <View style={{ flex: 2 }}>
-                  <Text className="text-center text-custom-blue text-base Archivo leading-archivo">
-                    {customInfo[1].reward}
+        <ScrollView
+          style={{ flex: 1 }}
+          contentContainerStyle={{ flexGrow: 1, paddingBottom: 40 }}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={{ flex: 1 }}>
+            {Number(totalRequests) > 399 ? (
+              <View className="flex-1 " style={{ padding: 16 }}>
+                <Text className="text-base Archivo leading-archivo text-center text-custom-blue flex-1">
+                  Malheureusement, pour le moment, nous ne traitons que les deux
+                  niveaux
+                  <Text className="ArchivoBold"> "Ti’Curieux" </Text>
+                  et
+                  <Text className="ArchivoBold"> "Ti’Défricheur"</Text>. {"\n"}
+                  Votre score actuel de{" "}
+                  <Text className="font-bold">{totalRequests}</Text> est
+                  supérieur à ces deux niveaux. Ainsi, vous pouvez débloquer le
+                  niveau le plus élevé possible :
+                  <Text className="ArchivoBold text-custom-green-text">
+                    {" "}
+                    "Ti’Défricheur"
                   </Text>
-                  <View className="py-6 items-center">
-                    <CustomButton
-                      title={customInfo[1].btnText}
-                      disabled={createLoading}
-                      style={{
-                        maxWidth: 280,
-                        minWidth: 200,
-                        backgroundColor: (colors as any)["custom-green-text"],
-                      }}
-                      onPress={() => {
-                        if (customInfo[1].route) {
-                          handleAssignLevel2();
-                        } else {
-                          console.log("Route à ajouter");
-                        }
-                      }}
-                    />
-                  </View>
-                </View>
-              ) : (
-                <View style={{ flex: 2 }} className="px-4">
-                  <Text className="text-base Archivo leading-archivo text-center text-custom-blue flex-1">
-                    Vous avez déjà activé le niveau{" "}
-                    <Text className="ArchivoBold text-custom-green-text">
-                      "Ti’Défricheur"
+                  .
+                </Text>
+                {!currentLevel ? (
+                  <View style={{ flex: 2 }}>
+                    <Text className="text-center text-custom-blue text-base Archivo leading-archivo">
+                      {customInfo[1].reward}
                     </Text>
-                    .
-                  </Text>
-                </View>
-              )}
-            </View>
-          ) : (
-            <View className=" mt-4" style={{ paddingHorizontal: 16 }}>
-              {CurrentEligibleLevel && (
-                <Text
-                  className="text-center text-custom-green-text ClashDisplayBold mb-2 leading-archivo "
-                  style={{ fontSize: 26 }}
-                >
-                  {CurrentEligibleLevel?.title}
-                </Text>
-              )}
-              <Text
-                className="text-3xl text-center text-custom-green-text leading-archivo"
-                style={{
-                  paddingBottom: 30,
-                  fontFamily: "comicoFont",
-                }}
-              >
-                {totalRequests} Demande{Number(totalRequests)>1 && 's'}
-              </Text>
-              {CurrentEligibleLevel && (
-                <Text className="text-center text-custom-blue text-xl Archivo leading-archivo">
-                  Déjà {totalRequests} demandes aux marques, bravo !
-                </Text>
-              )}
-              {CurrentEligibleLevel && !CurrentEligibleLevelIsActive && (
-                <View>
-                  <Text className="text-center text-custom-blue text-xl Archivo leading-archivo">
-                    {customInfo[Number(CurrentEligibleLevel.id - 2)].reward}
-                  </Text>
-                  <View className="py-6">
-                    <CustomButton
-                      title={
-                        customInfo[Number(CurrentEligibleLevel.id - 2)].btnText
-                      }
-                      disabled={createLoading}
-                      style={{
-                        maxWidth: 280,
-                        minWidth: 200,
-                        marginHorizontal: "auto",
-                        backgroundColor: (colors as any)["custom-green-text"],
-                      }}
-                      onPress={() => {
-                        if (
-                          customInfo[Number(CurrentEligibleLevel.id - 2)].route
-                        ) {
-                          handleAssignLevel();
-                        } else {
-                          console.log("a ajouter");
-                        }
-                      }}
-                    />
+                    <View className="py-6 items-center">
+                      <CustomButton
+                        title={customInfo[1].btnText}
+                        disabled={createLoading}
+                        style={{
+                          maxWidth: 280,
+                          minWidth: 200,
+                          backgroundColor: (colors as any)["custom-green-text"],
+                        }}
+                        onPress={() => {
+                          if (customInfo[1].route) {
+                            handleAssignLevel2();
+                          } else {
+                            console.log("Route à ajouter");
+                          }
+                        }}
+                      />
+                    </View>
                   </View>
-                </View>
-              )}
-              {/*CurrentEligibleLevel && CurrentEligibleLevelIsActive && (
+                ) : (
+                  <View style={{ flex: 2 }} className="px-4">
+                    <Text className="text-base Archivo leading-archivo text-center text-custom-blue flex-1">
+                      Vous avez déjà activé le niveau{" "}
+                      <Text className="ArchivoBold text-custom-green-text">
+                        "Ti’Défricheur"
+                      </Text>
+                      .
+                    </Text>
+                  </View>
+                )}
+              </View>
+            ) : (
+              <View className=" mt-4" style={{ paddingHorizontal: 16 }}>
+                {CurrentEligibleLevel && (
+                  <Text
+                    className="text-center text-custom-green-text ClashDisplayBold mb-2 leading-archivo "
+                    style={{ fontSize: 26 }}
+                  >
+                    {CurrentEligibleLevel?.title}
+                  </Text>
+                )}
+                <Text
+                  className="text-3xl text-center text-custom-green-text leading-archivo"
+                  style={{
+                    paddingBottom: 30,
+                    fontFamily: "comicoFont",
+                  }}
+                >
+                  {totalRequests} Demande{Number(totalRequests) > 1 && "s"}
+                </Text>
+                {CurrentEligibleLevel && (
+                  <Text className="text-center text-custom-blue text-xl Archivo leading-archivo">
+                    Déjà {totalRequests} demandes aux marques, bravo !
+                  </Text>
+                )}
+                {CurrentEligibleLevel && !CurrentEligibleLevelIsActive && (
+                  <View>
+                    <Text className="text-center text-custom-blue text-xl Archivo leading-archivo">
+                      {customInfo[Number(CurrentEligibleLevel.id - 2)].reward}
+                    </Text>
+                    <View className="py-6">
+                      <CustomButton
+                        title={
+                          customInfo[Number(CurrentEligibleLevel.id - 2)]
+                            .btnText
+                        }
+                        disabled={createLoading}
+                        style={{
+                          maxWidth: 280,
+                          minWidth: 200,
+                          marginHorizontal: "auto",
+                          backgroundColor: (colors as any)["custom-green-text"],
+                        }}
+                        onPress={() => {
+                          handleAssignLevel();
+                        }}
+                      />
+                    </View>
+                  </View>
+                )}
+                {/*CurrentEligibleLevel && CurrentEligibleLevelIsActive && (
                 <View className="flex-1">
                   <Text className="text-center text-custom-blue text-base Archivo leading-archivo mb-12">
                     Plus que{" "}
@@ -368,7 +399,6 @@ export default function Profile(): JSX.Element {
                 </View>
               )*/}
 
-          
                 {/*CurrentEligibleLevel == null && ()*/}
                 <View>
                   <View>
@@ -389,7 +419,9 @@ export default function Profile(): JSX.Element {
                         demandes pour passer au profil suivant et recevoir{" "}
                         {
                           customInfo[
-                            CurrentEligibleLevel ? CurrentEligibleLevel.id - 2 : 0
+                            CurrentEligibleLevel
+                              ? CurrentEligibleLevel.id - 2
+                              : 0
                           ].rewardNext
                         }
                       </Text>
@@ -403,46 +435,57 @@ export default function Profile(): JSX.Element {
                     />
                   )}
                   {Number(totalRequests) > 0 && (
-                    <View style={{ paddingTop: 60, margin: "auto" }}>
+                    <>
                       {(CurrentEligibleLevelIsActive ||
                         Number(totalRequests) < 29) && (
-                        <CustomButton
-                          title={"En savoir plus​"}
-                          style={{
-                            maxWidth: 280,
-                            minWidth: 180,
-                            backgroundColor: (colors as any)[
-                              "custom-green-text"
-                            ],
-                          }}
-                          onPress={() => router.push("/hometab/infoProfil")}
-                        />
+                        <View style={{ paddingTop: 50, margin: "auto" }}>
+                          <CustomButton
+                            title={"En savoir plus​"}
+                            style={{
+                              maxWidth: 280,
+                              minWidth: 180,
+                              backgroundColor: (colors as any)[
+                                "custom-green-text"
+                              ],
+                            }}
+                            onPress={() => router.push("/hometab/infoProfil")}
+                          />
+                        </View>
                       )}
-                    </View>
+                    </>
                   )}
-              
+                </View>
               </View>
-            </View>
-          )}
-          
-            <View className="items-center flex-1 justify-center" >
-              <Text className="text-center text-custom-blue text-xl Archivo leading-archivo">
-                Partagez votre expérience sur TiCO
-              </Text>
-              <View className="py-6">
-                <CustomButton
-                  title={"Partager"}
-                  style={{
-                    maxWidth: 280,
-                    minWidth: 150,
-                    backgroundColor: (colors as any)["custom-green-text"],
-                  }}
-                  onPress={handleShare}
-                />
+            )}
+            {/* Partagez votre expérience */}
+            {Number(totalRequests) > 0 && (
+              <View
+                style={{
+                  marginTop: "auto",
+                  alignItems: "center",
+                  paddingHorizontal: 16,
+                  paddingTop: 40,
+                  justifyContent: "center",
+                }}
+              >
+                <Text className="text-center text-custom-blue text-xl Archivo leading-archivo">
+                  Partagez votre expérience sur TiCO
+                </Text>
+                <View className="py-6">
+                  <CustomButton
+                    title={"Partager"}
+                    style={{
+                      maxWidth: 280,
+                      minWidth: 150,
+                      backgroundColor: (colors as any)["custom-green-text"],
+                    }}
+                    onPress={handleShare}
+                  />
+                </View>
               </View>
-            </View>
-          
-        </>
+            )}
+          </View>
+        </ScrollView>
       )}
     </SafeAreaView>
   );

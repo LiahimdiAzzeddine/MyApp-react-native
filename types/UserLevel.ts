@@ -10,5 +10,5 @@ export interface CreateUserLevelPayload {
 export interface UserLevel {
   id: number;
   user: User;
-  level: Level;
+  levels: Level[];
 }

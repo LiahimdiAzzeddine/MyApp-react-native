@@ -43,7 +43,6 @@ const CustomHeader = ({
       throw new Error("Context must be used within a Provider");
     }
     const hasLevelcurieux = userInfo?.levels?.some(level => level.id === 2);
-
   
     const { setSearchRecipes,searchRecipes } = context;
   const router = useRouter();

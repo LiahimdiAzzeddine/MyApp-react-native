@@ -1,13 +1,13 @@
-import { useState } from 'react';
-import api from '@/utils/axiosInstance';
-import { Level, LevelApiResponse } from '@/types/Level';
+import { useState } from "react";
+import api from "@/utils/axiosInstance";
+import { Level, LevelApiResponse } from "@/types/Level";
 
 const useGetTotalRequests = () => {
   const [loading, setLoading] = useState(false);
   const [totalRequests, setTotalRequests] = useState<number | null>(null);
   const [levels, setLevels] = useState<Level[]>([]);
-  const [currentLevels, setCurrentLevels] = useState<Level[] | null>(null);
-  const [currentLevel, setCurrentLevel] = useState<Level | null>(null);
+  const [currentLevels, setCurrentLevels] = useState<Level[]>([]);
+  const [currentLevel, setCurrentLevel] = useState<Level | null>();
   const [error, setError] = useState<string | null>(null);
 
   const fetchTotalRequests = async (): Promise<LevelApiResponse | false> => {
@@ -15,27 +15,35 @@ const useGetTotalRequests = () => {
     setError(null);
 
     try {
-      const response = await api.get<LevelApiResponse>('/api/requests/total');
+      const response = await api.get<LevelApiResponse>("/api/requests/total");
 
       if (response.status === 200 && response.data.success) {
         const { total_requests, levels, current_levels } = response.data;
 
-        setTotalRequests(30);
-        
-        setLevels(levels);
-        setCurrentLevel(levels.reduce((max, level) => level.id > max.id ? level : max))
-        setCurrentLevels(current_levels);
+        setTotalRequests(250);
 
+        setLevels(levels);
+        setCurrentLevels(current_levels ?? []);
+        if (current_levels && current_levels.length > 0) {
+          setCurrentLevel(
+            current_levels.reduce((max, level) =>
+              level.id > max.id ? level : max
+            )
+          );
+        } else {
+          setCurrentLevel(null);
+        }
         return response.data;
       } else {
-        setError('Erreur inattendue lors de la récupération des données.');
+        setError("Erreur inattendue lors de la récupération des données.");
         return false;
       }
     } catch (err: any) {
       if (err.response?.status === 401) {
-        setError('Utilisateur non authentifié.');
+        setError("Utilisateur non authentifié.");
       } else {
-        setError('Erreur lors de la récupération des données.');
+        setError("Erreur lors de la récupération des données.");
+        console.log("🚀 ~ fetchTotalRequests ~ err:", err);
       }
       return false;
     } finally {
