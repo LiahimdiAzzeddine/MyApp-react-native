@@ -18,11 +18,10 @@ const Favorites = () => {
   const [tips, setTips] = useState<any[]>([]);
   const [loadingRecipes, setloadingRecipes] = useState(true);
   const [errorTips, setErrorTips] = useState<string | null>(null);
-  const { lastUpdatedF } = useAppContext();
+  const { lastUpdatedFR } = useAppContext();
   const backgroundImage = require("@/assets/images/recipes/background.png");
 
   useEffect(() => {
-    console.log("🚀 ~ Favorites ~ lastUpdatedF:", lastUpdatedF);
 
     const fetchFavorites = async () => {
       try {
@@ -38,7 +37,7 @@ const Favorites = () => {
     };
 
     fetchFavorites();
-  }, [lastUpdatedF]);
+  }, [lastUpdatedFR]);
 
   const OpenRecipe = (recipe: any) => {
    router.push({

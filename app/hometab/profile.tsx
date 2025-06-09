@@ -288,14 +288,11 @@ export default function Profile(): JSX.Element {
             {Number(totalRequests) > 399 ? (
               <View className="flex-1 " style={{ padding: 16 }}>
                 <Text className="text-base Archivo leading-archivo text-center text-custom-blue flex-1">
-                  Malheureusement, pour le moment, nous ne traitons que les deux
-                  niveaux
-                  <Text className="ArchivoBold"> "Ti’Curieux" </Text>
-                  et
-                  <Text className="ArchivoBold"> "Ti’Défricheur"</Text>. {"\n"}
+                  Malheureusement, pour le moment, nous ne traitons que les premiere quatre 
+                  niveaux et 
                   Votre score actuel de{" "}
                   <Text className="font-bold">{totalRequests}</Text> est
-                  supérieur à ces deux niveaux. Ainsi, vous pouvez débloquer le
+                  supérieur à ces quatre niveaux. Ainsi, vous pouvez débloquer le
                   niveau le plus élevé possible :
                   <Text className="ArchivoBold text-custom-green-text">
                     {" "}
@@ -306,11 +303,11 @@ export default function Profile(): JSX.Element {
                 {!currentLevel ? (
                   <View style={{ flex: 2 }}>
                     <Text className="text-center text-custom-blue text-base Archivo leading-archivo">
-                      {customInfo[1].reward}
+                      {customInfo[3].reward}
                     </Text>
                     <View className="py-6 items-center">
                       <CustomButton
-                        title={customInfo[1].btnText}
+                        title={customInfo[3].btnText}
                         disabled={createLoading}
                         style={{
                           maxWidth: 280,
@@ -318,11 +315,7 @@ export default function Profile(): JSX.Element {
                           backgroundColor: (colors as any)["custom-green-text"],
                         }}
                         onPress={() => {
-                          if (customInfo[1].route) {
                             handleAssignLevel2();
-                          } else {
-                            console.log("Route à ajouter");
-                          }
                         }}
                       />
                     </View>

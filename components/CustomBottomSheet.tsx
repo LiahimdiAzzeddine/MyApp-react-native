@@ -25,7 +25,7 @@ import { Easing } from "react-native-reanimated";
 
 const CustomBottomSheet: React.FC = () => {
   const [hasScrolledDown, setHasScrolledDown] = useState(false);
-
+ const [isOpenIndex,setIsOpenIndex]= useState(0);
   const insets = useSafeAreaInsets();
   const {
     bottomSheetRef,
@@ -51,6 +51,7 @@ const CustomBottomSheet: React.FC = () => {
       if (index === -1) {
         closeBottomSheet();
       }
+      setIsOpenIndex(index);
     },
     [closeBottomSheet]
   );
@@ -93,7 +94,7 @@ const CustomBottomSheet: React.FC = () => {
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
    const yOffset = event.nativeEvent.contentOffset.y;
 
-      if (yOffset > 0 && !hasScrolledDown && !hasRequested && isAuthenticated) {
+      if (yOffset > 0 && !hasScrolledDown && !hasRequested && isAuthenticated && isOpenIndex==1) {
         setHasScrolledDown(true);
         setIsModalEncourager(true)
       }

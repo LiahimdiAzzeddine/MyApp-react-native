@@ -6,7 +6,7 @@ import {
   ScrollView,
   Alert,
 } from "react-native";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { useTheme } from "@react-navigation/native";
 import { Route, useLocalSearchParams, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -24,7 +24,7 @@ const levels = [
     image: require("@/assets/images/storys/16.png"),
     route: "/hometab/story",
     btnText: "Débloquer les stories​",
-    goal:30,
+    goal: 30,
   },
   {
     id: 2,
@@ -34,7 +34,7 @@ const levels = [
     image: require("@/assets/images/storys/17.png"),
     route: "/tips",
     btnText: "Débloquer les Ti’Conseils​​",
-    goal:120,
+    goal: 120,
   },
   {
     id: 3,
@@ -44,7 +44,7 @@ const levels = [
       "Recevez gratuitement votre calendrier perpétuel de fruits et légumes TiCO avec des recettes gourmandes et des astuces à essayer au quotidien.",
     image: require("@/assets/images/storys/18.png"),
     btnText: "Recevoir mon calendrier​",
-    goal:150,
+    goal: 150,
   },
   {
     id: 4,
@@ -54,7 +54,7 @@ const levels = [
       "« La vérité si J’mange », le guide de décryptage TiCO pour apprendre facilement à déjouer les pièges sur les produits alimentaires.​",
     image: require("@/assets/images/storys/19.png"),
     btnText: "Recevoir le code​​",
-    goal:250,
+    goal: 250,
   },
   {
     id: 5,
@@ -64,7 +64,7 @@ const levels = [
     image1: require("@/assets/images/storys/30.png"),
     image2: require("@/assets/images/storys/20.png"),
     btnText: "Débloquer les stories​",
-    goal:400,
+    goal: 2000000000,
   },
   {
     id: 6,
@@ -74,7 +74,7 @@ const levels = [
       "Débloquer gratuitement le jeu Info ou Pipeau pour pimenter vos apéros tout en apprenant de manière ludique à déjouer les pièges sur l’alimentation.\n Prenez-vous au jeu, mettez vous dans la peau d’un influenceur, d’un lobbyiste ou d’un consommateur pour trouver la vérité sur les produits alimentaires !​",
     image: require("@/assets/images/storys/22.png"),
     btnText: "Débloquer les stories​",
-    goal:600,
+    goal: 2000000000,
   },
   {
     id: 7,
@@ -84,7 +84,7 @@ const levels = [
     image1: require("@/assets/images/storys/30.png"),
     image2: require("@/assets/images/storys/21.png"),
     btnText: "Débloquer les stories​",
-    goal:800,
+    goal: 2000000000,
   },
   {
     id: 8,
@@ -94,7 +94,7 @@ const levels = [
       "Commandez gratuitement votre box surprise avec des produits sains et responsables à découvrir !​",
     image: require("@/assets/images/storys/25.png"),
     btnText: "Débloquer les stories​",
-    goal:1000,
+    goal: 2000000000,
   },
 ];
 
@@ -103,19 +103,20 @@ export default function Profile() {
   const { userInfo } = useContext(AuthContext);
   const router = useRouter();
   const { colors } = useTheme();
-    const {
-    totalRequests,
-  } = useGetTotalRequests();
-
+  const { totalRequests, fetchTotalRequests } = useGetTotalRequests();
+  useEffect(() => {
+    fetchTotalRequests();
+  }, [totalRequests]);
   const userId: number | undefined = userInfo?.id;
   const getLevel = (requests: number | undefined) =>
     levels.find((level) => level.id === requests);
-  
+
   const level = getLevel(Number(id));
-  const hasLevel= userInfo?.levels?.some((lv) => lv.id === (Number(id)+1));
-  
-const unlockBtn = !hasLevel || Number(totalRequests) >= Number(level?level.goal:0);
-  
+  const hasLevel = userInfo?.levels?.some((lv) => lv.id === Number(id) + 1);
+
+  const unlockBtn =
+    !hasLevel && Number(totalRequests) >= Number(level ? level.goal : 0);
+
   const {
     createUserLevel,
     createdUserLevel,
@@ -246,24 +247,23 @@ const unlockBtn = !hasLevel || Number(totalRequests) >= Number(level?level.goal:
             </Text>
           </ScrollView>
         )}
-        {unlockBtn&&(
-         <View className="py-6">
-          <CustomButton
-            title={level.btnText}
-            disabled={createLoading}
-            style={{
-              maxWidth: 280,
-              minWidth: 200,
-              marginHorizontal: "auto",
-              backgroundColor: (colors as any)["custom-green-text"],
-            }}
-            onPress={() => {
-              handleAssignLevel();
-            }}
-          />
-        </View>  
+        {unlockBtn && (
+          <View className="py-2">
+            <CustomButton
+              title={level.btnText}
+              disabled={createLoading}
+              style={{
+                maxWidth: 280,
+                minWidth: 200,
+                marginHorizontal: "auto",
+                backgroundColor: (colors as any)["custom-green-text"],
+              }}
+              onPress={() => {
+                handleAssignLevel();
+              }}
+            />
+          </View>
         )}
-       
       </View>
     </SafeAreaView>
   );

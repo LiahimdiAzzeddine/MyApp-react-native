@@ -112,8 +112,7 @@ export default function Scanner() {
       </View>
     </View>
     <Solliciter isOpen={isModalEncourager}  setIsOpen={setIsModalEncourager} authUser={userInfo} />
-     
-    
+
     </>
   );
 }
