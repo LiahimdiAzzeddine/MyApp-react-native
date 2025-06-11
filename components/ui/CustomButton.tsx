@@ -38,7 +38,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
 
 const styles = StyleSheet.create({
   button: {
-    paddingVertical: 10,
+    paddingVertical: 9,
     paddingHorizontal: 20,
     borderRadius: 12,
     alignItems: "center",
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "white",
     fontFamily: "ArchivoBold",
-    fontSize:18
+    fontSize:17
   },
 });
 

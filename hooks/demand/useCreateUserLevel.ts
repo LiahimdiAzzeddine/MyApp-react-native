@@ -3,6 +3,7 @@ import api from '@/utils/axiosInstance';
 import { CreateUserLevelPayload, UserLevel } from '@/types/UserLevel';
 import { AuthContext } from '@/context/AuthContext';
 import { useSpinner } from '@/context/LoadingContext';
+import { Alert } from 'react-native';
 
 const useCreateUserLevel = () => {
   const [loading, setLoading] = useState(false);
@@ -23,11 +24,24 @@ const useCreateUserLevel = () => {
       if (response.status === 201) {
         setCreatedUserLevel(response.data);
         updateUserLevel(response.data.user.levels)
+        if (response.data.level.id === 4) {
+  Alert.alert(
+    "Mail envoyé !",
+    "Vérifiez votre boîte mail, votre calendrier TiCO vous y attend !"
+  );
+} else if (response.data.level.id === 5) {
+  Alert.alert(
+    "Mail envoyé !",
+    "Vérifiez votre boîte mail, votre guide TiCO vous y attend !"
+  );
+}
+
         return response.data;
       } else {
         setError("Échec lors de la création de la relation utilisateur-niveau.");
         return false;
       }
+        
         
     } catch (err: any) {
       

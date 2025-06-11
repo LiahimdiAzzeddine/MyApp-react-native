@@ -23,9 +23,11 @@ const customInfo = [
   {
     id: 2,
     title: "Ti’Curieux",
+    rewardInit:
+      "débloquez les stories TiCO stylées et engagées pour faire bouger les marques.​",
     reward:
       "Débloquez les stories TiCO stylées et engagées pour faire bouger les marques.​",
-    rewardNext: "3 Ti’Conseils exclusifs par mois pour briller à l’apéro !​​",
+    rewardNext: " 3 Ti’Conseils exclusifs par mois pour briller à l’apéro!​​",
     route: "/hometab/story",
     btnText: "Débloquer les stories​",
   },
@@ -35,7 +37,7 @@ const customInfo = [
     reward:
       "Débloquez vos 3 Ti'Conseils exclusifs mensuels si vous avez appris quelque chose d’intéressant dites-le !​",
     rewardNext:
-      "votre calendrier perpétuel de fruits et légumes de saison. Ponctué d’astuces, de rappels et de recettes c’est un bel outil à garder à l’œil dans la cuisine.​",
+      " votre calendrier perpétuel de fruits et légumes de saison. Ponctué d’astuces, de rappels et de recettes c’est un bel outil à garder à l’œil dans la cuisine.​",
     route: "/tips",
     btnText: "Débloquer les Ti’Conseils​​",
   },
@@ -43,25 +45,24 @@ const customInfo = [
     id: 4,
     title: "Ti’Conso engagé",
     reward:
-      "Recevez votre calendrier perpétuel de fruits et légumes de saison avec en bonus des astuces et recettes saines et gourmandes idéales à garder à l’œ",
+      "Recevez votre calendrier perpétuel de fruits et légumes de saison avec en bonus des astuces et recettes saines et gourmandes idéales à garder à l’œil",
     rewardNext:
-      "votre guide de décryptage pour déjouer les piègessur les produits alimentaires​",
+      " votre guide de décryptage pour déjouer les pièges sur les produits alimentaires​",
     btnText: "Recevoir mon calendrier​",
   },
   {
     id: 5,
     title: "Ti’Décrypteur",
-    reward:
-      "Recevez votre code de réduction pour votre première séance personnalisée avec Marion Honoré, coach en alimentation santé durable.​",
-    rewardNext:
-      "votre Guide de décryptage pour déjouer les pièges sur les produits alimentaires.​​​",
-    btnText: "Recevoir le code​​",
+    reward:"Recevez votre guide de décryptage pour déjouer les pièges sur les produits alimentaires.",
+    rewardNext:" une réduction sur la première séance de coaching personnalisé en alimentation santé durable​​​",
+    btnText: "Recevoir mon guide​",
   },
   {
     id: 6,
     title: "Ti’Veilleur",
     reward: "Jeu Info ou Pipeau",
-    rewardNext: "recevoir 3 Ti’Conseils exclusifs pour briller à l’apéro !​​pp",
+    rewardNext:
+      " recevoir 3 Ti’Conseils exclusifs pour briller à l’apéro !​​pp",
     route: "/hometab/story",
     btnText: "Débloquer les stories​",
   },
@@ -228,7 +229,7 @@ export default function Profile(): JSX.Element {
 
     const result = await createUserLevel({
       user_id: userId,
-      level_id: levels[1].id,
+      level_id: 5,
     });
 
     //router.push(customInfo[1].route as Route);
@@ -281,29 +282,22 @@ export default function Profile(): JSX.Element {
       ) : (
         <ScrollView
           style={{ flex: 1 }}
-          contentContainerStyle={{ flexGrow: 1, paddingBottom: 40 }}
+          contentContainerStyle={{ flexGrow: 1, paddingBottom: 5 }}
           showsVerticalScrollIndicator={false}
         >
           <View style={{ flex: 1 }}>
             {Number(totalRequests) > 399 ? (
-              <View className="flex-1 " style={{ padding: 16 }}>
-                <Text className="text-base Archivo leading-archivo text-center text-custom-blue flex-1">
-                  Malheureusement, pour le moment, nous ne traitons que les premiere quatre 
-                  niveaux et 
-                  Votre score actuel de{" "}
-                  <Text className="font-bold">{totalRequests}</Text> est
-                  supérieur à ces quatre niveaux. Ainsi, vous pouvez débloquer le
-                  niveau le plus élevé possible :
-                  <Text className="ArchivoBold text-custom-green-text">
-                    {" "}
-                    "Ti’Défricheur"
-                  </Text>
-                  .
+              <View className="flex-1 justify-center gap-6" style={{ padding: 16 }}>
+                <Text className="text-lg Archivo leading-archivo text-center text-custom-blue ">
+                  TiCO est en cours de développement, vous pourrez accéder très bientôt aux profils suivants !​
                 </Text>
-                {!currentLevel ? (
+                <Text className="text-lg Archivo leading-archivo text-center text-custom-blue ">
+                  Continuer à faire des demandes, elles seront comptabilisées et vous serez notifiés dès que vous pourrez débloquer de nouvelles récompenses !
+                </Text>
+                {/*!currentLevel && (
                   <View style={{ flex: 2 }}>
-                    <Text className="text-center text-custom-blue text-base Archivo leading-archivo">
-                      {customInfo[3].reward}
+                    <Text className="text-center text-custom-blue text-lg Archivo leading-archivo">
+                     {customInfo[3].reward}
                     </Text>
                     <View className="py-6 items-center">
                       <CustomButton
@@ -315,50 +309,41 @@ export default function Profile(): JSX.Element {
                           backgroundColor: (colors as any)["custom-green-text"],
                         }}
                         onPress={() => {
-                            handleAssignLevel2();
+                          handleAssignLevel2();
                         }}
                       />
                     </View>
                   </View>
-                ) : (
-                  <View style={{ flex: 2 }} className="px-4">
-                    <Text className="text-base Archivo leading-archivo text-center text-custom-blue flex-1">
-                      Vous avez déjà activé le niveau{" "}
-                      <Text className="ArchivoBold text-custom-green-text">
-                        "Ti’Défricheur"
-                      </Text>
-                      .
-                    </Text>
-                  </View>
-                )}
+                )*/}
               </View>
             ) : (
               <View className=" mt-4" style={{ paddingHorizontal: 16 }}>
                 {CurrentEligibleLevel && (
                   <Text
                     className="text-center text-custom-green-text ClashDisplayBold mb-2 leading-archivo "
-                    style={{ fontSize: 26 }}
+                    style={{ fontSize: 25 }}
                   >
                     {CurrentEligibleLevel?.title}
                   </Text>
                 )}
                 <Text
-                  className="text-3xl text-center text-custom-green-text leading-archivo"
+                  className=" text-center text-custom-green-text leading-archivo"
                   style={{
-                    paddingBottom: 30,
+                    fontSize: 25,
+                    paddingBottom: 20,
                     fontFamily: "comicoFont",
                   }}
                 >
                   {totalRequests} Demande{Number(totalRequests) > 1 && "s"}
                 </Text>
                 {CurrentEligibleLevel && (
-                  <Text className="text-center text-custom-blue text-xl Archivo leading-archivo">
+                  <Text className="text-center text-custom-blue text-lg Archivo leading-archivo">
                     Déjà {totalRequests} demandes aux marques, bravo !
                   </Text>
                 )}
                 {CurrentEligibleLevel && !CurrentEligibleLevelIsActive && (
                   <View>
-                    <Text className="text-center text-custom-blue text-xl Archivo leading-archivo">
+                    <Text className="text-center text-custom-blue text-lg Archivo leading-archivo">
                       {customInfo[Number(CurrentEligibleLevel.id - 2)].reward}
                     </Text>
                     <View className="py-6">
@@ -397,7 +382,7 @@ export default function Profile(): JSX.Element {
                   <View>
                     {Number(totalRequests) == 0 && (
                       <Text
-                        className="text-center text-custom-blue text-xl Archivo leading-archivo "
+                        className="text-center text-custom-blue text-lg Archivo leading-archivo "
                         style={{ marginBottom: 25 }}
                       >
                         Scannez des produits et demandez la transparence aux
@@ -406,17 +391,28 @@ export default function Profile(): JSX.Element {
                     )}
 
                     {Number(totalRequests) > 0 && (
-                      <Text className="text-center text-custom-blue text-xl Archivo leading-archivo">
-                        Plus que{" "}
-                        {getRemainingRequests(nextEligibleLevel?.goal ?? 0)}{" "}
-                        demandes pour passer au profil suivant et recevoir{" "}
-                        {
-                          customInfo[
-                            CurrentEligibleLevel
-                              ? CurrentEligibleLevel.id - 2
-                              : 0
-                          ].rewardNext
-                        }
+                      <Text className="text-center text-custom-blue text-lg Archivo leading-archivo">
+                        Plus que
+                        {getRemainingRequests(nextEligibleLevel?.goal ?? 0) > 1
+                          ? " " +
+                            getRemainingRequests(nextEligibleLevel?.goal ?? 0) +
+                            " demandes "
+                          : " " +
+                            getRemainingRequests(nextEligibleLevel?.goal ?? 0) +
+                            " demande "}
+                        pour passer au profil suivant et{" "}
+                        {Number(totalRequests) > 29 ? "recevoir" : ""}
+                        {Number(totalRequests) < 30
+                          ? customInfo[
+                              CurrentEligibleLevel
+                                ? CurrentEligibleLevel.id - 2
+                                : 0
+                            ].rewardInit
+                          : customInfo[
+                              CurrentEligibleLevel
+                                ? CurrentEligibleLevel.id - 2
+                                : 0
+                            ].rewardNext}
                       </Text>
                     )}
                   </View>
@@ -454,17 +450,17 @@ export default function Profile(): JSX.Element {
             {Number(totalRequests) > 0 && (
               <View
                 style={{
-                  marginTop: "auto",
                   alignItems: "center",
                   paddingHorizontal: 16,
-                  paddingTop: 40,
-                  justifyContent: "center",
+                  paddingTop: 35,
+                  justifyContent:"flex-end",
+                  flex:1
                 }}
               >
-                <Text className="text-center text-custom-blue text-xl Archivo leading-archivo">
+                <Text className="text-center text-custom-blue text-lg Archivo leading-archivo">
                   Partagez votre expérience sur TiCO
                 </Text>
-                <View className="py-6">
+                <View className="py-5">
                   <CustomButton
                     title={"Partager"}
                     style={{

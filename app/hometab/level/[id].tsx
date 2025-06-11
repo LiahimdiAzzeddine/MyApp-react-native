@@ -30,7 +30,7 @@ const levels = [
     id: 2,
     title: "Ti’Défricheur",
     soubTitle: "À partir de 80 demandes",
-    message: "Débloquez 3 Ti’Conseils exclusif par mois.",
+    message: "Débloquez 3 Ti’Conseils exclusifs par mois.",
     image: require("@/assets/images/storys/17.png"),
     route: "/tips",
     btnText: "Débloquer les Ti’Conseils​​",

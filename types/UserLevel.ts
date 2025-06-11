@@ -11,4 +11,5 @@ export interface UserLevel {
   id: number;
   user: User;
   levels: Level[];
+  level:Level;
 }

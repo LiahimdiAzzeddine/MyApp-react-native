@@ -1,8 +1,9 @@
 import React, { useContext } from 'react';
 import { View, StyleSheet, SafeAreaView, StatusBar, Platform, TouchableOpacity, Image } from 'react-native';
-import { useRouter } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import { AppContext } from '@/context/AppContext';
 import { AuthContext } from '@/context/AuthContext';
+
 
 // Images
 const Tico = require('@/assets/images/headers/tico.png');
@@ -113,6 +114,8 @@ const CustomHeader = ({
             </TouchableOpacity>
           )}
           {(isHome && hasLevelcurieux ) &&(
+            <View className='flex flex-row gap-y-2 items-end align-bottom text-start' style={{alignItems:"flex-end"}}>
+              <Link href={"/hometab/story"} className='ArchivoLight leading-none  text-custom-green-text text-lg underline underline-offset-0'>Stories​</Link>
             <TouchableOpacity style={styles.iconButton}
               onPress={() => router.push('/hometab/story')}
             >
@@ -122,6 +125,7 @@ const CustomHeader = ({
                 resizeMode="contain"
               />
             </TouchableOpacity>
+            </View>
           )}
           
           <TouchableOpacity style={styles.iconButton}>

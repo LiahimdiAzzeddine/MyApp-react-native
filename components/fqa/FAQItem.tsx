@@ -14,9 +14,7 @@ const FAQItem: React.FC<FAQItemProps> = ({ question, answer, index, length }) =>
   const [isOpen, setIsOpen] = useState(false);
     const { width } = useWindowDimensions();
 
-function stripHtmlTags(html:any) {
-  return html.replace(/<\/?[^>]+(>|$)/g, "");
-}
+
 
   const highlightTiCO = (text: string) => {
     const parts = text.split(/(TiCO)/i);
@@ -31,12 +29,21 @@ function stripHtmlTags(html:any) {
       return <Text key={idx}>{part}</Text>;
     });
   };
+const stripHtml = (html:any) => {
+  return html
+    .replace(/<br\s*\/?>/gi, '\n')     // Remplace <br> par 1 saut de ligne
+    .replace(/<\/p>/gi, '\n')          // Remplace </p> par 1 saut de ligne
+    .replace(/<[^>]+>/g, '')           // Supprime toutes les autres balises HTML
+    .replace(/\n{2,}/g, '\n\n ')          // Remplace plusieurs sauts de ligne par un seul
+    .trim();
+};
+
 
   return (
     <View>
       <TouchableOpacity style={styles.header} onPress={() => setIsOpen(!isOpen)}>
         <View style={styles.textContainer}>
-          <Text className='ArchivoLight text-lg text-custom-blue leading-archivo '>{highlightTiCO(stripHtmlTags(question))}</Text>
+          <Text className='ArchivoLight text-lg text-custom-blue leading-archivo '>{highlightTiCO(stripHtml(question))}</Text>
         </View>
         <Ionicons
           name={isOpen ? 'chevron-up' : 'chevron-down'}
@@ -47,15 +54,10 @@ function stripHtmlTags(html:any) {
 
       {isOpen && (
     <View style={styles.answerBox}>
-      <RenderHtml
-        contentWidth={width}
-        source={{ html: answer }}
-        tagsStyles={{
-          p: styles.answerText,
-          b: { fontWeight: 'bold' },
-          i: { fontStyle: 'italic' }
-        }}
-      />
+    <Text className='ArchivoLight text-base text-custom-blue leading-archivo '>
+      {stripHtml(answer)}
+    </Text>
+      
     </View>
       )}
 

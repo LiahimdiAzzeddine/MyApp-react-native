@@ -17,7 +17,6 @@ const useFAQ = () => {
     const fetchFAQs = async () => {
       try {
         const response = await axios.get('/api/faqs');
-        console.log('FAQs fetched: ', response.data);
         setFAQs(response.data ? Object.values(response.data) : []);
       } catch (err: unknown) {
         const axiosError = err as AxiosError;

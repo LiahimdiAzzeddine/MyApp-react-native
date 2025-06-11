@@ -10,49 +10,26 @@ import {
 } from "react-native";
 
 import { useRouter } from "expo-router";
-import * as Haptics from "expo-haptics";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { showAlert } from "@/utils/alert";
 
 const logo = require("@/assets/images/headers/tico.png");
 // Pour l’icône info, assure-toi d’avoir un PNG ou utilise react-native-svg
 const infoIcon = require("@/assets/images/headers/info.png");
 
 export default function ScanHeader() {
-  const [showFAQ, setShowFAQ] = useState(false);
   const router = useRouter();
 
-  const triggerHaptic = async () => {
-    if (Platform.OS !== "web") {
-      try {
-        await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-      } catch {
-        // pas supporté
-      }
-    }
-  };
+
 
   const goToSettings = () => {
-    triggerHaptic();
     router.push('/settings');
   };
 
   const onInfoPress = () => {
-    triggerHaptic();
-    setShowFAQ(true);
+    router.push('/settingsPage/fqas');
   };
 
-  const onProductInfo = () => {
-    showAlert(
-      "Nous travaillons activement sur cette fonctionnalité. Elle sera bientôt disponible.",
-      "Info",
-      () => console.log("Alerte fermée"),
-      "Compris",
-      false
-    );
-  };
-
+ 
   return (
     <>
       <SafeAreaView style={styles.safeArea}>
