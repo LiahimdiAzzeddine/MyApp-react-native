@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import React, { useContext, useEffect } from "react";
 import { useTheme } from "@react-navigation/native";
-import { Route, useLocalSearchParams, useRouter } from "expo-router";
+import { Link, Route, useLocalSearchParams, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AuthContext } from "@/context/AuthContext";
 import useCreateUserLevel from "@/hooks/demand/useCreateUserLevel";
@@ -226,18 +226,19 @@ export default function Profile() {
           >
             <Image
               source={level.image1}
-              style={{ width: "50%", height: 130 }}
+              style={{ width: "50%", height: 120 }}
               resizeMode="contain"
             />
             <Image
               source={level.image2}
-              style={{ width: "50%", height: 130 }}
+              style={{ width: "50%", height: 120 }}
               resizeMode="contain"
             />
           </View>
         )}
 
         {level.Text && (
+          <>
           <ScrollView showsVerticalScrollIndicator={false}>
             <Text
               className="text-start text-custom-green-text text-lg Archivo  leading-archivo"
@@ -246,6 +247,8 @@ export default function Profile() {
               {level.Text}
             </Text>
           </ScrollView>
+          <Link href={'https://jalimente.fr/'} className="text-lg text-center archivoBold underline text-custom-green-text py-4">En savoir plus</Link>
+          </>
         )}
         {unlockBtn && (
           <View className="py-2">

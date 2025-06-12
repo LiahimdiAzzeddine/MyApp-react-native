@@ -56,6 +56,11 @@ export default function RootLayout() {
   if (!loaded) {
     return null;
   }
+  const style = {
+  backgroundColor: "#9FA8DA",
+  borderRadius: 10,
+  paddingTop: 5,
+};
 
   return (
     <ThemeProvider
@@ -120,13 +125,15 @@ export default function RootLayout() {
                       headerShown: false,
                     }}
                   />
-                   <Stack.Screen
-                    name="validation/[token]"
+                  <Stack.Screen
+                    name="tico"
                     options={{
+                      title: "welcome",
                       animation: "fade",
-                      header: (props) => <CustomHeader image="vf" />,
+                      headerShown: false,
                     }}
                   />
+                 
                   <Stack.Screen name="+not-found" />
                 </Stack>
                 <CustomBottomSheet />

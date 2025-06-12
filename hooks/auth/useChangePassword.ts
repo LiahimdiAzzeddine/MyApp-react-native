@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import axios from "axios";
+import axios from 'axios';
 import api from '@/utils/axiosInstance';
 import { useToast } from '../useToast';
 import { useSpinner } from '@/context/LoadingContext';
@@ -22,6 +22,8 @@ const useChangePassword = () => {
   const navigation = useNavigation<any>(); // adapt based on your navigator
   const { setSpinner  } = useSpinner();
   const router=useRouter();
+    const apiUrl = process.env.EXPO_PUBLIC_API_URL;
+
 const { logout } = useContext(AuthContext);
   const goToPage = (path: string) => {
     navigation.replace(path);
@@ -44,7 +46,7 @@ const { logout } = useContext(AuthContext);
       let response;
       if (emailParam) {
         // Changement de mot de passe via email/token
-        response = await axios.post('api/auth/change-password', {
+        response = await axios.post(apiUrl+'/api/auth/change-password', {
           email: emailParam,
           new_password: newPassword,
           new_password_confirmation: newPasswordConfirmation,
@@ -65,6 +67,7 @@ const { logout } = useContext(AuthContext);
         router.replace('/(auth)/login')
       }
     } catch (err: any) {
+      console.log("🚀 ~ useChangePassword ~ err:", err)
       if (err.response?.data?.errors) {
         setError(err.response.data.errors);
         triggerToast('Erreur de validation. Vérifiez les champs indiqués.', 'error');

@@ -71,7 +71,7 @@ export interface RecipeValues {
   rest_time: string;
   ingredients: IngredientInput[];
   steps: string[];
-  image:string|null;
+  image:any|null;
 }
 
   

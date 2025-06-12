@@ -22,14 +22,17 @@ import ProductSkeletonLoader from "./fp/ProductSkeletonLoader";
 import ModalHeader from "./fp/ModalHeader";
 import ProductDetailsView from "./fp/ProductDetailsView";
 import { Easing } from "react-native-reanimated";
+import { usePathname } from "expo-router";
 
 const CustomBottomSheet: React.FC = () => {
   const [hasScrolledDown, setHasScrolledDown] = useState(false);
  const [isOpenIndex,setIsOpenIndex]= useState(0);
   const insets = useSafeAreaInsets();
+  const pathname = usePathname();
   const {
     bottomSheetRef,
     closeBottomSheet,
+    isOpen,
     scannedBarcode,
     setHasRequested,
     setProductName,
@@ -43,7 +46,13 @@ const CustomBottomSheet: React.FC = () => {
     scannedBarcode || ""
   );
 
-  // Définir les snap points avec useMemo pour éviter les re-renders
+
+  useEffect(() => {
+    if (pathname !== "/" && pathname !== "/index" && isOpen) {
+      closeBottomSheet();
+    }
+  }, [pathname]);
+
   const snapPoints = useMemo(() => ["40%", "100%"], []);
 
   const handleSheetChanges = useCallback(

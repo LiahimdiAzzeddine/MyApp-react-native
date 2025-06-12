@@ -1,32 +1,31 @@
 import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
-   containerImg: {
-    alignItems: 'center',
-    paddingBottom:30,
+  containerImg: {
+    alignItems: "center",
+    paddingBottom: 30,
   },
   placeholder: {
-    width: 160,
-    height: 150,
+    width: 170,
+    height: 140,
     borderWidth: 1,
-    borderColor: '#f3cfcf',
+    borderColor: "#f3cfcf",
     borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginBottom: 20,
   },
   imagePreview: {
-    width: 150,
-    height: 150,
+    width: 170,
+    height: 140,
     borderRadius: 10,
     marginBottom: 20,
   },
- 
 
   container: {
     flex: 1,
     padding: 18,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
 
   formContainer: {
@@ -38,146 +37,145 @@ const styles = StyleSheet.create({
   },
   label: {
     marginBottom: 8,
-    color: '#D32F2F',
-    fontFamily: 'ArchivoLight',
+    color: "#D32F2F",
+    fontFamily: "ArchivoLight",
   },
   input: {
     borderWidth: 1,
-    borderColor: '#FFCDD2', // custom-red-clear equivalent
+    borderColor: "#FFCDD2", // custom-red-clear equivalent
     borderRadius: 12,
     padding: 12,
-    fontFamily: 'ArchivoLight',
-    color: '#333',
+    fontFamily: "ArchivoLight",
+    color: "#333",
   },
   multilineInput: {
     minHeight: 80,
-    textAlignVertical: 'top',
+    textAlignVertical: "top",
   },
   inputError: {
-    borderColor: '#B71C1C', // dark red for error
+    borderColor: "#B71C1C", // dark red for error
   },
   errorText: {
-    color: '#B71C1C', // dark red for error
+    color: "#B71C1C", // dark red for error
     fontSize: 14,
     marginTop: 4,
-    fontFamily: 'ArchivoLight',
+    fontFamily: "ArchivoLight",
   },
   buttonGroup: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    fontFamily:"ArchivoLight"
+    flexDirection: "row",
+    flexWrap: "wrap",
+    fontFamily: "ArchivoLight",
   },
   filterButton: {
     borderWidth: 1,
-    borderColor: '#D32F2F',
+    borderColor: "#D32F2F",
     borderRadius: 20,
     paddingVertical: 6,
     paddingHorizontal: 12,
     marginRight: 8,
     marginBottom: 8,
-    backgroundColor: '#FFF',
-    fontFamily:"ArchivoLight"
+    backgroundColor: "#FFF",
+    fontFamily: "ArchivoLight",
   },
   activeButton: {
-    backgroundColor: '#D32F2F',
-    borderColor: '#D32F2F',
+    backgroundColor: "#D32F2F",
+    borderColor: "#D32F2F",
   },
   buttonText: {
-    color: '#D32F2F',
-    fontFamily: 'ArchivoLight',
+    color: "#D32F2F",
+    fontFamily: "ArchivoLight",
   },
   activeButtonText: {
-    color: '#FFF',
+    color: "#FFF",
   },
   boldText: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   infoText: {
-    color: '#666',
+    color: "#666",
     fontSize: 14,
-    padding:10,
-    fontFamily: 'ArchivoLight',
+    padding: 10,
+    fontFamily: "ArchivoLight",
   },
   ingredientInputGroup: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 8,
   },
   ingredientInput: {
     borderWidth: 1,
-    borderColor: '#FFCDD2',
+    borderColor: "#FFCDD2",
     borderRadius: 12,
     padding: 12,
     marginRight: 8,
   },
   addButton: {
-    backgroundColor: '#D32F2F',
+    backgroundColor: "#D32F2F",
     borderRadius: 20,
     paddingVertical: 8,
     paddingHorizontal: 16,
-    alignSelf: 'flex-start',
+    alignSelf: "flex-start",
     marginTop: 8,
   },
-   button: {
-    backgroundColor: '#D32F2F', // rouge
+  button: {
+    backgroundColor: "#D32F2F", // rouge
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
   },
   addButtonText: {
-    color: '#FFF',
-    fontFamily: 'ArchivoLight',
+    color: "#FFF",
+    fontFamily: "ArchivoLight",
   },
   tagsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
     marginTop: 12,
   },
   tag: {
-    backgroundColor: '#FFF',
+    backgroundColor: "#FFF",
     borderWidth: 1,
-    borderColor: '#D32F2F',
+    borderColor: "#D32F2F",
     borderRadius: 20,
     paddingVertical: 6,
     paddingHorizontal: 6,
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginRight: 8,
     marginBottom: 8,
   },
   tagText: {
-    color: '#D32F2F',
-    fontFamily: 'ArchivoLight',
+    color: "#D32F2F",
+    fontFamily: "ArchivoLight",
     marginRight: 8,
   },
   removeTagButton: {
-    backgroundColor: '#EF5350',
+    backgroundColor: "#EF5350",
     width: 25,
     height: 25,
-    justifyContent:"center",
+    justifyContent: "center",
     borderRadius: 12,
-    margin:"auto",
+    margin: "auto",
   },
   removeTagButtonText: {
-    color: 'white',
-    margin:"auto"
+    color: "white",
+    margin: "auto",
   },
   submitContainer: {
-    alignItems: 'center',
-    marginTop: 16,
+    alignItems: "center",
     marginBottom: 32,
   },
   visualizeButton: {
-    backgroundColor: '#D32F2F',
+    backgroundColor: "#D32F2F",
   },
 
   submitButton: {
-    backgroundColor: '#FAD4CE',
-    borderColor: '#FAD4CE',
+    backgroundColor: "#FAD4CE",
+    borderColor: "#FAD4CE",
   },
   submitButtonText: {
-    color: '#B71C1C',
-    fontFamily: 'ArchivoLight',
+    color: "#B71C1C",
+    fontFamily: "ArchivoLight",
   },
 });
 export default styles;

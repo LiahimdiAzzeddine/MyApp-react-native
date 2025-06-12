@@ -36,7 +36,7 @@ interface RecipeDetailsProps {
   custom: boolean;
 }
 
-const RecipeDetails = ({ recipe = {}, custom = true }: RecipeDetailsProps) => {
+const RecipeDetails = ({ recipe = {}, custom = false }: RecipeDetailsProps) => {
   let {
     id,
     title = "Recette sans titre",
@@ -110,38 +110,68 @@ const RecipeDetails = ({ recipe = {}, custom = true }: RecipeDetailsProps) => {
                 <Text style={styles.title}>{title}</Text>
               </View>
               <View style={styles.imageWrapper}>
-                <Image
-                  source={{
-                    uri: generateImageUrl(recipe.id, recipe.image_name) || "",
-                  }}
-                  defaultSource={require("@/assets/images/recipes/64.png")}
-                  style={styles.categoryImage}
-                  resizeMode="cover"
-                />
+                {custom ? (
+                  <Image
+                    source={recipe.image_name}
+                    defaultSource={require("@/assets/images/recipes/64.png")}
+                    style={styles.categoryImage}
+                    resizeMode="cover"
+                  />
+                ) : (
+                  <Image
+                    source={{
+                      uri: generateImageUrl(recipe.id, recipe.image_name) || "",
+                    }}
+                    defaultSource={require("@/assets/images/recipes/64.png")}
+                    style={styles.categoryImage}
+                    resizeMode="cover"
+                  />
+                )}
               </View>
             </ImageBackground>
 
             <View style={styles.infoRow}>
               <View style={styles.difficultyWrapper}>
-                <TouchableOpacity
-                  onPress={toggleFavorite}
+                {!custom && (
+                  <TouchableOpacity
+                    onPress={toggleFavorite}
+                    style={{
+                      padding: 0,
+                      flex: 1,
+                    }}
+                  >
+                    <Image
+                      source={
+                        favorite
+                          ? require("@/assets/images/recipes/34.png")
+                          : require("@/assets/images/recipes/35.png")
+                      }
+                      style={{ width: 50, height: 50 }}
+                      resizeMode="contain"
+                    />
+                  </TouchableOpacity>
+                )}
+                <View
                   style={{
-                    padding: 0,
+                    flex: 1,
+                    maxWidth: "50%",
+                    flexDirection: "row",
+                    flexWrap: "wrap",
+                    alignItems: "center",
                   }}
                 >
-                  <Image
-                    source={
-                      favorite
-                        ? require("@/assets/images/recipes/34.png")
-                        : require("@/assets/images/recipes/35.png")
-                    }
-                    style={{ width: 50, height: 50 }}
-                    resizeMode="contain"
-                  />
-                </TouchableOpacity>
-                {difficulte && (
-                  <Text style={styles.difficultyText}>{difficulte}</Text>
-                )}
+                  {difficulte && (
+                    <Text style={styles.difficultyText}>{difficulte}</Text>
+                  )}
+                  {regimes &&
+                    regimes.map(
+                      (filter: string, index: React.Key | null | undefined) => (
+                        <Text key={index} style={styles.difficultyText}>
+                          {filter.trim()}
+                        </Text>
+                      )
+                    )}
+                </View>
                 <View style={styles.timeWrapper}>
                   <Image
                     source={horloge}
@@ -153,14 +183,6 @@ const RecipeDetails = ({ recipe = {}, custom = true }: RecipeDetailsProps) => {
                     {calculateTotalTime(timecook, timerest, timebake)}
                   </Text>
                 </View>
-
-                {/*
-            {regimes &&
-              regimes.map((filter, index) => (
-                <Text key={index} style={styles.difficultyText}>
-                  {filter.trim()}
-                </Text>
-              ))}*/}
               </View>
             </View>
           </View>
@@ -278,15 +300,16 @@ const RecipeDetails = ({ recipe = {}, custom = true }: RecipeDetailsProps) => {
           </View>
         </View>
       </ScrollView>
-
-      <View style={styles.buttonSection}>
-        <TouchableOpacity
-          className="bg-custom-red rounded-xl py-3 px-4 p-2 m-auto "
-          onPress={shareRecipe}
-        >
-          <Text className="text-base text-white">Partager cette recette</Text>
-        </TouchableOpacity>
-      </View>
+      {!custom && (
+        <View style={styles.buttonSection}>
+          <TouchableOpacity
+            className="bg-custom-red rounded-xl py-3 px-4 p-2 m-auto "
+            onPress={shareRecipe}
+          >
+            <Text className="text-base text-white">Partager cette recette</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </SafeAreaView>
   );
 };
@@ -315,6 +338,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     minHeight: 240,
+    minWidth: 200,
   },
   slideContainer: {
     paddingVertical: 10,
@@ -393,25 +417,26 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   difficultyText: {
-    backgroundColor: "#fad4ce",
+    backgroundColor: "#c32721",
     color: "white",
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 15,
-    margin: 2,
+    margin: 1,
   },
   timeWrapper: {
+    flex: 1,
     flexDirection: "row",
-    alignItems: "flex-end",
+    alignItems: "center",
     justifyContent: "flex-end",
   },
   clockIcon: {
     width: 24,
     height: 24,
-    marginRight: 10,
+    marginRight: 5,
   },
   totalTimeText: {
-    fontSize: 16,
+    fontSize: 13,
     color: "#c32721",
     fontFamily: "Archivo",
   },

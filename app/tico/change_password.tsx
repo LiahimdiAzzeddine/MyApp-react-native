@@ -6,21 +6,14 @@ import {
   TouchableOpacity,
   StyleSheet,
   KeyboardAvoidingView,
-  ActivityIndicator,
   TouchableWithoutFeedback,
   Keyboard,
   ScrollView,
 } from "react-native";
-import { useRoute } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import { useToast } from "@/hooks/useToast";
 import useChangePassword from "@/hooks/auth/useChangePassword";
 import { useLocalSearchParams } from "expo-router";
-
-type Params = {
-  email?: string;
-  token?: string;
-};
 
 type Props = {
   Close?: (value: boolean) => void;
@@ -34,7 +27,7 @@ const ChangePassword: React.FC<Props> = ({ Close }) => {
 
   const { changePassword, loading, error } = useChangePassword();
   const { triggerToast } = useToast();
-
+useEffect(()=>{console.log(error)},[error])
   const [values, setValues] = useState({
     oldPassword: "",
     newPassword: "",
@@ -170,6 +163,7 @@ const ChangePassword: React.FC<Props> = ({ Close }) => {
           {label}
         </Text>
         <View style={styles.inputWrapper}>
+         
           <TextInput
             style={getInputStyle(field)}
             
@@ -228,12 +222,13 @@ const ChangePassword: React.FC<Props> = ({ Close }) => {
             <Text className="text-custom-blue text-3xl ClashDisplayBold text-center">
               Changer mon mot de passe
             </Text>
+            
           </View>
           <View style={{ flex: 2 }}>
             {renderField("Ancien mot de passe", "oldPassword", "old", !email)}
             {renderField("Nouveau mot de passe", "newPassword", "new")}
             {renderField("Confirmer", "confirmPassword", "confirm")}
-
+ 
             <TouchableOpacity
               style={[
                 styles.button,

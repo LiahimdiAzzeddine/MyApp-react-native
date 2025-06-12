@@ -21,7 +21,7 @@ const WelcomeSlider = () => {
     setCurrentPage(e.nativeEvent.position);
   };
   return (
-    <SafeAreaView style={styles.container}  edges={['bottom', 'left', 'right']}>
+    <SafeAreaView style={styles.container} className='text-white'  edges={['bottom', 'left', 'right']} >
       <PagerView
         style={styles.pager}
         initialPage={0}

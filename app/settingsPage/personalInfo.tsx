@@ -1,6 +1,6 @@
 // components/PersonalInfo.tsx
 
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -21,6 +21,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import NetInfo from "@react-native-community/netinfo";
 import { Ionicons } from "@expo/vector-icons";
 import { WhiteModal } from "@/components/ui/WhiteModal";
+import { AuthContext } from "@/context/AuthContext";
 
 const PersonalInfo = () => {
   const router = useRouter();
@@ -30,6 +31,7 @@ const PersonalInfo = () => {
     error: profileError,
   } = useGetProfile();
   const { deleteAccount, loading: deleteLoading } = useDeleteAccount();
+  const {  logout } = useContext(AuthContext);
 
   const [isOnline, setIsOnline] = useState<boolean>(true);
   const [cachedProfile, setCachedProfile] = useState<any>(null);
@@ -66,6 +68,7 @@ const PersonalInfo = () => {
     setShowModalDelete(false);
     const result = await deleteAccount();
     if (result.success) {
+      logout();
       Alert.alert("Succès", result.message);
       router.replace("/login");
     } else {
