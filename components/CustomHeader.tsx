@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { View, StyleSheet, SafeAreaView, StatusBar, Platform, TouchableOpacity, Image } from 'react-native';
-import { Link, useRouter } from 'expo-router';
+import { Link, Route, useRouter } from 'expo-router';
 import { AppContext } from '@/context/AppContext';
 import { AuthContext } from '@/context/AuthContext';
 
@@ -25,7 +25,8 @@ type Props = {
   isRecipes?:boolean;
   isTips?:boolean;
   isProfil?:boolean;
-  isHome?:boolean
+  isHome?:boolean;
+  goTo?: string;
 };
 
 const CustomHeader = ({
@@ -36,6 +37,8 @@ const CustomHeader = ({
   isTips = false,
   isProfil = false,
   isHome=false,
+  goTo,
+
 }: Props) => {
   const context = useContext(AppContext);
   const { userInfo } = useContext(AuthContext);
@@ -64,9 +67,18 @@ const CustomHeader = ({
     <SafeAreaView style={[styles.safeArea, { backgroundColor: color }]}>
       <View style={[styles.container, { backgroundColor: color }]}>
         <TouchableOpacity
-          onPress={back ? () => router.back():() => router.push('/')}
-          style={styles.iconButton}
-        >
+  onPress={() => {
+    if (goTo) {
+      router.replace(goTo as Route);
+    } else if (back) {
+      router.back();
+    } else {
+      router.push('/');
+    }
+  }}
+  style={styles.iconButton}
+>
+
           <Image source={SRC} style={styles.iconImage} resizeMode="contain" />
         </TouchableOpacity>
 

@@ -1,13 +1,7 @@
 import { useState } from "react";
 import Toast from "react-native-root-toast";
 import api from '@/utils/axiosInstance';
-
-interface RecipeFormValues {
-  title: string;
-  description: string;
-  image?: string;
-  [key: string]: any;
-}
+import { RecipeValues } from "@/types/recipe";
 
 interface ApiError {
   [key: string]: string[];
@@ -39,7 +33,7 @@ const useSuggestRecipe = () => {
     });
   };
 
-  const handleSubmit = async (formValues: RecipeFormValues) => {
+  const handleSubmit = async (formValues: RecipeValues) => {
     setLoading(true);
     setError(null);
     setSuccess(false);

@@ -67,6 +67,12 @@
           "imageWidth": 150
         }
       ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The $(PRODUCT_NAME) accesses your photos to let you share them."
+        }
+      ],
       "expo-font",
       "expo-secure-store"
     ],

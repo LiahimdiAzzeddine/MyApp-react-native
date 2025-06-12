@@ -54,6 +54,26 @@ export interface Ingredient {
     disabled: boolean | null;
     forceJson: boolean;
   }
+  // Types definitions
+export interface IngredientInput {
+  name: string;
+  quantity: string;
+  unit: string;
+}
+
+export interface RecipeValues {
+  titre: string;
+  types: string[];
+  difficulty: string;
+  filters: string[];
+  prep_time: string;
+  cook_time: string;
+  rest_time: string;
+  ingredients: IngredientInput[];
+  steps: string[];
+  image:string|null;
+}
+
   
 
 export interface UseRecipesLastResult {

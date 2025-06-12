@@ -168,7 +168,7 @@ const router=useRouter();
     <KeyboardAvoidingView
       className="bg-custom-orange"
       style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      behavior={"padding"}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <ScrollView

@@ -6,7 +6,7 @@ export default function _layout() {
   return (
     <Stack
       screenOptions={({ route }) => ({
-        header: (props) => <CustomHeader image='vf' isProfil={route.name === "profile"}/>,
+        header: (props) => <CustomHeader image='vf' isProfil={route.name === "profile"}  goTo={route.name === "story" ? "/home" : undefined}/>,
       })}
     >
       <Stack.Screen name="profile" />

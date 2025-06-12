@@ -147,7 +147,7 @@ const Recipes = () => {
               </Text>
             </TouchableOpacity>
 
-            <Text style={[styles.pageText, { color: colors.text }]}>
+            <Text style={[styles.pageText, { color: "#c32721" }]}>
               Page {currentPage} sur {totalPages}
             </Text>
 
