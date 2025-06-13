@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   View,
   Text,
@@ -13,18 +13,20 @@ import {
 
 import { setFirstVisit } from '@/utils/storage';
 import { useRouter } from 'expo-router';
+import { AuthContext } from '@/context/AuthContext';
 
 const { height } = Dimensions.get('window');
 
 const Intro7 = () => {
   const [showModalInscription, setShowModalInscription] = useState(false);
     const router = useRouter();
-  
+  const { onlyLogout } = useContext(AuthContext);
 
  
   const handleGuestClick = async () => {
     try {
       await setFirstVisit(true);
+      onlyLogout(),
       router.push("/(tabs)")
     } catch (error) {
       console.error('Error setting first visit status:', error);
