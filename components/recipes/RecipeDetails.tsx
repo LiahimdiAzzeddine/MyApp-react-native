@@ -84,7 +84,7 @@ const RecipeDetails = ({ recipe = {}, custom = false }: RecipeDetailsProps) => {
     };
     checkFavorite();
   }, [id]);
-
+let imageDemo=recipe.image_name??require("@/assets/images/recipes/recettefondblanc.png");
   return (
     <SafeAreaView style={styles.container} edges={["bottom", "left", "right"]}>
       {/* Contenu principal */}
@@ -112,7 +112,7 @@ const RecipeDetails = ({ recipe = {}, custom = false }: RecipeDetailsProps) => {
               <View style={styles.imageWrapper}>
                 {custom ? (
                   <Image
-                    source={recipe.image_name}
+                    source={imageDemo}
                     defaultSource={require("@/assets/images/recipes/64.png")}
                     style={styles.categoryImage}
                     resizeMode="cover"

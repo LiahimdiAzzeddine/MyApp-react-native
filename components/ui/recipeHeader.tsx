@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fad4ce',
     paddingHorizontal:16,
     width:'100%',
-    paddingVertical:10
+    paddingTop:20
   },
 
   icon: {

@@ -57,7 +57,7 @@ const Recipes = () => {
               isOnline?(router.push("/recipetab/recipes")):(AlertOffLine())
             } }
           >
-            <Text style={styles.buttonText}>Toutes les Ti'Recettes</Text>
+            <Text style={styles.buttonText}>Toutes les Tit'Recettes</Text>
           </TouchableOpacity>
         </View>
       </View>

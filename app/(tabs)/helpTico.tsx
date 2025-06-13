@@ -35,7 +35,7 @@ const HelpTico = () => {
   };
 
   const openSite = async () => {
-    const url = "https://www.onparticipe.fr/c/tico_scan";
+    const url = "https://www.foodhea.com/";
     try {
       const supported = await Linking.canOpenURL(url);
       if (supported) {
@@ -75,7 +75,7 @@ const HelpTico = () => {
               <Text
              style={styles.greetinghelp}
              
-                className="leading-clash text-2xl"
+                className="leading-clash text-2xl text-custom-blue"
               >
                 Vous avez le pouvoir{"\n"}de changer les choses
               </Text>
@@ -146,12 +146,8 @@ const HelpTico = () => {
                 Soutenir le développement de
                 <Text style={{ fontWeight: "bold" }}>
                   Ti<Text style={{ letterSpacing: -1 }}>CO</Text>
-                </Text>{" "}
-                et découvrir comment{" "}
-                <Text style={{ fontWeight: "bold" }}>
-                  obtenir le guide de décryptage et le calendrier
-                </Text>{" "}
-                des fruits, légumes, conseils et recettes de saison.
+                </Text>{" \n"}
+                et découvrir toutes les contreparties offertes
               </Text>
               <View className="items-center justify-center mt-2 w-full relative">
                 <Image
@@ -166,7 +162,7 @@ const HelpTico = () => {
                   }}
                 />
                 <CustomButton
-                  title="Faire un don"
+                  title="En savoir plus"
                   onPress={handleDonation}
                   accessibilityLabel="Bouton pour faire un don"
                   accessibilityHint="Ouvre le site pour faire un don et soutenir TiCO"

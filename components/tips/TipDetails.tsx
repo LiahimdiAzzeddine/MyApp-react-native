@@ -37,7 +37,7 @@ const TipDetails: React.FC<any> = ({ tip }:any) => {
 
       await Share.share({
         title: title,
-        message: `Découvre ce conseil : ${title}\n${deepLink}`,
+        message: `J’ai découvert ce conseil sur TiCO, jette un œil ça pourrait t’intéresser !`,
         url: deepLink, // Le deep link sera utilisé comme URL
       });
     } catch (error) {

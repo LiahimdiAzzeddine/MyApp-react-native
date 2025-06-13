@@ -8,14 +8,14 @@ export default function TicoLayout() {
         name="change_password"
         options={{
           animation: "fade",
-          header: (props) => <CustomHeader color="#ffeda3" />,
+          header: (props) => <CustomHeader image="x" goTo={"/"}  color="#ffeda3" />,
         }}
       />
       <Stack.Screen
         name="validation/[token]"
         options={{
           animation: "fade",
-          header: (props) => <CustomHeader />,
+          header: (props) => <CustomHeader image="x" goTo={"/"} />,
         }}
       />
     </Stack>

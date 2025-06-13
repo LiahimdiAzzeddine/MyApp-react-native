@@ -18,12 +18,7 @@ const Home = () => {
   const { userInfo } = useContext(AuthContext);
   const { colors } = useTheme();
   const router = useRouter();
-  const handleGoToChangePassword = () => {
-    const email = 'liahimdi.az@gmail.com';
-    const token = 'QPGIBdJy5DVgq15CWkjygwcAFqiYpOVdYnwwu8pJLGNgPI70hi6Q8EVLvZNU';
 
-    router.push(`/tico/change_password?email=${encodeURIComponent(email)}&token=${encodeURIComponent(token)}`);
-  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -56,7 +51,6 @@ const Home = () => {
               />
             </ImageBackground>
           </View>
-      <Button title="Tester lien Change Password" onPress={handleGoToChangePassword} />
 
           {/* Boutons */}
           <View style={styles.buttonsContainer} className="w-[80%]">

@@ -218,7 +218,7 @@ const InfoSection: React.FC<Props> = ({ product }) => {
             >
               <View style={styles.additifsContainer}>
                 <View style={styles.additifsIconContainer}>
-                  <Ionicons name="cube-outline" size={32} color="#4a90a4" />
+                  {/** <Ionicons name="cube-outline" size={32} color="#4a90a4" />*/}
                   <Text style={styles.additifsText}>
                     {product.additifs?.length
                       ? `Contient ${product.additifs.length} additifs`

@@ -3,10 +3,9 @@ import { StyleSheet } from "react-native";
 const styles = StyleSheet.create({
   containerImg: {
     alignItems: "center",
-    paddingBottom: 30,
   },
   placeholder: {
-    width: 170,
+    width: 160,
     height: 140,
     borderWidth: 1,
     borderColor: "#f3cfcf",
@@ -16,7 +15,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   imagePreview: {
-    width: 170,
+    width: 160,
     height: 140,
     borderRadius: 10,
     marginBottom: 20,

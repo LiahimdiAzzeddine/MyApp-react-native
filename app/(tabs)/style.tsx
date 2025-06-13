@@ -46,7 +46,6 @@ export const styles = StyleSheet.create({
         position: 'absolute',
         top:50,
         left:10,
-        color: '#1e3a8a',
         textAlign: 'center',
         width:"100%", 
       },

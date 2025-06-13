@@ -187,7 +187,7 @@ const Suggestrecipe: React.FC = () => {
         },
         {}
       ),
-      image_name: { uri: image }, // vide ou une valeur par défaut si besoin
+      image_name:image? { uri: image }:null, // vide ou une valeur par défaut si besoin
     };
     console.log("🚀 ~ visualiseRecette ~ mappedRecipe:", mappedRecipe);
 
@@ -770,7 +770,9 @@ const Suggestrecipe: React.FC = () => {
                   <TouchableOpacity onPress={pickImage} style={styles.button}>
                     <Text style={styles.addButtonText}>Ajouter une photo</Text>
                   </TouchableOpacity>
+                  
                 </View>
+                <Text className="text-custom-gray pb-8 pt-4" style={{fontFamily:"ArchivoLight"}}>Pas d'inquiétude on se charge du shooting photo !</Text>
                 <TouchableOpacity
                   onPress={visualiseRecette}
                   style={styles.visualizeButton}
