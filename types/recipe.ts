@@ -63,6 +63,7 @@ export interface IngredientInput {
 
 export interface RecipeValues {
   titre: string;
+  nbperson:string;
   types: string[];
   difficulty: string;
   filters: string[];

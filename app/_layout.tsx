@@ -93,10 +93,10 @@ export default function RootLayout() {
                     options={{ headerShown: false, animation: "fade" }}
                   />
                   <Stack.Screen
-                    name="fp/[productDetailsScreen]"
+                    name="fp/[gtin]"
                     options={{
                       animation: "fade",
-                      header: (props) => <CustomHeader image="vf" />,
+                      header: (props) => <CustomHeader image="bx"  />,
                     }}
                   />
                   <Stack.Screen

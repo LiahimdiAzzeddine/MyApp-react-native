@@ -18,6 +18,13 @@ const Home = () => {
   const { userInfo } = useContext(AuthContext);
   const { colors } = useTheme();
   const router = useRouter();
+   const goToProduct = () => {
+    router.push({
+      pathname: '/fp/[gtin]',
+      params: { gtin: '1234567890126', search: 'true' },
+    });
+
+  };
 
 
   return (
@@ -51,7 +58,6 @@ const Home = () => {
               />
             </ImageBackground>
           </View>
-
           {/* Boutons */}
           <View style={styles.buttonsContainer} className="w-[80%]">
             {[

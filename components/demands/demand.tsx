@@ -31,13 +31,18 @@ const Demand = ({ demande, incrementInsistCount, press }: DemandeProps) => {
 
   if (!demande) return null;
 
-  const peutInsister =
-    (demandeState.last_insist_at &&
-      (new Date().getTime() - new Date(demandeState.last_insist_at).getTime()) /
-        (1000 * 60 * 60 * 24) >
-        30) ||
-    demandeState.insist_count === 0 ||
-    demandeState.insist_count === null;
+  const peutInsister = (
+  (
+    demandeState.last_insist_at &&
+    (new Date().getTime() - new Date(demandeState.last_insist_at).getTime()) / (1000 * 60 * 60 * 24) > 30
+  ) ||
+  demandeState.insist_count === 0 ||
+  demandeState.insist_count === null
+) &&
+(
+  (new Date().getTime() - new Date(demandeState.created_at).getTime()) / (1000 * 60 * 60 * 24) > 30
+);
+
   const handleIncrement = async () => {
     if (loading) return;
     setLoading(true);

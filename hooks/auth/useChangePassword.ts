@@ -67,7 +67,6 @@ const { logout } = useContext(AuthContext);
         router.replace('/(auth)/login')
       }
     } catch (err: any) {
-      console.log("🚀 ~ useChangePassword ~ err:", err)
       if (err.response?.data?.errors) {
         setError(err.response.data.errors);
         triggerToast('Erreur de validation. Vérifiez les champs indiqués.', 'error');

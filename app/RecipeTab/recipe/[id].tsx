@@ -11,10 +11,6 @@ const Recipe: React.FC = () => {
   const router = useRouter();
   const pathname = usePathname(); // 👈 Add this line
   const { recipe, loading, error } = useRecipeById(recipeId);
-  useEffect(() => {
-    console.log("🚀 ~ Current URL path:", pathname); // 👈 This will log the current route path
-  }, [recipe]);
-
 
   if (loading) {
     return (

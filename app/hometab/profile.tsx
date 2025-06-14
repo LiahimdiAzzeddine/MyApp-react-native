@@ -179,10 +179,7 @@ export default function Profile(): JSX.Element {
         //const LevelIndex =levels.findIndex(lvl => lvl === currentLevelgeted);
         setCurrentEligibleLevelIsActive(false);
       }
-      console.log("🚀 ~ useEffect ~ nextLevel:", nextLevel);
     } else {
-      console.log("🚀 ~ useEffect ~ currentLevel:", currentLevel);
-
       setCurrentEligibleLevel(currentLevelgeted);
       setNextEligibleLevel(nextLevel);
       setCurrentEligibleLevelIsActive(currentLevel.id == currentLevelgeted?.id);

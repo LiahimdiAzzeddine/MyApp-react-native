@@ -22,8 +22,6 @@ const Favorites = () => {
   const { lastUpdatedF } = useAppContext();
 
   useEffect(() => {
-    console.log("🚀 ~ Favorites ~ lastUpdatedF:", lastUpdatedF);
-
     const fetchFavorites = async () => {
       try {
         setLoadingTips(true);

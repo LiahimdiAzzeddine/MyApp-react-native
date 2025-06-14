@@ -135,7 +135,6 @@ export default function GreenLineWithPoint({ demandesCount }: GreenLineWithPoint
     const newPosition = getPointOnPath(normalizedValue);
     
     setPointPosition(newPosition);
-    console.log("🚀 Position sur la courbe:", newPosition);
   }, [position]);
 
   const containerStyle: ViewStyle = {

@@ -40,6 +40,7 @@ const RecipeDetails = ({ recipe = {}, custom = false }: RecipeDetailsProps) => {
   let {
     id,
     title = "Recette sans titre",
+    nbperson,
     difficulte,
     timecook,
     timerest,
@@ -58,10 +59,12 @@ const RecipeDetails = ({ recipe = {}, custom = false }: RecipeDetailsProps) => {
   const shareRecipe = async () => {
     try {
       const deepLink = `${apiUrl}/recipetab/recipe/${id}`;
-      await Share.share({
-        message: `Découvre cette recette : ${title} - ${deepLink}`,
-        title: `Partager la recette: ${title}`,
-      });
+      const content = {
+            title: "TiCO App",
+          message: `Découvre cette recette : ${title} - ${deepLink}`,
+            subject: "Partager TiCO",
+          };
+          await Share.share(content);
     } catch (error) {
       console.error("Erreur lors du partage", error);
     }
@@ -173,15 +176,21 @@ let imageDemo=recipe.image_name??require("@/assets/images/recipes/recettefondbla
                     )}
                 </View>
                 <View style={styles.timeWrapper}>
+                <View style={styles.timeWrapper2}>
                   <Image
                     source={horloge}
                     style={styles.clockIcon}
                     resizeMode="contain"
                   />
-                  <Text style={styles.totalTimeText}>
+                  <Text style={styles.totalTimeText} className="leading-archivo">
                     Temps total:{" "}
                     {calculateTotalTime(timecook, timerest, timebake)}
                   </Text>
+                </View>
+                {nbperson&&(
+                  <Text style={styles.totalTimeText} className="leading-archivo">Pour {nbperson} personne{nbperson>1?"s":""}</Text>
+                )}
+
                 </View>
               </View>
             </View>
@@ -426,6 +435,11 @@ const styles = StyleSheet.create({
   },
   timeWrapper: {
     flex: 1,
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "flex-end",
+  },
+  timeWrapper2: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-end",

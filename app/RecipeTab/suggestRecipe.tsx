@@ -11,7 +11,6 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Image,
-  StyleSheet,
   Modal,
 } from "react-native";
 import useSuggestRecipe from "@/hooks/recipes/useSuggestRecipe";
@@ -29,6 +28,7 @@ const backgroundPicker = require("@/assets/images/recipes/pickerbg.png");
 
 interface ValidationErrors {
   titre?: string;
+  nbperson?:string;
   types?: string;
   difficulty?: string;
   prep_time?: string;
@@ -46,12 +46,12 @@ const Suggestrecipe: React.FC = () => {
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>(
     {}
   );
-  const router = useRouter();
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedRecipe, setSelectedRecipe] = useState<any | null>(null);
 
   const [values, setValues] = useState<RecipeValues>({
     titre: "",
+    nbperson: "",
     types: [],
     difficulty: "",
     filters: [],
@@ -80,6 +80,14 @@ const Suggestrecipe: React.FC = () => {
       isValid = false;
     } else if (values.titre.trim().length < 3) {
       errors.titre = "Le titre doit contenir au moins 3 caractères";
+      isValid = false;
+    }
+     // Validation du nombre de personnes
+    if (!values.nbperson.trim()) {
+      errors.nbperson = "Le nombre de personnes est obligatoire";
+      isValid = false;
+    } else if (isNaN(Number(values.nbperson)) || Number(values.nbperson) <= 0 || Number(values.nbperson) > 50) {
+      errors.nbperson = "Le nombre de personnes doit être un nombre entre 1 et 50";
       isValid = false;
     }
 
@@ -169,6 +177,7 @@ const Suggestrecipe: React.FC = () => {
        const mappedRecipe = {
       id: Date.now(), // ou un UUID si disponible
       title: values.titre,
+      nbperson: Number(values.nbperson),
       difficulte: values.difficulty,
       timecook: values.cook_time + "min",
       timebake: values.prep_time + "min",
@@ -189,8 +198,6 @@ const Suggestrecipe: React.FC = () => {
       ),
       image_name:image? { uri: image }:null, // vide ou une valeur par défaut si besoin
     };
-    console.log("🚀 ~ visualiseRecette ~ mappedRecipe:", mappedRecipe);
-
     setSelectedRecipe(mappedRecipe);
     setModalVisible(true);
     }else{
@@ -378,6 +385,7 @@ const Suggestrecipe: React.FC = () => {
        if (success) {
         setValues({
           titre: "",
+          nbperson: "",
           types: [],
           difficulty: "",
           filters: [],
@@ -429,6 +437,30 @@ const Suggestrecipe: React.FC = () => {
                 {(error?.titre || validationErrors.titre) && (
                   <Text style={styles.errorText}>
                     {error?.titre?.[0] || validationErrors.titre}
+                  </Text>
+                )}
+              </View>
+               {/* Nombre des personnes */}
+              <View style={styles.inputGroup}>
+                <Text className="text-base" style={styles.label}>
+                  Pour combien de personnes ?
+                </Text>
+                <TextInput
+                  style={[
+                    styles.input,
+                    error?.nbperson || validationErrors.nbperson
+                      ? styles.inputError
+                      : null,
+                  ]}
+                  value={values.nbperson}
+                  onChangeText={(text) => handleInputChange("nbperson", text)}
+                  placeholder="Nombre de personnes"
+                  placeholderTextColor="#999"
+                  keyboardType="numeric"
+                />
+                {(error?.nbperson || validationErrors.nbperson) && (
+                  <Text style={styles.errorText}>
+                    {error?.nbperson?.[0] || validationErrors.nbperson}
                   </Text>
                 )}
               </View>

@@ -9,51 +9,44 @@ export default function IndexPage() {
   const router = useRouter();
   const segments = useSegments();
 
-  useEffect(() => {
-    const checkAndRedirect = async () => {
-      try {
-        // Vérifier s'il y a une URL initiale (Universal Link)
-        const initialUrl = await Linking.getInitialURL();
-        
-        if (initialUrl) {
-          console.log("🔗 Universal Link détecté:", initialUrl);
-          
-          // Parser l'URL pour extraire le chemin
-          const url = Linking.parse(initialUrl);
-          const path = url.path;
-          
-          if (path && path !== '/') {
-            console.log("📍 Redirection vers le chemin:", path);
-            // Rediriger vers le chemin spécifique
-            setTimeout(() => {
-              router.replace(path as any);
-            }, 100);
-            return; // Sortir de la fonction pour éviter la redirection normale
-          }
-        }
+useEffect(() => {
+  const checkAndRedirect = async () => {
+    try {
+      const initialUrl = await Linking.getInitialURL();
 
-        // Logique normale si pas d'Universal Link
-        const hasLaunched = await getFirstVisit();
-        const isFirstLaunch = hasLaunched === null;
+      if (initialUrl) {
+        const { path, queryParams } = Linking.parse(initialUrl);
 
-        if (isFirstLaunch) {
-          console.log("🚀 Premier lancement - Redirection vers welcomeSlider");
+        if (path && path !== '/') {
           setTimeout(() => {
-            router.replace('/welcomeSlider');
+            router.replace({
+              pathname: `/${path}` as any,
+              params: queryParams as any,
+            });
           }, 100);
-        } else {
-          console.log("📱 Utilisateur existant - Redirection vers les tabs");
-          router.replace('/(tabs)');
+          return;
         }
-      } catch (error) {
-        console.error("❌ Erreur lors de la vérification:", error);
-        // En cas d'erreur, aller vers les tabs par défaut
+      }
+
+      const hasLaunched = await getFirstVisit();
+      const isFirstLaunch = hasLaunched === null;
+
+      if (isFirstLaunch) {
+        setTimeout(() => {
+          router.replace('/welcomeSlider');
+        }, 100);
+      } else {
         router.replace('/(tabs)');
       }
-    };
+    } catch (error) {
+      console.error("❌ Erreur lors de la vérification:", error);
+      router.replace('/(tabs)');
+    }
+  };
 
-    checkAndRedirect();
-  }, []);
+  checkAndRedirect();
+}, []);
+
 
   // Afficher un loader pendant la vérification
   return (

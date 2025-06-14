@@ -21,7 +21,7 @@ import {  useAppContext } from "@/context/AppContext";
 
 
 
-const apiUrl = Constants.expoConfig?.extra?.BACKEND_URL || "";
+const apiUrl = "https://tico.foodhea.com";
 
 const TipDetails: React.FC<any> = ({ tip }:any) => {
   const { id, title, details } = tip;
@@ -34,11 +34,10 @@ const TipDetails: React.FC<any> = ({ tip }:any) => {
     try {
       // Construisez votre deep link
       const deepLink = `${apiUrl}/tiptab/tip/${id}`;
-
       await Share.share({
         title: title,
-        message: `J’ai découvert ce conseil sur TiCO, jette un œil ça pourrait t’intéresser !`,
-        url: deepLink, // Le deep link sera utilisé comme URL
+        message: `J’ai découvert ce conseil sur TiCO, jette un œil ça pourrait t’intéresser ! \n`+deepLink,
+        
       });
     } catch (error) {
       console.error("Erreur lors du partage", error);
@@ -53,7 +52,6 @@ const TipDetails: React.FC<any> = ({ tip }:any) => {
       setFavorite(true); 
     } 
     refreshFTips()
-    console.log("lastUpdatedF",lastUpdatedF)
   };
 
   useEffect(() => {

@@ -43,7 +43,6 @@ const useGetTotalRequests = () => {
         setError("Utilisateur non authentifié.");
       } else {
         setError("Erreur lors de la récupération des données.");
-        console.log("🚀 ~ fetchTotalRequests ~ err:", err);
       }
       return false;
     } finally {

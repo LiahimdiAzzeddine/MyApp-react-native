@@ -18,7 +18,7 @@ export default function LaterProducts() {
     await deleteProductFromLater(product.gtin);
     fetchLaterProducts();
     router.push({
-      pathname: '/fp/[productDetailsScreen]',
+      pathname: '/fp/[gtin]',
       params: {
         gtin: product.gtin.toString(),
         search: 'true',

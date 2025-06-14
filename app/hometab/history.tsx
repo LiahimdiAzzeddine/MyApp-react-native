@@ -32,13 +32,12 @@ export default function History() {
   }, []);
 
   const handleOpenProduct = (product: Product) => {
-    router.push({ pathname: '/fp/[productDetailsScreen]', params: { gtin: (product.gtin).toString() } });
+    router.push({ pathname: '/fp/[gtin]', params: { gtin: (product.gtin).toString() } });
   };
   const handleDeleteProduct = async (gtin: string) => {
     try {
       setLoading(true); // Afficher le chargement pendant la suppression
       const result = await deleteByGtin(gtin);
-      console.log(result); // Affiche le message de retour de la fonction
       
       // Actualiser la liste après suppression
       await fetchProducts();

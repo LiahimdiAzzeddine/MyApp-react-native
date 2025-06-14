@@ -42,7 +42,6 @@ export const storePreferences = async (
   try {
     const key = `user_preferences_${userId}`;
     await AsyncStorage.setItem(key, JSON.stringify(values));
-    console.log("Préférences sauvegardées avec succès.");
   } catch (error) {
     console.error("Erreur lors de la sauvegarde des préférences :", error);
   }
@@ -80,7 +79,6 @@ export const storeTipPreferences = async (
   try {
     const key = `user_tip_preferences_${userId}`;
     await AsyncStorage.setItem(key, JSON.stringify(Array.from(selectedTips)));
-    console.log("Préférences des astuces sauvegardées avec succès.");
   } catch (error) {
     console.error("Erreur lors de la sauvegarde des préférences des astuces :", error);
   }
@@ -338,7 +336,6 @@ export const clearAllStorage = async (): Promise<void> => {
     await AsyncStorage.removeItem(PRODUCTS_KEY);
     await AsyncStorage.removeItem(LATER_PRODUCTS_KEY);
     await initStorage(); // Réinitialise avec des tableaux vides
-    console.log('Toutes les données ont été effacées avec succès.');
   } catch (error) {
     console.error('Erreur lors de l\'effacement des données:', error);
     throw error;

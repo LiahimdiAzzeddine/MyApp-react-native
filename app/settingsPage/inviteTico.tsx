@@ -14,19 +14,17 @@ import {
 } from "react-native";
 
 
-const apiUrl = "https://your-api-url.com"; 
-
+const apiUrl = "https://tico.foodhea.com";
 const InviteTico = () => {
   const handleShare = async () => {
     const content = {
-      title: "TiCO App",
-      message:
-        "Découvrez l'application TiCO et partagez-la avec votre entourage !\n" +
-        apiUrl +
-        "/tico/helptico",
-      subject: "Partager TiCO",
-    };
-    await Share.share(content);
+            title: "TiCO App",
+            message:
+              "Découvrez l'application TiCO et partagez-la avec votre entourage !\n" +
+              apiUrl,
+            subject: "Partager TiCO",
+          };
+          await Share.share(content);
   };
 
   return (

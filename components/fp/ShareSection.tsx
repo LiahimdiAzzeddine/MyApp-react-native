@@ -13,7 +13,7 @@ interface SectionsProps {
   productName: string|null;
 }
 
-const backendUrl = process.env.EXPO_PUBLIC_BACKEND_URL; // Assure-toi de le définir dans ton .env
+const backendUrl = "https://tico.foodhea.com"; // Assure-toi de le définir dans ton .env
 
 const ShareSection: React.FC<SectionsProps> = ({ scrollToTarget, targetRefRecettes, gtin, productName }) => {
 const {  setIsModalContact,closeBottomSheet } = useBottomSheet();
@@ -45,8 +45,7 @@ const {  setIsModalContact,closeBottomSheet } = useBottomSheet();
  const handleShare = async () => {
     try {
       // Construire l'URL de partage avec les paramètres
-      const fullUrl = `${backendUrl}/fp/productDetailsScreen?gtin=${gtin}&search=true`;
-
+      const fullUrl = `${backendUrl}/fp/gtin?gtin=${gtin}&search=true`;
       await RNShare.share({
         title: 'Découvrez cette fiche produit',
         message: `Découvrez les infos nutritionnelles ici : ${fullUrl}`,

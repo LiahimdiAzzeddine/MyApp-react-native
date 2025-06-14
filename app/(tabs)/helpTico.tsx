@@ -12,6 +12,7 @@ import {
   ScrollView,
 } from "react-native";
 import {styles} from "./style"
+import { useRouter } from "expo-router";
 
 const apiUrl = "https://tico.foodhea.com";
 
@@ -24,8 +25,7 @@ const HelpTico = () => {
         title: "TiCO App",
         message:
           "Découvrez l'application TiCO et partagez-la avec votre entourage !\n" +
-          apiUrl +
-          "/tico/helptico",
+          apiUrl +"/(tabs)/helpTico",
         subject: "Partager TiCO",
       };
       await Share.share(content);
@@ -40,6 +40,7 @@ const HelpTico = () => {
       const supported = await Linking.canOpenURL(url);
       if (supported) {
         await Linking.openURL(url);
+        
       } else {
         console.log("Impossible d'ouvrir l'URL :", url);
       }

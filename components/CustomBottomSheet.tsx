@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import {
   StyleSheet,
   View,
@@ -9,9 +15,7 @@ import {
   NativeScrollEvent,
 } from "react-native";
 
-import BottomSheet, {
-  BottomSheetScrollView,
-} from "@gorhom/bottom-sheet";
+import BottomSheet, { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useBottomSheet } from "@/context/BottomSheetContext";
 import { AuthContext } from "@/context/AuthContext";
@@ -26,7 +30,9 @@ import { usePathname } from "expo-router";
 
 const CustomBottomSheet: React.FC = () => {
   const [hasScrolledDown, setHasScrolledDown] = useState(false);
- const [isOpenIndex,setIsOpenIndex]= useState(0);
+  const [isAlreadySaved, setIsAlreadySaved] = useState(false);
+
+  const [isOpenIndex, setIsOpenIndex] = useState(0);
   const insets = useSafeAreaInsets();
   const pathname = usePathname();
   const {
@@ -37,7 +43,7 @@ const CustomBottomSheet: React.FC = () => {
     setHasRequested,
     setProductName,
     setIsModalEncourager,
-    hasRequested
+    hasRequested,
   } = useBottomSheet();
   const { userInfo } = useContext(AuthContext);
   const isAuthenticated = !!userInfo;
@@ -45,7 +51,6 @@ const CustomBottomSheet: React.FC = () => {
   const { productData, loading, error, fetchProduct } = useGetProduct(
     scannedBarcode || ""
   );
-
 
   useEffect(() => {
     if (pathname !== "/" && pathname !== "/index" && isOpen) {
@@ -82,13 +87,13 @@ const CustomBottomSheet: React.FC = () => {
       if (productData.name !== undefined) {
         setProductName(productData.name);
       }
-      
     }
   }, [userInfo, productData]);
 
   const handleAddToLater = async (product: any) => {
     try {
       await addLaterProduct(product);
+      setIsAlreadySaved(true);
       Alert.alert("Succès", 'Produit ajouté à la liste "à voir plus tard"');
     } catch (error) {
       console.error("Erreur lors de l'ajout du produit", error);
@@ -99,14 +104,20 @@ const CustomBottomSheet: React.FC = () => {
     }
   };
 
-
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-   const yOffset = event.nativeEvent.contentOffset.y;
+    const yOffset = event.nativeEvent.contentOffset.y;
 
-      if (yOffset > 0 && !hasScrolledDown && !hasRequested && isAuthenticated && isOpenIndex==1) {
-        setHasScrolledDown(true);
-        setIsModalEncourager(true)
-      }
+    if (
+      yOffset > 0 &&
+      !hasScrolledDown &&
+      !hasRequested &&
+      isAuthenticated &&
+      isOpenIndex == 1&&
+      isOnline
+    ) {
+      setHasScrolledDown(true);
+      setIsModalEncourager(true);
+    }
   };
 
   return (
@@ -132,43 +143,46 @@ const CustomBottomSheet: React.FC = () => {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="always"
-         onScroll={handleScroll}  
+        onScroll={handleScroll}
       >
-         {loading ? (
-            <ProductSkeletonLoader />
-          ) : isOnline ? (
-            productData ? (
-              <ProductDetailsView productData={productData} />
-            ) : (
-              <View style={styles.messageContainer}>
-                <Text style={styles.messageText}>
-                  Aucun produit trouvé pour ce code-barres.
-                </Text>
-              </View>
-            )
+        {loading ? (
+          <ProductSkeletonLoader />
+        ) : isOnline ? (
+          productData ? (
+            <ProductDetailsView productData={productData} />
           ) : (
-            <View style={styles.offlineContainer}>
-              <Text style={styles.offlineText}>
-                Vous êtes hors ligne. Souhaitez-vous sauvegarder ce produit pour
-                plus tard ?
+            <View style={styles.messageContainer}>
+              <Text style={styles.messageText}>
+                Aucun produit trouvé pour ce code-barres.
               </Text>
-              {productData && (
-                <TouchableOpacity
-                  onPress={() =>
-                    handleAddToLater({
-                      gtin: productData.gtin,
-                      name: "Produit hors ligne",
-                      trademark: "N/A",
-                      image: "default_image_url",
-                    })
-                  }
-                  style={styles.button}
-                >
-                  <Text style={styles.buttonText}>Sauvegarder</Text>
-                </TouchableOpacity>
-              )}
             </View>
-          )}
+          )
+        ) : (
+          <View style={styles.offlineContainer}>
+            <Text style={styles.offlineText}>
+              Vous êtes hors ligne. Souhaitez-vous sauvegarder ce produit pour
+              plus tard ?
+            </Text>
+            {scannedBarcode  && (
+              <TouchableOpacity
+                onPress={() =>
+                  handleAddToLater({
+                    gtin: scannedBarcode,
+                    name: "Produit hors ligne",
+                    trademark: "N/A",
+                    image: "default_image_url",
+                  })
+                }
+                style={[styles.button, isAlreadySaved && styles.buttonDisabled]}
+                disabled={isAlreadySaved}
+              >
+                <Text style={styles.buttonText}>
+                  {isAlreadySaved ? "Déjà sauvegardé" : "Sauvegarder"}
+                </Text>
+              </TouchableOpacity>
+            )}
+          </View>
+        )}
       </BottomSheetScrollView>
     </BottomSheet>
   );
@@ -181,6 +195,10 @@ const styles = StyleSheet.create({
     margin: 10,
     borderRadius: 8,
   },
+  buttonDisabled: {
+    backgroundColor: "#ccc",
+  },
+
   testText: {
     fontSize: 18,
     fontWeight: "bold",

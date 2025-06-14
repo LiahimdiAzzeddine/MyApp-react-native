@@ -9,7 +9,7 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "buildNumber": "9.1.6",
+      "buildNumber": "9.1.8",
       "supportsTablet": true,
       "bundleIdentifier": "com.tico.foodhea.tico",
       "associatedDomains": [
@@ -88,7 +88,7 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "f4210c76-96c8-476e-83cf-f886b3c51bb6"
+        "projectId": "86a045a8-13ac-4166-ad8b-3ae5ba580a08"
       }
     }
   }

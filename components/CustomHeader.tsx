@@ -36,7 +36,7 @@ type Props = {
   isTips?: boolean;
   isProfil?: boolean;
   isHome?: boolean;
-  goTo?: string;
+  goTo?: string|null;
 };
 
 const CustomHeader = ({
@@ -47,7 +47,7 @@ const CustomHeader = ({
   isTips = false,
   isProfil = false,
   isHome = false,
-  goTo,
+  goTo=null,
 }: Props) => {
   const context = useContext(AppContext);
   const { userInfo } = useContext(AuthContext);
@@ -90,7 +90,11 @@ const CustomHeader = ({
             if (goTo) {
               router.replace(goTo as Route);
             } else if (back) {
-              router.back();
+              if(router.canGoBack()){
+                router.back();
+              }else{
+                router.replace("/");
+              }
             } else {
               router.push("/");
             }

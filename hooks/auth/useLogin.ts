@@ -49,7 +49,6 @@ export const useLogin = () => {
       const message =
         error.response?.data?.message || "Erreur lors de la connexion";
       const errorDetails = error.response?.data?.errors || null;
-      console.log("🚀 ~ useLogin ~ errorDetails:", errorDetails);
       if (error?.status) {
         setStatus(error.status);
       }

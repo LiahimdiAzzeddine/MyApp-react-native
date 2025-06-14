@@ -20,7 +20,6 @@ const GlobalInfo: React.FC<GlobalInfoProps> = (props) => {
     if (isOpen) {
       setImageLoading(true);
     }
-      console.log("🚀 ~ useEffect ~ setImageLoading:")
       setTimeout(() => {
         if (isOpen) {
         setImageLoading(false);
