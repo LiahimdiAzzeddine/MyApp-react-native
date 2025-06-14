@@ -9,44 +9,46 @@ export default function IndexPage() {
   const router = useRouter();
   const segments = useSegments();
 
-useEffect(() => {
-  const checkAndRedirect = async () => {
-    try {
-      const initialUrl = await Linking.getInitialURL();
-
-      if (initialUrl) {
-        const { path, queryParams } = Linking.parse(initialUrl);
-
-        if (path && path !== '/') {
-          setTimeout(() => {
-            router.replace({
-              pathname: `/${path}` as any,
-              params: queryParams as any,
-            });
-          }, 100);
-          return;
+  useEffect(() => {
+    const checkAndRedirect = async () => {
+      try {
+        // Vérifier s'il y a une URL initiale (Universal Link)
+        const initialUrl = await Linking.getInitialURL();
+        
+        if (initialUrl) {          
+          // Parser l'URL pour extraire le chemin
+          const url = Linking.parse(initialUrl);
+          const path = url.path;
+          
+          if (path && path !== '/') {
+            // Rediriger vers le chemin spécifique
+            setTimeout(() => {
+              router.replace(path as any);
+            }, 100);
+            return; // Sortir de la fonction pour éviter la redirection normale
+          }
         }
-      }
 
-      const hasLaunched = await getFirstVisit();
-      const isFirstLaunch = hasLaunched === null;
+        // Logique normale si pas d'Universal Link
+        const hasLaunched = await getFirstVisit();
+        const isFirstLaunch = hasLaunched === null;
 
-      if (isFirstLaunch) {
-        setTimeout(() => {
-          router.replace('/welcomeSlider');
-        }, 100);
-      } else {
+        if (isFirstLaunch) {
+          setTimeout(() => {
+            router.replace('/welcomeSlider');
+          }, 100);
+        } else {
+          router.replace('/(tabs)');
+        }
+      } catch (error) {
+        console.error("❌ Erreur lors de la vérification:", error);
+        // En cas d'erreur, aller vers les tabs par défaut
         router.replace('/(tabs)');
       }
-    } catch (error) {
-      console.error("❌ Erreur lors de la vérification:", error);
-      router.replace('/(tabs)');
-    }
-  };
+    };
 
-  checkAndRedirect();
-}, []);
-
+    checkAndRedirect();
+  }, []);
 
   // Afficher un loader pendant la vérification
   return (
