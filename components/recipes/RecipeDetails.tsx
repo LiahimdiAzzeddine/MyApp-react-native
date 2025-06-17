@@ -354,12 +354,12 @@ const styles = StyleSheet.create({
   },
   bulletList: {
     flexDirection: "column",
-    maxWidth: "99%",
+    maxWidth: "96%",
   },
   bulletItem: {
     flexDirection: "row",
     alignItems: "flex-start",
-    marginBottom: 10,
+    marginBottom: 5,
   },
 
   stepText: {
@@ -368,6 +368,7 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     fontFamily: "ArchivoLight",
     color: "#c32721",
+    width:"100%"
   },
   title: {
     textAlign: "center",

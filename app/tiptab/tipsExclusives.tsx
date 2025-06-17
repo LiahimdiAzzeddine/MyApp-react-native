@@ -36,7 +36,7 @@ const Tips = () => {
   };
 
 
-      const canAccessTips = userInfo?.levels?.some(level => level.id === 3);
+ const canAccessTips = userInfo?.levels?.some(level => level.id === 3);
 
 
   if (!context) {

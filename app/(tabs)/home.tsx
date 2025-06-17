@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { styles } from "./style";
+import styles from "./style";
 import {
   View,
   Text,
@@ -12,18 +12,24 @@ import {
 import { AuthContext } from "@/context/AuthContext";
 import CustomButton from "@/components/ui/CustomButton";
 import { useTheme } from "@react-navigation/native";
-import { useRouter } from "expo-router";
+import { Redirect, useRouter } from "expo-router";
 
 const Home = () => {
   const { userInfo } = useContext(AuthContext);
   const { colors } = useTheme();
   const router = useRouter();
+
+  const isAuthenticated = !!userInfo;
+
+  if (!isAuthenticated) {
+    return <Redirect href="/(tabs)" />;
+  }
+  
    const goToProduct = () => {
     router.push({
       pathname: '/fp/[gtin]',
-      params: { gtin: '1234567890126', search: 'true' },
+      params: { gtin: '3261342004447', search: 'true' },
     });
-
   };
 
 
@@ -58,7 +64,8 @@ const Home = () => {
               />
             </ImageBackground>
           </View>
-          {/* Boutons */}
+          {/* <Button title={"test"} onPress={()=>{goToProduct()}} />
+          Boutons */}
           <View style={styles.buttonsContainer} className="w-[80%]">
             {[
                { title: "Profil et récompenses", route: "hometab/profile" },

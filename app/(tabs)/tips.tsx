@@ -1,13 +1,20 @@
 import React, { useContext, useEffect } from "react";
 import { View, StyleSheet, TouchableOpacity, Text, Alert } from "react-native";
-import { useRouter } from "expo-router";
+import { Redirect, useRouter } from "expo-router";
 import RenderHeaderTab from "@/components/ui/renderHeader";
 import { AppContext } from "@/context/AppContext";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { AuthContext } from "@/context/AuthContext";
 
 const Tips = () => {
   const router = useRouter();
   const context = useContext(AppContext);
+  const { userInfo } = useContext(AuthContext);
+    const isAuthenticated = !!userInfo;
+  
+    if (!isAuthenticated) {
+      return <Redirect href="/(tabs)" />;
+    }
 
 
   if (!context) {
@@ -15,7 +22,6 @@ const Tips = () => {
   }
 
   const isOnline = context.isOnline;
-  
    const AlertOffLine=()=>{
     Alert.alert("Hore Ligne","Vous êtes hors ligne. Certaines fonctionnalités sont désactivées.")
    }

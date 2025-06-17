@@ -86,15 +86,16 @@ const Tips = () => {
   );
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className="flex-1 bg-white"  style={{backgroundColor:"#fff"}}>
       <RenderHeaderTab title="Ti'Conseils" />
-      <View className="h-full bg-white">
+      <View className="h-full bg-white" style={{backgroundColor:"#fff"}}>
         {!preferencesLoaded || loading ? (
           <LoadingState />
         ) : error ? (
           <ErrorState message={error} />
         ) : tipsList.length > 0 ? (
           <FlatList
+           style={{backgroundColor:"#fff"}}
             data={tipsList}
             keyExtractor={(item) => String(item.id)}
             renderItem={renderItem}

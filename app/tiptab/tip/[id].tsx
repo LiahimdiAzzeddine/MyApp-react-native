@@ -57,9 +57,9 @@ const styles = StyleSheet.create({
   },
   loadingContainer: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'center',
     alignItems: 'center',
+     backgroundColor: '#ffeda3',
     zIndex: 50,
   },
 });

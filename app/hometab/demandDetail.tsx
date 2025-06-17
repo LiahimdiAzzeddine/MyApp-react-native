@@ -29,7 +29,7 @@ const DemandDetail = () => {
           "Si tu le fais aussi nous aurons plus de pouvoir pour obliger les marques à dire la vérité.\n\n" +
           "Plus on fait des demandes plus on est récompensé et ça c’est cool !\n\n" +
           "Essaye, demande à cette marque de s’engager ici:" +
-          apiUrl +"/fp/gtin?gtin=" +demand?.gtin +"&search=true \n\n" +
+          apiUrl +"/fp/" +demand?.gtin +"?search=true \n\n" +
           "Si tu n’as pas encore TiCO scan télécharge là et reviens sur mon message, clique sur le lien plus haut pour arriver directement sur la page produit.\n\n" +
           "📲 TiCO sur l'App Store : https://apps.apple.com/fr/app/tico-scan/id6739306595 \n" +
           "📲 TiCO sur le Play Store : https://play.google.com/store/apps/details?id=com.tico.foodhea.tico&hl=fr \n\n" +

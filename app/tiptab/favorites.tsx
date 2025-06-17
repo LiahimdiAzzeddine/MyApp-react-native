@@ -85,7 +85,7 @@ const Favorites = () => {
               <Ionicons name={"alert-circle"} size={64} color={"#ff8200"} style={{paddingBottom:10}} />
 
               <Text style={[styles.title, { color: "#FF8200" }]} className="leading-archivo">
-                Vous n’avez pas encore de Ti'Conseils{'\n'} enregistrés en favoris.
+                Vous n’avez pas encore de Ti'Conseils{'\n'} enregistrés en favoris
               {'\n'} 
                 Pour retrouver facilement vos astuces et conseils préférés,
                 pensez à les ajouter en favori.

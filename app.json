@@ -1,15 +1,16 @@
 {
   "expo": {
-    "name": "tico",
+    "name": "TiCO Scan",
     "slug": "tico",
-    "version": "1.4",
+    "version": "5",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "tico",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "buildNumber": "10.1.1",
+      "name": "TiCO Scan",
+      "buildNumber": "1",
       "supportsTablet": true,
       "bundleIdentifier": "com.tico.foodhea.tico",
       "associatedDomains": [
@@ -20,6 +21,8 @@
       }
     },
     "android": {
+      "versionCode": 5,
+      "label": "TiCO Scan",
       "package": "com.tico.foodhea.tico",
       "intentFilters": [
         {
@@ -40,6 +43,7 @@
         "backgroundColor": "#fff"
       },
       "permissions": [
+        "com.google.android.gms.permission.AD_ID",
         "android.permission.CAMERA",
         "android.permission.RECORD_AUDIO"
       ]
@@ -78,7 +82,7 @@
     "experiments": {
       "typedRoutes": true
     },
-    "owner": "azzeddine22",
+    "owner": "azzeddinehamman",
     "runtimeVersion": {
       "policy": "appVersion"
     },
@@ -88,7 +92,7 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "86a045a8-13ac-4166-ad8b-3ae5ba580a08"
+        "projectId": "bca36011-9302-4a40-a134-08a116ff8bd5"
       }
     }
   }

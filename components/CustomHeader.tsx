@@ -81,24 +81,33 @@ const CustomHeader = ({
     };
     checkTooltipSeen();
   }, [isHome, hasLevelcurieux]);
+const handleBackPress = () => {
+    
+      try {
+        if (goTo) {
+          router.replace(goTo as Route);
+        } else if (back) {
+          if (router.canGoBack()) {
+            
+            router.back();
+          } else {
+            router.replace("/(tabs)");
+          }
+        } else {
+          router.replace("/(tabs)");
+        }
+      } catch (error) {
+        console.error("Navigation error:", error);
+        // Fallback sécurisé
+        router.replace("/(tabs)");
+      }
+  };
 
   return (
     <SafeAreaView style={[styles.safeArea, { backgroundColor: color }]}>
       <View style={[styles.container, { backgroundColor: color }]}>
         <TouchableOpacity
-          onPress={() => {
-            if (goTo) {
-              router.replace(goTo as Route);
-            } else if (back) {
-              if(router.canGoBack()){
-                router.back();
-              }else{
-                router.replace("/");
-              }
-            } else {
-              router.push("/");
-            }
-          }}
+          onPress={handleBackPress}
           style={styles.iconButton}
         >
           <Image source={SRC} style={styles.iconImage} resizeMode="contain" />

@@ -14,7 +14,7 @@ const Recipe: React.FC = () => {
 
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center',backgroundColor:"#fad4ce" }}>
         <ActivityIndicator size="large" color="#0000ff" />
       </View>
     );
@@ -25,7 +25,7 @@ const Recipe: React.FC = () => {
       <View style={{ padding: 16 }}>
         <ErrorMessage
           message={error || "No recipe found"}
-          onClose={() => router.replace('/')}
+          onClose={() => router.replace('/(tabs)')}
           icon=""
         />
       </View>

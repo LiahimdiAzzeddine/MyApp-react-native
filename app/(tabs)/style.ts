@@ -1,6 +1,5 @@
 import { StyleSheet } from "react-native";
-
-export const styles = StyleSheet.create({
+ const styles = StyleSheet.create({
     safeArea: {
       flex: 1,
       backgroundColor: '#ffffff',
@@ -81,8 +80,18 @@ export const styles = StyleSheet.create({
       alignItems: "center",
       backgroundColor: "rgba(255, 255, 255, 0)",
     },
+    overlay2: {
+position: 'absolute',
+flex: 1,
+bottom: 0,
+top: 0,
+left: 0,
+right: 0,
+alignItems: 'center',
+
+},
     scanFrameContainer: {
-      width: "80%",
+      width: 300,
       height: 220,
       backgroundColor: "transparent",
       overflow: "hidden",
@@ -159,4 +168,4 @@ export const styles = StyleSheet.create({
       textAlign: "center",
     },
   });
-  
+  export default styles;

@@ -28,7 +28,7 @@ export default function Mission() {
 
     <View className="flex-1 mt-8 justify-start px-6">
       <Text className='ArchivoLight text-base text-custom-green-text pb-5'>
-        Chez TiCO, nous avons une mission:
+        Chez TiCO, nous avons une mission :
         {'\n'}
         faire de la transparence alimentaire une réalité. Pour que nous puissions choisir en toute
         confiance ce qu’on met dans nos assiettes.
@@ -36,8 +36,8 @@ export default function Mission() {
       <Text className='ArchivoLight text-base text-custom-green-text pb-5'>
         Vous avez un rôle clé ! En scannant vos produits du quotidien,
         vous envoyez un message clair aux marques :
-        {'\n'} nous voulons des
-        informations fiables et accessibles.
+        <Text className='ArchivoBold text-base text-custom-green-text pb-5'> nous voulons des
+        informations fiables et accessibles.</Text>
       </Text>
       <Text className='ArchivoLight text-base text-custom-green-text pb-5'>
         Un geste simple, anonyme et sécurisé. Plus nous serons nombreux,

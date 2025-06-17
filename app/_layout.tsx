@@ -21,12 +21,19 @@ import CustomHeader from "@/components/CustomHeader";
 import { BottomSheetProvider } from "@/context/BottomSheetContext";
 import CustomBottomSheet from "@/components/CustomBottomSheet";
 import { LoadingProvider } from "@/context/LoadingContext";
+import { Text, TextInput } from "react-native";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+  // Assertion de type pour éviter l'erreur TypeScript
+(Text as any).defaultProps = (Text as any).defaultProps || {};
+(Text as any).defaultProps.allowFontScaling = false;
+
+(TextInput as any).defaultProps = (TextInput as any).defaultProps || {};
+(TextInput as any).defaultProps.allowFontScaling = false;
 
   const [loaded] = useFonts({
     comicoFont: require("../assets/fonts/Comico-Regular.otf"),

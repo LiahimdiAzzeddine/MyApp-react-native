@@ -31,10 +31,11 @@ import { usePathname } from "expo-router";
 const CustomBottomSheet: React.FC = () => {
   const [hasScrolledDown, setHasScrolledDown] = useState(false);
   const [isAlreadySaved, setIsAlreadySaved] = useState(false);
-
   const [isOpenIndex, setIsOpenIndex] = useState(0);
+  
   const insets = useSafeAreaInsets();
   const pathname = usePathname();
+  
   const {
     bottomSheetRef,
     closeBottomSheet,
@@ -45,6 +46,7 @@ const CustomBottomSheet: React.FC = () => {
     setIsModalEncourager,
     hasRequested,
   } = useBottomSheet();
+  
   const { userInfo } = useContext(AuthContext);
   const isAuthenticated = !!userInfo;
   const { isOnline } = useAppContext();
@@ -52,73 +54,114 @@ const CustomBottomSheet: React.FC = () => {
     scannedBarcode || ""
   );
 
-  useEffect(() => {
-    if (pathname !== "/" && pathname !== "/index" && isOpen) {
-      closeBottomSheet();
-    }
-  }, [pathname]);
+  // Nettoyage sécurisé lors du changement de route
+  // useEffect(() => {
+  //   if (pathname !== "/" && pathname !== "/index" && isOpen) {
+  //     try {
+  //       closeBottomSheet();
+  //     } catch (error) {
+  //       console.error("Error closing bottom sheet:", error);
+  //     }
+  //   }
+  // }, [pathname, isOpen]);
 
   const snapPoints = useMemo(() => ["40%", "100%"], []);
 
   const handleSheetChanges = useCallback(
     (index: number) => {
-      if (index === -1) {
-        closeBottomSheet();
+      try {
+        if (index === -1) {
+          closeBottomSheet();
+        }
+        setIsOpenIndex(index);
+      } catch (error) {
+        console.error("Error handling sheet changes:", error);
       }
-      setIsOpenIndex(index);
     },
     [closeBottomSheet]
   );
 
+  // Fetch product avec gestion d'erreur améliorée
   useEffect(() => {
     if (scannedBarcode && isOnline) {
-      fetchProduct();
-      setHasScrolledDown(false);
+      try {
+        fetchProduct();
+        setHasScrolledDown(false);
+      } catch (error) {
+        console.error("Error fetching product:", error);
+      }
     }
-  }, [scannedBarcode]);
+  }, [scannedBarcode, isOnline]);
 
+  // Gestion sécurisée des données produit
   useEffect(() => {
     if (userInfo && productData) {
-      addProduct(productData);
-      if (productData.alreadyRequest !== undefined) {
-        setHasRequested(productData.alreadyRequest);
-      }
+      try {
+        // Vérification des données avant traitement
+        if (productData && typeof productData === 'object') {
+          addProduct(productData);
+          
+          if (productData.alreadyRequest !== undefined) {
+            setHasRequested(productData.alreadyRequest);
+          }
 
-      if (productData.name !== undefined) {
-        setProductName(productData.name);
+          if (productData.name !== undefined && productData.name !== null) {
+            setProductName(productData.name);
+          }
+        }
+      } catch (error) {
+        console.error("Error processing product data:", error);
+        // Ne pas crasher l'app, juste logger l'erreur
       }
     }
-  }, [userInfo, productData]);
+  }, [userInfo, productData, setHasRequested, setProductName]);
 
-  const handleAddToLater = async (product: any) => {
+  const handleAddToLater = useCallback(async (product: any) => {
     try {
+      // Validation des données produit
+      if (!product || typeof product !== 'object') {
+        throw new Error("Invalid product data");
+      }
+
       await addLaterProduct(product);
       setIsAlreadySaved(true);
       Alert.alert("Succès", 'Produit ajouté à la liste "à voir plus tard"');
     } catch (error) {
-      console.error("Erreur lors de l'ajout du produit", error);
+      console.error("Erreur lors de l'ajout du produit:", error);
       Alert.alert(
         "Erreur",
         "Une erreur s'est produite en ajoutant le produit."
       );
     }
-  };
+  }, []);
 
-  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const yOffset = event.nativeEvent.contentOffset.y;
+  const handleScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    try {
+      const yOffset = event?.nativeEvent?.contentOffset?.y || 0;
 
-    if (
-      yOffset > 0 &&
-      !hasScrolledDown &&
-      !hasRequested &&
-      isAuthenticated &&
-      isOpenIndex == 1&&
-      isOnline
-    ) {
-      setHasScrolledDown(true);
-      setIsModalEncourager(true);
+      if (
+        yOffset >= 35 &&
+        !hasScrolledDown &&
+        !hasRequested &&
+        isAuthenticated &&
+        isOpenIndex === 1 && // Utilisation de === au lieu de ==
+        isOnline
+      ) {
+        setHasScrolledDown(true);
+        setIsModalEncourager(true);
+      }
+    } catch (error) {
+      console.error("Error handling scroll:", error);
     }
-  };
+  }, [hasScrolledDown, hasRequested, isAuthenticated, isOpenIndex, isOnline, setIsModalEncourager]);
+
+  // Données par défaut pour le produit hors ligne
+  const defaultOfflineProduct = useMemo(() => ({
+    gtin: scannedBarcode || "",
+    name: "Produit hors ligne",
+    trademark: "N/A",
+    image: "default_image_url",
+  }), [scannedBarcode]);
 
   return (
     <BottomSheet
@@ -130,11 +173,11 @@ const CustomBottomSheet: React.FC = () => {
       topInset={insets.top}
       enablePanDownToClose={true}
       handleStyle={styles.handleStyle}
-      keyboardBehavior="interactive"
+      keyboardBehavior="extend" // Changé de "interactive" à "extend" pour iOS
       keyboardBlurBehavior="restore"
       animationConfigs={{
-        duration: 500,
-        easing: Easing.out(Easing.exp),
+        duration: 300, // Réduit de 500 à 300ms
+        easing: Easing.bezier(0.25, 0.1, 0.25, 1), // Animation plus stable
       }}
     >
       <ModalHeader goToPage={closeBottomSheet} />
@@ -163,18 +206,12 @@ const CustomBottomSheet: React.FC = () => {
               Vous êtes hors ligne. Souhaitez-vous sauvegarder ce produit pour
               plus tard ?
             </Text>
-            {scannedBarcode  && (
+            {scannedBarcode && (
               <TouchableOpacity
-                onPress={() =>
-                  handleAddToLater({
-                    gtin: scannedBarcode,
-                    name: "Produit hors ligne",
-                    trademark: "N/A",
-                    image: "default_image_url",
-                  })
-                }
+                onPress={() => handleAddToLater(defaultOfflineProduct)}
                 style={[styles.button, isAlreadySaved && styles.buttonDisabled]}
                 disabled={isAlreadySaved}
+                activeOpacity={0.7} // Ajout pour améliorer l'UX
               >
                 <Text style={styles.buttonText}>
                   {isAlreadySaved ? "Déjà sauvegardé" : "Sauvegarder"}
@@ -198,7 +235,6 @@ const styles = StyleSheet.create({
   buttonDisabled: {
     backgroundColor: "#ccc",
   },
-
   testText: {
     fontSize: 18,
     fontWeight: "bold",
@@ -210,18 +246,15 @@ const styles = StyleSheet.create({
     margin: 5,
     borderRadius: 5,
   },
-
   container: {
     flex: 1,
     backgroundColor: "white",
   },
-
   scrollContent: {
-    paddingBottom: 100, // suffisant pour éviter la coupure
+    paddingBottom: 100,
     minHeight: 600,
     flexGrow: 1,
   },
-
   handleStyle: {
     paddingTop: 8,
     paddingBottom: 5,

@@ -9,7 +9,6 @@ import {
   NativeSyntheticEvent,
   NativeScrollEvent,
 } from "react-native";
-import NetInfo from "@react-native-community/netinfo";
 import { useLocalSearchParams } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -75,7 +74,7 @@ const ProductDetailsSheetLikePage = () => {
     fetchProduct();
     setScannedBarcode(String(gtin));
   }
-}, [gtin, isOnlineSearch, fetchProduct]);
+}, [gtin, isOnlineSearch]);
 
 
   // 🔹 Save history if user is authenticated
@@ -167,8 +166,6 @@ const ProductDetailsSheetLikePage = () => {
       }}
       edges={["bottom"]}
     >
-      <Text>gtin:{ gtin}</Text>
-      <Text>search: { search }</Text>
       <View style={styles.container}>
         {isLoading ? (
           <ProductSkeletonLoader />

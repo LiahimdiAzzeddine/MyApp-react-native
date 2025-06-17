@@ -45,10 +45,10 @@ const {  setIsModalContact,closeBottomSheet } = useBottomSheet();
  const handleShare = async () => {
     try {
       // Construire l'URL de partage avec les paramètres
-      const fullUrl = `${backendUrl}/fp/gtin?gtin=${gtin}&search=true`;
+      const fullUrl = `${backendUrl}/fp/${gtin}?search=true`;
       await RNShare.share({
         title: 'Découvrez cette fiche produit',
-        message: `Découvrez les infos nutritionnelles ici : ${fullUrl}`,
+        message: `Découvrez la fiche de ce produit sur TiCO : ${fullUrl}`,
       });
     } catch (error) {
       console.error('Erreur lors du partage :', error);

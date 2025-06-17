@@ -39,10 +39,10 @@ const Item = ({ tip, index, length, OpenTip }: ItemProps) => {
         </View>
 
         {/* Flèche */}
-        <TouchableOpacity onPress={() => OpenTip(tip)}
+        <View 
           >
           <Image source={require('@/assets/images/tips/elementFleche.png')} style={styles.arrowIcon}  resizeMode="contain" />
-        </TouchableOpacity>
+        </View>
       </TouchableOpacity>
 
       {/* Séparateur */}

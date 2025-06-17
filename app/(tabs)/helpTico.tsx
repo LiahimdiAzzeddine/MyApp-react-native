@@ -11,8 +11,7 @@ import {
   Share,
   ScrollView,
 } from "react-native";
-import {styles} from "./style"
-import { useRouter } from "expo-router";
+import styles from "./style"
 
 const apiUrl = "https://tico.foodhea.com";
 
@@ -64,7 +63,6 @@ const HelpTico = () => {
           }}
           showsVerticalScrollIndicator={false}
         >
-          {/* Header */}
           <View
            style={styles.header}
           >

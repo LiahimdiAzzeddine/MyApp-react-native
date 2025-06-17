@@ -65,7 +65,7 @@ const TipDetails: React.FC<any> = ({ tip }:any) => {
   return (
     <SafeAreaView style={styles.container} edges={["bottom", "left", "right"]}>
       {/* Contenu principal */}
-      <View style={styles.scrollView} id="partiesScorllable">
+      <View style={styles.scrollView}>
         <View style={styles.mainContent}>
           {/* Section Titre et Image */}
           <View style={styles.headerSection}>

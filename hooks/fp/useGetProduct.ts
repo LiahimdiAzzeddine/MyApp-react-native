@@ -30,7 +30,7 @@ const useGetProduct = (ean: string) => {
       }
     } catch (err: any) {
       if (err.response && err.response.status === 404) {
-        setError('Produit non trouvé.');
+        setError('Produit non trouvé. test');
         setProductData(null);
       } else {
         setError('Erreur lors de la récupération du produit.');
