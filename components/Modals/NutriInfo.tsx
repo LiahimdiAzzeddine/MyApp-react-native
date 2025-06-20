@@ -36,13 +36,22 @@ const NutriInfo: React.FC<NutriInfoProps> = ({
 }) => {
   const selectedImage = nutriscoreImages[nutriscore] || nutriscoreImages.B;
   const selectedPhrase = nutriscorePhrase[nutriscore] || nutriscorePhrase.B;
-  const {targetRef,scrollRef } = useBottomSheet();
+  const {scrollRef,scrollRefpage } = useBottomSheet();
 
   const handleMoreInfo = () => {
     setIsOpen(false);
     togglePanel();
     
-  setTimeout(() => {/** scroll ver  targetRef*/}, 500);
+ setTimeout(() => {
+  if(scrollRef.current){
+     scrollRef.current?.scrollTo({ y: 500, animated: true }); // ✅ scroll de 200px
+  }
+   if(scrollRefpage.current){
+     scrollRefpage.current?.scrollTo({ y: 500, animated: true }); // ✅ scroll de 200px
+  }
+   
+  }, 500);
+
   };
 
   return (

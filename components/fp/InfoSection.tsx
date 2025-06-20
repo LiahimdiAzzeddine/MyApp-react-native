@@ -221,8 +221,10 @@ const InfoSection: React.FC<Props> = ({ product }) => {
                   {/** <Ionicons name="cube-outline" size={32} color="#4a90a4" />*/}
                   <Text style={styles.additifsText}>
                     {product.additifs?.length
-                      ? `Contient ${product.additifs.length} additifs`
-                      : " Ne contient pas d'additifs"}
+                      ? `Contient ${product.additifs.length} additif${
+                          product.additifs.length > 1 ? "s" : ""
+                        }`
+                      : "Ne contient pas d'additifs"}
                   </Text>
                 </View>
               </View>

@@ -40,6 +40,7 @@ const CustomBottomSheet: React.FC = () => {
     bottomSheetRef,
     closeBottomSheet,
     isOpen,
+    scrollRef,
     scannedBarcode,
     setHasRequested,
     setProductName,
@@ -187,6 +188,7 @@ const CustomBottomSheet: React.FC = () => {
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="always"
         onScroll={handleScroll}
+        ref={scrollRef}
       >
         {loading ? (
           <ProductSkeletonLoader />

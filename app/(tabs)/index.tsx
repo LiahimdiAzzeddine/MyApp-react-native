@@ -7,9 +7,6 @@ import { useFocusEffect, useTheme } from '@react-navigation/native';
 import styles from "./style";
 import CustomButton from "@/components/ui/CustomButton";
 import { useBottomSheet } from "@/context/BottomSheetContext";
-import Solliciter from "@/components/Modals/Solliciter";
-import { AuthContext } from "@/context/AuthContext";
-import { useRouter } from "expo-router";
 
 export default function Scanner() {
   const [permission, requestPermission] = useCameraPermissions();
@@ -17,10 +14,8 @@ export default function Scanner() {
   const [isCameraActive, setIsCameraActive] = useState(true);
   const { colors } = useTheme();
   const cameraRef = useRef(null);
-  const router=useRouter()
 
   const { openBottomSheet, setScannedBarcode, isScanning, isModalEncourager, setIsScanning, setIsModalEncourager, closeBottomSheet } = useBottomSheet();
-  const { userInfo } = useContext(AuthContext);
 
   // Utiliser useFocusEffect pour détecter quand l'écran est activé/désactivé
   useFocusEffect(
@@ -126,7 +121,7 @@ export default function Scanner() {
           </View>
         </View>
       </View>
-      <Solliciter isOpen={isModalEncourager} setIsOpen={setIsModalEncourager} authUser={userInfo} />
+      
     </>
   );
 }

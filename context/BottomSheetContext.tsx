@@ -37,6 +37,7 @@ type BottomSheetContextType = {
   setIsModalContactTico: (value: boolean) => void;
   scrollRef: React.RefObject<ScrollView | null>;
   targetRef: React.RefObject<View | null>;
+  scrollRefpage: React.RefObject<ScrollView | null>;
 };
 
 const BottomSheetContext = createContext<BottomSheetContextType | undefined>(
@@ -69,7 +70,9 @@ export const BottomSheetProvider: React.FC<{ children: ReactNode }> = ({
   const [isModalContactTico, setIsModalContactTico] = useState(false);
 
   const scrollRef = useRef<ScrollView>(null);
+  const scrollRefpage = useRef<ScrollView|null>(null);
   const targetRef = useRef<View>(null);
+  
 
   const openBottomSheet = () => {
     bottomSheetRef.current?.snapToIndex(0);
@@ -108,6 +111,7 @@ export const BottomSheetProvider: React.FC<{ children: ReactNode }> = ({
         setIsModalAdditif,
         scrollRef,
         targetRef,
+        scrollRefpage,
         isModalContact,
         setIsModalContact,
         isModalContactTico,

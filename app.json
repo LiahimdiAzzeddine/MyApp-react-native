@@ -2,7 +2,7 @@
   "expo": {
     "name": "TiCO Scan",
     "slug": "tico",
-    "version": "5",
+    "version": "2",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "tico",
@@ -21,12 +21,13 @@
       }
     },
     "android": {
-      "versionCode": 5,
+      "versionCode": 6,
       "label": "TiCO Scan",
       "package": "com.tico.foodhea.tico",
       "intentFilters": [
         {
           "action": "VIEW",
+          "autoVerify": true,
           "data": {
             "scheme": "https",
             "host": "tico.foodhea.com",
@@ -92,7 +93,7 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "bca36011-9302-4a40-a134-08a116ff8bd5"
+        "projectId": "43a0b07f-c2ff-4f1e-8c8c-8d28d00d6818"
       }
     }
   }

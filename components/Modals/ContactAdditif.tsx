@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { View, Text, Button, ScrollView, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import CustomModal from './Modal';
 import { markerStyle } from './markerEffect';
+import { useBottomSheet } from '@/context/BottomSheetContext';
 
 type Additif = {
   code: string;
@@ -14,9 +15,7 @@ type Props = {
   isOpen: boolean;
   setIsOpen: (value: boolean) => void;
   additifs: Additif[];
-  togglePanel?: (index: number) => Promise<void>;
-  scrollToTarget?: (ref: any, key: string) => void;
-  targetRefAdditifs?: any;
+  togglePanel: () => void;
 };
 
 const ContactAdditif: React.FC<Props> = ({
@@ -24,12 +23,11 @@ const ContactAdditif: React.FC<Props> = ({
   setIsOpen,
   additifs,
   togglePanel,
-  scrollToTarget,
-  targetRefAdditifs,
 }) => {
   const [showAll, setShowAll] = useState(false);
   const [showInfo, setShowInfo] = useState<'additifs' | 'transformation'>('additifs');
   const displayedAdditifs = showAll ? additifs : additifs.slice(0, 3);
+  const {scrollRef,scrollRefpage } = useBottomSheet();
 
   const getPastilleImage = (note:number) => {
   if (note == 1) {
@@ -45,10 +43,16 @@ const ContactAdditif: React.FC<Props> = ({
 
   const MoreInfo = async () => {
     setIsOpen(false);
-    //await togglePanel(2);
+   togglePanel();
     setTimeout(() => {
-      //scrollToTarget(targetRefAdditifs, 'additifs');
-    }, 100);
+  if(scrollRef.current){
+     scrollRef.current?.scrollTo({ y: 700, animated: true }); // ✅ scroll de 200px
+  }
+   if(scrollRefpage.current){
+     scrollRefpage.current?.scrollTo({ y: 700, animated: true }); // ✅ scroll de 200px
+  }
+   
+  }, 500);
   };
 
   return (
@@ -127,7 +131,9 @@ const ContactAdditif: React.FC<Props> = ({
         {showInfo === 'additifs' && (
         <TouchableOpacity onPress={MoreInfo}>
                 <Text style={styles.moreInfo}>En savoir plus</Text>
-              </TouchableOpacity>)}</View>
+              </TouchableOpacity>
+            
+            )}</View> 
       </View>
     </CustomModal>
   );

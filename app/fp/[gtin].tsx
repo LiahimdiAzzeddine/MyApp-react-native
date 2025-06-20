@@ -52,6 +52,7 @@ const ProductDetailsSheetLikePage = () => {
     setProductName,
     setIsModalEncourager,
     hasRequested,
+    scrollRefpage,
   } = useBottomSheet();
 
   // 🔹 Fetch local
@@ -171,6 +172,7 @@ const ProductDetailsSheetLikePage = () => {
           <ProductSkeletonLoader />
         ) : product ? (
           <ScrollView
+            ref={scrollRefpage}
             style={styles.sheet}
             contentContainerStyle={{ paddingBottom: 80 }}
             onScroll={handleScroll}

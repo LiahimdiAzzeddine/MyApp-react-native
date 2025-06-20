@@ -1,5 +1,5 @@
 // ProductDetailsView.tsx
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import TransparencyScale from './TransparencyScale';
 import GlobalInfo from './GlobalInfo';
@@ -7,8 +7,10 @@ import Encourager from './Encourager';
 import InfoSection from './InfoSection';
 import ProductDetailsAccordion from './ProductDetailsAccordion';
 import { Product } from '@/types/product';
-import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import Recettes from './Recettes';
+import Solliciter from '../Modals/Solliciter';
+import { AuthContext } from '@/context/AuthContext';
+import { useBottomSheet } from '@/context/BottomSheetContext';
 
 interface ProductDetailsViewProps {
   productData: Product | null;
@@ -17,8 +19,8 @@ interface ProductDetailsViewProps {
 const ProductDetailsView: React.FC<ProductDetailsViewProps> = ({ 
   productData, 
 }) => {
- 
-
+  const {  isModalEncourager, setIsModalEncourager } = useBottomSheet();
+  const { userInfo } = useContext(AuthContext);
   // Pas de produit trouvé
   if (!productData) {
     return (
@@ -46,6 +48,7 @@ const ProductDetailsView: React.FC<ProductDetailsViewProps> = ({
       <InfoSection product={productData} />
       <ProductDetailsAccordion product={productData} />
       <Recettes recettes={[]}/>
+      <Solliciter isOpen={isModalEncourager} setIsOpen={setIsModalEncourager} authUser={userInfo} />
     </View>
   );
 };

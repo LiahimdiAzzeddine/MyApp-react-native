@@ -38,10 +38,18 @@ const useRegister = () => {
       triggerToast('Enregistrement réussi', 'success');
       router.replace('/login');
 
-      Alert.alert(
-        'Validation',
-        'Nous avons envoyé un email de confirmation à votre boîte mail.'
-      );
+     Alert.alert(
+  'Validation',
+  'Nous avons envoyé un email de confirmation sur votre boîte mail.',
+  [
+    {
+      text: 'OK',
+      onPress: () => console.log('OK Pressed'),
+    },
+  ],
+  { cancelable: false }
+);
+
 
       return response.data;
     } catch (error: any) {
