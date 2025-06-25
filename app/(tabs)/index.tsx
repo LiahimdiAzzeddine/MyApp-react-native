@@ -84,6 +84,9 @@ export default function Scanner() {
         <View style={styles.containerScan}>
           {/* CameraView sans enfants */}
           <CameraView
+           barcodeScannerSettings={{
+    barcodeTypes: ['ean13', 'ean8', 'upc_a', 'code128']
+  }}
             ref={cameraRef} 
             style={styles.camera}
             facing={"back"}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet, findNodeHandle } from 'react-native';
+import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import CustomModal from './Modal';
 import { useBottomSheet } from '@/context/BottomSheetContext';
 
@@ -21,11 +21,11 @@ const nutriscoreImages: Record<string, any> = {
 };
 
 const nutriscorePhrase: Record<string, string> = {
-  E: "Les produits notés A sont généralement riches en nutriments bénéfiques (fibres, protéines, vitamines) et faibles en éléments à limiter comme les graisses saturées, les sucres ou le sel. Ce sont des aliments à privilégier dans le cadre d'une alimentation équilibrée.",
+  A: "Les produits notés A sont généralement riches en nutriments bénéfiques (fibres, protéines, vitamines) et faibles en éléments à limiter comme les graisses saturées, les sucres ou le sel. Ce sont des aliments à privilégier dans le cadre d'une alimentation équilibrée.",
   B: "Les produits classés B restent de bons choix pour votre alimentation. Ils contiennent un bon mix de nutriments, avec parfois un peu plus de graisses, sucres ou sel que les produits notés A et un peu moins que les produits notés C.",
   C: "Un produit avec un Nutri-Score C peut contenir plus de graisses, de sucre ou de sel. Mais attention, ça ne veut pas dire qu'il faut l'éviter ! Certains aliments comme les huiles végétales, riches en bonnes graisses, peuvent avoir un C tout en étant bons pour la santé. Tout est une question d'équilibre !",
   D: "Un produit noté D contient généralement des nutriments à limiter (graisses saturées, sucres ou sel). Mais certains, comme les fromages, apportent aussi des nutriments intéressants comme le calcium. Ils peuvent faire partie d'une alimentation variée si on les consomme avec modération.",
-  A: "Les produits classés E sont ceux qui contiennent le plus d'éléments à limiter (graisses saturées, sucres, sel). Ils sont à consommer avec parcimonie. Toutefois, certains produits peuvent être classés E tout en étant intéressants nutritionnellement, comme certaines huiles. L'important, c'est de les intégrer à petite dose dans votre alimentation globale.",
+  E: "Les produits classés E sont ceux qui contiennent le plus d'éléments à limiter (graisses saturées, sucres, sel). Ils sont à consommer avec parcimonie. Toutefois, certains produits peuvent être classés E tout en étant intéressants nutritionnellement, comme certaines huiles. L'important, c'est de les intégrer à petite dose dans votre alimentation globale.",
 };
 
 const NutriInfo: React.FC<NutriInfoProps> = ({
@@ -36,39 +36,40 @@ const NutriInfo: React.FC<NutriInfoProps> = ({
 }) => {
   const selectedImage = nutriscoreImages[nutriscore] || nutriscoreImages.B;
   const selectedPhrase = nutriscorePhrase[nutriscore] || nutriscorePhrase.B;
-  const {scrollRef,scrollRefpage } = useBottomSheet();
+  const { scrollRef, scrollRefpage } = useBottomSheet();
 
   const handleMoreInfo = () => {
+    console.log("click savoir plus");
     setIsOpen(false);
-    togglePanel();
-    
- setTimeout(() => {
-  if(scrollRef.current){
-     scrollRef.current?.scrollTo({ y: 500, animated: true }); // ✅ scroll de 200px
-  }
-   if(scrollRefpage.current){
-     scrollRefpage.current?.scrollTo({ y: 500, animated: true }); // ✅ scroll de 200px
-  }
-   
-  }, 500);
-
+    setTimeout(() => {
+      togglePanel();
+    }, 50); 
   };
 
   return (
     <CustomModal isOpen={isOpen} onClose={() => setIsOpen(false)}>
       <View style={styles.wrapper}>
         {/* Header */}
-        <Text  className='ArchivoBold text-2xl text-custom-blue ArchivoExtraBold' style={{padding:8}}>Nutrition</Text>
+        <Text className='ArchivoBold text-2xl text-custom-blue ArchivoExtraBold' style={{padding: 8}}>
+          Nutrition
+        </Text>
         <Image source={selectedImage} style={styles.image} resizeMode="contain" />
 
         {/* Content */}
         <ScrollView style={styles.scrollArea} showsVerticalScrollIndicator={false}>
-          <Text className='text-custom-blue text-center  leading-tight ArchivoLight'>{selectedPhrase}</Text>
+          <Text className='text-custom-blue text-center leading-tight ArchivoLight'>
+            {selectedPhrase}
+          </Text>
         </ScrollView>
 
         {/* Footer */}
         <TouchableOpacity onPress={handleMoreInfo} style={styles.linkContainer}>
-          <Text   className="text-sm text-custom-blue underline text-center " style={{paddingLeft:"5%"}} >En savoir plus</Text>
+          <Text 
+            className="text-sm text-custom-blue underline text-center" 
+            style={{paddingLeft: "5%"}}
+          >
+            En savoir plus
+          </Text>
         </TouchableOpacity>
       </View>
     </CustomModal>

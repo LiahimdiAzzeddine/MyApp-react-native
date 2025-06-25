@@ -43,16 +43,18 @@ const ContactAdditif: React.FC<Props> = ({
 
   const MoreInfo = async () => {
     setIsOpen(false);
-   togglePanel();
     setTimeout(() => {
-  if(scrollRef.current){
-     scrollRef.current?.scrollTo({ y: 700, animated: true }); // ✅ scroll de 200px
-  }
-   if(scrollRefpage.current){
-     scrollRefpage.current?.scrollTo({ y: 700, animated: true }); // ✅ scroll de 200px
-  }
+    togglePanel();
+    }, 50);
+  //   setTimeout(() => {
+  // if(scrollRef.current){
+  //    scrollRef.current?.scrollTo({ y: 700, animated: true }); // ✅ scroll de 200px
+  // }
+  //  if(scrollRefpage.current){
+  //    scrollRefpage.current?.scrollTo({ y: 700, animated: true }); // ✅ scroll de 200px
+  // }
    
-  }, 500);
+  // }, 500);
   };
 
   return (

@@ -1,5 +1,5 @@
-import React, { useState, useMemo, useContext } from "react";
-import { Alert, ScrollView } from "react-native";
+import React, { useState, useMemo, useContext, useRef, useEffect } from "react";
+import { Alert, Button, ScrollView, View } from "react-native";
 import AccordionItem from "./AccordionItem";
 import NutritionalInfo from "./accordion/NutritionalInfo";
 import IngredientsInfo from "./accordion/IngredientsInfo";
@@ -29,6 +29,8 @@ export default function ProductDetailsAccordion({
   const isAuthenticated: boolean = !!userInfo;
   const router = useRouter();
   const [openPanel, setOpenPanel] = useState<string | null>(null);
+  const sectionRefs = useRef<{ [key: string]: View | null }>({});
+  
   const {
     isModalNutrition,
     setIsModalNutrition,
@@ -39,17 +41,48 @@ export default function ProductDetailsAccordion({
     isModalContactTico,
     setIsModalContactTico,
     setIsModalEncourager,
+    scrollRefpage,
+    scrollRef
   } = useBottomSheet();
 
   const togglePanel = (id: string) => {
     setOpenPanel(openPanel === id ? null : id);
   };
+
   const OnlyOpen = (id: string) => {
-    if (openPanel != id) {
-      console.log("🚀 ~ OnlyOpen ~ openPanel:", openPanel, id);
-      setOpenPanel(id);
+    if (id) {
+      // Force l'ouverture même si déjà ouvert
+      if (openPanel !== id) {
+        setOpenPanel(id);
+      } else {
+        // Si c'est le même panneau, forcer la fermeture puis réouverture
+        //setOpenPanel('0');
+        setTimeout(() => {
+          setOpenPanel(id);
+        }, 50);
+      }
+      
+      // Delay scroll to allow rendering first
+      setTimeout(() => {
+        console.log("🚀 ~ OnlyOpen ~ dans setTimeout, openPanel courant:", openPanel);
+        const ref = sectionRefs.current[id];
+        if (ref && 'measure' in ref) {
+          (ref as any).measure((_fx: any, _fy: any, _width: any, _height: any, _px: any, py: number) => {
+            console.log("🚀 ~ measure ~ scrolling to:", py - 50);
+            if (scrollRefpage?.current) {
+              scrollRefpage?.current?.scrollTo({ y: py - 50, animated: true });
+            }
+            if (scrollRef?.current) {
+              scrollRef?.current?.scrollTo({ y: py - 50, animated: true });
+            }
+          });
+        } else {
+          console.log("🚀 ~ OnlyOpen ~ ref non trouvé pour id:", id);
+        }
+      }, 500); // Augmenté pour laisser le temps à la réouverture
     }
   };
+
   const openContactSolliciter = (): void => {
     if (!isAuthenticated) {
       Alert.alert("Attention", "Se connecter pour encourager la marque", [
@@ -68,7 +101,7 @@ export default function ProductDetailsAccordion({
   };
 
   // Memoize accordion sections configuration to avoid recreating on each render
-  const accordionSections = [
+  const accordionSections = useMemo(() => [
     {
       id: "1",
       title: "Informations nutritionnelles",
@@ -172,33 +205,41 @@ export default function ProductDetailsAccordion({
         />
       ),
     },
-  ]; // Only recreate when product changes
+  ], [product]); // Only recreate when product changes
 
   const handleToggle = (section: (typeof accordionSections)[0]) => {
     if (section.isEnabled) {
       togglePanel(section.id);
     }
   };
+
   const findFirstInactiveItem = (sections: any[]) => {
     return sections.find((section) => !section.isEnabled);
   };
-  const firstInactiveItem = findFirstInactiveItem(accordionSections);
+
+  const firstInactiveItem = useMemo(() => findFirstInactiveItem(accordionSections), [accordionSections]);
 
   return (
     <>
       <ScrollView>
         {accordionSections.map((section) => (
-          <AccordionItem
+          <View
             key={section.id}
-            title={section.title}
-            isOpen={openPanel === section.id}
-            onToggle={() => handleToggle(section)}
-            disabled={!section.isEnabled}
-            showBubble={firstInactiveItem.id == section.id}
-            onBubblePress={openContactSolliciter}
+            ref={(ref) => {
+              sectionRefs.current[section.id] = ref;
+            }}
           >
-            {section.isEnabled && section.component}
-          </AccordionItem>
+            <AccordionItem
+              title={section.title}
+              isOpen={openPanel === section.id}
+              onToggle={() => handleToggle(section)}
+              disabled={!section.isEnabled}
+              showBubble={firstInactiveItem?.id === section.id}
+              onBubblePress={openContactSolliciter}
+            >
+              {section.isEnabled && section.component}
+            </AccordionItem>
+          </View>
         ))}
       </ScrollView>
       <NutriInfo

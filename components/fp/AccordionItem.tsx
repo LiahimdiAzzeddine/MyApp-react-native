@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
 import Collapsible from "react-native-collapsible";
 
@@ -20,7 +20,8 @@ export default function AccordionItem({
   showBubble = false,
   onBubblePress,
 }: AccordionItemProps) {
-  
+
+
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>

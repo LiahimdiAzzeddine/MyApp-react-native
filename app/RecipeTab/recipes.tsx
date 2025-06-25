@@ -173,7 +173,7 @@ const Recipes = () => {
 
         <TouchableOpacity
           className="bg-custom-red rounded-xl py-3 px-4 m-auto"
-          style={{marginBottom:5}}
+          style={{marginBottom:16}}
           onPress={goToAddRecipe}
         >
           <Text className="text-base text-white">Proposer une recette</Text>

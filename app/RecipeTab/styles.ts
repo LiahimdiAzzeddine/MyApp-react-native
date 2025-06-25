@@ -4,6 +4,39 @@ const styles = StyleSheet.create({
   containerImg: {
     alignItems: "center",
   },
+  containerg: {
+    marginTop: 16,
+    paddingHorizontal: 10,
+  },
+  checkboxContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  checkbox: {
+    width: 22,
+    height: 22,
+    borderWidth: 1,
+    borderColor: '#aaa',
+    borderRadius: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+  },
+  checkedCheckbox: {
+    backgroundColor: '#4CAF50',
+    borderColor: '#4CAF50',
+  },
+  labelText: {
+    fontSize: 14,
+    color: '#333',
+    flexShrink: 1,
+  },
+  linkText: {
+    color: '#007bff',
+    textDecorationLine: 'underline',
+  },
+
   placeholder: {
     width: 160,
     height: 140,

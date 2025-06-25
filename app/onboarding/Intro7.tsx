@@ -41,7 +41,14 @@ const Intro7 = () => {
       console.error('Error setting first visit status:', error);
     }
   };
-
+const Login = async () => {
+    try {
+      await setFirstVisit(true);
+      router.push("/(auth)/login")
+    } catch (error) {
+      console.error('Error setting first visit status:', error);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -70,6 +77,9 @@ const Intro7 = () => {
               <Text style={styles.buttonText}>
                 J'utilise <Text className='ArchivoBold'>Ti<Text style={styles.tight}>CO</Text></Text>{'\n'}en tant qu'invité
               </Text>
+            </TouchableOpacity>
+              <TouchableOpacity style={styles.button} onPress={Login}>
+              <Text style={styles.buttonText}>Se connecter</Text>
             </TouchableOpacity>
           </View>
         </ImageBackground>

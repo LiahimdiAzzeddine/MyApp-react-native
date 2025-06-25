@@ -2,7 +2,7 @@
   "expo": {
     "name": "TiCO Scan",
     "slug": "tico",
-    "version": "2",
+    "version": "7",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "tico",
@@ -10,7 +10,7 @@
     "newArchEnabled": true,
     "ios": {
       "name": "TiCO Scan",
-      "buildNumber": "1",
+      "buildNumber": "2",
       "supportsTablet": true,
       "bundleIdentifier": "com.tico.foodhea.tico",
       "associatedDomains": [
@@ -21,7 +21,7 @@
       }
     },
     "android": {
-      "versionCode": 6,
+      "versionCode": 7,
       "label": "TiCO Scan",
       "package": "com.tico.foodhea.tico",
       "intentFilters": [

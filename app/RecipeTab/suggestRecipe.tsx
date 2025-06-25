@@ -22,6 +22,8 @@ import RecipeDetails from "@/components/recipes/RecipeDetails";
 import RecipesHeader from "@/components/ui/recipeHeader";
 import styles from "./styles";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Ionicons } from '@expo/vector-icons'; // ou autre lib pour icône
+
 
 const backgroundImage = require("@/assets/images/recipes/background.png");
 const backgroundPicker = require("@/assets/images/recipes/pickerbg.png");
@@ -36,18 +38,22 @@ interface ValidationErrors {
   rest_time?: string;
   ingredients?: string;
   steps?: string;
+  cgus?: string;
 }
 
 const Suggestrecipe: React.FC = () => {
   const { handleSubmit, loading, error, success } = useSuggestRecipe();
   const [stepInput, setStepInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+    const [acceptedCGUs, setAcceptedCGUs] = useState<boolean>(false);
+  
   const [image, setImage] = useState<string | null>(null);
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>(
     {}
   );
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedRecipe, setSelectedRecipe] = useState<any | null>(null);
+const router=useRouter();
 
   const [values, setValues] = useState<RecipeValues>({
     titre: "",
@@ -88,6 +94,10 @@ const Suggestrecipe: React.FC = () => {
       isValid = false;
     } else if (isNaN(Number(values.nbperson)) || Number(values.nbperson) <= 0 || Number(values.nbperson) > 50) {
       errors.nbperson = "Le nombre de personnes doit être un nombre entre 1 et 50";
+      isValid = false;
+    }
+    if(!acceptedCGUs){
+errors.cgus = "Vous devez accepter les CGU.";
       isValid = false;
     }
 
@@ -804,7 +814,38 @@ const Suggestrecipe: React.FC = () => {
                   </TouchableOpacity>
                   
                 </View>
-                <Text className="text-custom-gray pb-8 pt-4" style={{fontFamily:"ArchivoLight"}}>Pas d'inquiétude on se charge du shooting photo !</Text>
+                <Text className="text-custom-gray pb-8 pt-4" style={{fontFamily:"ArchivoLight"}}>Vous n’avez pas de photo ?</Text>
+                <Text className="text-custom-gray pb-8 pt-4" style={{fontFamily:"ArchivoLight"}}>Pas d’inquiétude on se charge du shooting pour vous !</Text>
+                 <View style={styles.containerg}>
+  <TouchableOpacity
+    onPress={() => setAcceptedCGUs(!acceptedCGUs)}
+    accessibilityLabel={acceptedCGUs ? "CGU acceptées" : "Accepter les CGU"}
+    accessibilityRole="checkbox"
+    accessibilityState={{ checked: acceptedCGUs }}
+    style={styles.checkboxContainer}
+  >
+    <View style={[styles.checkbox, acceptedCGUs && styles.checkedCheckbox]}>
+      {acceptedCGUs && (
+        <Ionicons name="checkmark" size={16} color="#fff" />
+      )}
+    </View>
+    <Text style={styles.labelText}>
+      J'ai lu et j'accepte les{' '}
+      <Text
+        onPress={() => router.push('/settingsPage/CGUConfidentiality')}
+        style={styles.linkText}
+      >
+        CGU
+      </Text>
+    </Text>
+  </TouchableOpacity>
+
+  {(error?.nbperson || validationErrors.cgus) && (
+    <Text style={styles.errorText}>
+      {error?.nbperson || validationErrors.cgus}
+    </Text>
+  )}
+</View>
                 <TouchableOpacity
                   onPress={visualiseRecette}
                   style={styles.visualizeButton}
