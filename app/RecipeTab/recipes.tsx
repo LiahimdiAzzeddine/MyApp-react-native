@@ -39,13 +39,13 @@ const Recipes = () => {
   if (!context) {
     throw new Error("AppContext must be used within a AppProvider");
   }
-   const { lastUpdatedR } = context;
-    useEffect(() => {
+  const { lastUpdatedR } = context;
+  useEffect(() => {
     const fetchPreferences = async () => {
       try {
         const storedPreferences = await getPreferences(String(userInfo?.id));
-        setRegimePreferences([...storedPreferences?.regime??[]]);
-        setAllergenPreferences([...storedPreferences?.allergen??[]]);
+        setRegimePreferences([...storedPreferences?.regime ?? []]);
+        setAllergenPreferences([...storedPreferences?.allergen ?? []]);
       } catch (error) {
         console.error(
           "Erreur lors de la récupération des préférences :",
@@ -55,14 +55,14 @@ const Recipes = () => {
     };
 
     fetchPreferences();
-  }, [userInfo,lastUpdatedR]);
-  const { searchRecipes,isOnline } = context;
+  }, [userInfo, lastUpdatedR]);
+  const { searchRecipes, isOnline } = context;
 
   const itemsPerPage = 10;
   const { recipes, loading, error } = useRecipesLast(
     regimePreferences,
     allergenPreferences,
-      searchTerm);
+    searchTerm);
 
   const paginatedRecipes = (() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -79,12 +79,12 @@ const Recipes = () => {
   const goToRecipeDetails = (recipe: any) => {
     router.push({
       pathname: "/recipetab/recipe/[id]",
-      params: { id: recipe.id.toString() }, 
+      params: { id: recipe.id.toString() },
     });
   };
 
   const goToAddRecipe = () => {
-    router.push("/recipetab/suggestrecipe");
+    router.push("/recipetab/suggestRecipe");
   };
 
   return (
@@ -143,7 +143,7 @@ const Recipes = () => {
               <Text
                 style={[styles.pageBtn, currentPage === 1 && styles.disabled]}
               >
-             <AntDesign name="left" size={22} color="black" />
+                <AntDesign name="left" size={22} color="black" />
               </Text>
             </TouchableOpacity>
 
@@ -163,17 +163,17 @@ const Recipes = () => {
                   currentPage === totalPages && styles.disabled,
                 ]}
               >
-               <AntDesign name="right" size={22} color="black" />
+                <AntDesign name="right" size={22} color="black" />
               </Text>
             </TouchableOpacity>
           </View>
-        ):(
+        ) : (
           <Text className="h-3"></Text>
         )}
 
         <TouchableOpacity
           className="bg-custom-red rounded-xl py-3 px-4 m-auto"
-          style={{marginBottom:16}}
+          style={{ marginBottom: 16 }}
           onPress={goToAddRecipe}
         >
           <Text className="text-base text-white">Proposer une recette</Text>
@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
   searchContainer: {
     flexDirection: "row",
     paddingHorizontal: 16,
-    paddingBottom:10,
+    paddingBottom: 10,
     alignItems: "center",
     gap: 10,
     justifyContent: "center",
@@ -208,8 +208,8 @@ const styles = StyleSheet.create({
     padding: 10,
     fontFamily: "ArchivoLightItalic",
 
-    borderColor:"#c32721",
-    color:"#c32721"
+    borderColor: "#c32721",
+    color: "#c32721"
   },
   recipeList: { flex: 1, padding: 10 },
   pagination: {

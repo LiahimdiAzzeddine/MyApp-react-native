@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
   },
   labelText: {
     fontSize: 14,
-    color: '#333',
+    color: "#B71C1C",
     flexShrink: 1,
   },
   linkText: {

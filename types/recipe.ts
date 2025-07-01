@@ -136,3 +136,50 @@ export const groupSteps = (steps: Step[], groupSize: number): Step[][] => {
   }
   return groups;
 };
+
+
+
+
+export interface ValidationErrors {
+  titre?: string;
+  nbperson?: string;
+  types?: string;
+  difficulty?: string;
+  prep_time?: string;
+  cook_time?: string;
+  rest_time?: string;
+  ingredients?: string;
+  steps?: string;
+  cgus?: string;
+}
+
+export interface RecipeSubmissionError {
+  titre?: string[];
+  nbperson?: string[];
+  type?: string[];
+  difficulty?: string[];
+  prep_time?: string[];
+  cook_time?: string[];
+  rest_time?: string[];
+  ingredients?: string[];
+  steps?: string[];
+  filters?: string[];
+}
+
+export interface MappedRecipe {
+  id: number;
+  title: string;
+  nbperson: number;
+  difficulte: string;
+  timecook: string;
+  timebake: string;
+  timerest: string;
+  regimes: string[];
+  ingredients: Array<{
+    qt: string;
+    unit: string;
+    name: string;
+  }>;
+  recette: { [key: string]: string };
+  image_name: { uri: string } | null;
+}
