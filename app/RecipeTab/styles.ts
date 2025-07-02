@@ -1,213 +1,325 @@
 import { StyleSheet } from "react-native";
 
+
 const styles = StyleSheet.create({
-  containerImg: {
-    alignItems: "center",
-  },
-  containerg: {
-    marginTop: 16,
-    paddingHorizontal: 10,
-  },
-  checkboxContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  checkbox: {
-    width: 22,
-    height: 22,
-    borderWidth: 1,
-    borderColor: '#aaa',
-    borderRadius: 4,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-  },
-  checkedCheckbox: {
-    backgroundColor: '#4CAF50',
-    borderColor: '#4CAF50',
-  },
-  labelText: {
-    fontSize: 14,
-    color: "#B71C1C",
-    flexShrink: 1,
-  },
-  linkText: {
-    color: '#007bff',
-    textDecorationLine: 'underline',
-  },
-
-  placeholder: {
-    width: 160,
-    height: 140,
-    borderWidth: 1,
-    borderColor: "#f3cfcf",
-    borderRadius: 10,
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  imagePreview: {
-    width: 160,
-    height: 140,
-    borderRadius: 10,
-    marginBottom: 20,
-  },
-
-  container: {
+  outerContainer: {
     flex: 1,
-    padding: 18,
     backgroundColor: "#fff",
   },
-
-  formContainer: {
+  container: {
     flex: 1,
-    marginBottom: 20,
+    backgroundColor: "#fff",
+  },
+  innerContainer: {
+    flex: 1,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    paddingBottom: 20,
+  },
+  formContainer: {
+    padding: 18,
+    fontFamily: "ArchivoLight",
   },
   inputGroup: {
-    marginBottom: 16,
+    marginBottom: 20,
   },
   label: {
     marginBottom: 8,
     color: "#D32F2F",
-    fontFamily: "ArchivoLight",
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  required: {
+    color: '#B71C1C',
   },
   input: {
     borderWidth: 1,
-    borderColor: "#FFCDD2", // custom-red-clear equivalent
+    borderColor: "#FFCDD2",
     borderRadius: 12,
-    padding: 12,
-    fontFamily: "ArchivoLight",
+    padding: 14,
+    fontSize: 16,
     color: "#333",
+    backgroundColor: '#fff',
+     fontFamily: "ArchivoLight",
   },
   multilineInput: {
-    minHeight: 80,
+    minHeight: 100,
     textAlignVertical: "top",
   },
   inputError: {
-    borderColor: "#B71C1C", // dark red for error
+    borderColor: "#B71C1C",
   },
   errorText: {
-    color: "#B71C1C", // dark red for error
+    color: "#B71C1C",
     fontSize: 14,
-    marginTop: 4,
+    marginTop: 6,
     fontFamily: "ArchivoLight",
   },
-  buttonGroup: {
+  timeInputContainer: {
     flexDirection: "row",
-    flexWrap: "wrap",
-    fontFamily: "ArchivoLight",
+    alignItems: "center",
+    gap: 12,
   },
-  filterButton: {
+  timeInput: {
+    flex:5,
     borderWidth: 1,
-    borderColor: "#D32F2F",
-    borderRadius: 20,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    marginRight: 8,
-    marginBottom: 8,
-    backgroundColor: "#FFF",
-    fontFamily: "ArchivoLight",
+    borderColor: "#FFCDD2",
+    borderRadius: 12,
+    padding: 14,
+    fontSize: 16,
+    color: "#333",
+    backgroundColor: '#fff',
   },
-  activeButton: {
-    backgroundColor: "#D32F2F",
-    borderColor: "#D32F2F",
+  pickerContainer: {
+    borderWidth: 1,
+    borderColor: "#FFCDD2",
+    borderRadius: 12,
+    backgroundColor: '#fff',
+    overflow: 'hidden',
+    flex:4
   },
-  buttonText: {
-    color: "#D32F2F",
-    fontFamily: "ArchivoLight",
-  },
-  activeButtonText: {
-    color: "#FFF",
+  picker: {
+    height: 50,
+    width: 140,
   },
   boldText: {
     fontWeight: "bold",
+    color: "#D32F2F",
   },
   infoText: {
     color: "#666",
     fontSize: 14,
-    padding: 10,
-    fontFamily: "ArchivoLight",
+    marginTop: 8,
+    fontFamily:"ArchivoLightItalic",
+ lineHeight: 16,
   },
   ingredientInputGroup: {
     flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 8,
+    gap: 8,
+    marginBottom: 12,
   },
   ingredientInput: {
     borderWidth: 1,
     borderColor: "#FFCDD2",
     borderRadius: 12,
     padding: 12,
-    marginRight: 8,
+    fontSize: 14,
+    color: "#333",
+    backgroundColor: '#fff',
   },
   addButton: {
     backgroundColor: "#D32F2F",
     borderRadius: 20,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
     alignSelf: "flex-start",
     marginTop: 8,
-  },
-  button: {
-    backgroundColor: "#D32F2F", // rouge
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
+    fontFamily: "Archivo",
   },
   addButtonText: {
     color: "#FFF",
-    fontFamily: "ArchivoLight",
+    fontSize: 14,
+    fontWeight: '600',
+     fontFamily: "Archivo",
   },
   tagsContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
-    marginTop: 12,
+    marginTop: 16,
+    gap: 8,
   },
   tag: {
     backgroundColor: "#FFF",
     borderWidth: 1,
     borderColor: "#D32F2F",
     borderRadius: 20,
-    paddingVertical: 6,
-    paddingHorizontal: 6,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
     flexDirection: "row",
     alignItems: "center",
-    marginRight: 8,
+    gap: 8,
+  },
+  stepTag: {
+    backgroundColor: "#FFF",
+    borderWidth: 1,
+    borderColor: "#D32F2F",
+    borderRadius: 12,
+    padding: 12,
     marginBottom: 8,
+    width: '100%',
+    position:"relative"
+  },
+  stepNumber: {
+    color: "#D32F2F",
+    fontWeight: 'bold',
+    fontSize: 14,
+    marginBottom: 4,
+  },
+  stepText: {
+    color: "#333",
+    fontSize: 14,
+    lineHeight: 20,
   },
   tagText: {
     color: "#D32F2F",
+    fontSize: 14,
+
     fontFamily: "ArchivoLight",
-    marginRight: 8,
   },
   removeTagButton: {
     backgroundColor: "#EF5350",
-    width: 25,
-    height: 25,
-    justifyContent: "center",
+    width: 24,
+    height: 24,
     borderRadius: 12,
-    margin: "auto",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+    removeTagButtonStep: {
+    backgroundColor: "#EF5350",
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    justifyContent: "center",
+    alignItems: "center",
+    position:'absolute',
+    right:5,
+    top:5
   },
   removeTagButtonText: {
     color: "white",
-    margin: "auto",
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   submitContainer: {
     alignItems: "center",
-    marginBottom: 32,
+    marginTop: 20,
+    marginBottom: 40,
+  },
+  imageContainer: {
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  imagePlaceholder: {
+    width: 160,
+    height: 140,
+    borderRadius: 12,
+    overflow: 'hidden',
+    marginBottom: 12,
+  },
+  placeholderImage: {
+    width: "100%",
+    height: "100%",
+    borderColor: "#FFCDD2",
+    borderWidth:1.5,
+     borderRadius: 12,
+  },
+  imagePreview: {
+    width: 160,
+    height: 140,
+    borderRadius: 12,
+    marginBottom: 12,
+    borderColor: "#FFCDD2",
+    borderWidth:1.5,
+  },
+  imageButton: {
+    backgroundColor: "#D32F2F",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 20,
+  },
+  cguContainer: {
+    alignItems: 'center',
+    paddingVertical: 20,
+    gap: 4,
+  },
+  noPhotoText: {
+    color: "#666",
+    fontSize: 14,
+  },
+  noPhotoSubtext: {
+    color: "#666",
+    fontSize: 14,
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  checkboxContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    textAlign:'center',
+    justifyContent:'center'
+  },
+  checkbox: {
+    width: 24,
+    height: 24,
+    borderWidth: 2,
+    borderColor: '#D32F2F',
+    borderRadius: 6,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+  },
+  checkedCheckbox: {
+    backgroundColor: "#D32F2F",
+  },
+  cguText: {
+    fontSize: 14,
+    color: "#D32F2F",
+    flex: 1,
+
+  },
+  linkText: {
+    color: "#D32F2F",
+    textDecorationLine: 'underline',
+    fontWeight: '600',
   },
   visualizeButton: {
     backgroundColor: "#D32F2F",
+    borderRadius: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 32,
+    marginBottom: 12,
+    minWidth: 200,
   },
-
+  visualizeButtonText: {
+    color: "#FFF",
+    fontSize: 16,
+    fontWeight: '600',
+    textAlign: 'center',
+    fontFamily: "Archivo",
+  },
   submitButton: {
     backgroundColor: "#FAD4CE",
-    borderColor: "#FAD4CE",
+    borderRadius: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 32,
+    minWidth: 200,
   },
   submitButtonText: {
     color: "#B71C1C",
-    fontFamily: "ArchivoLight",
+    fontSize: 16,
+    fontWeight: '600',
+    textAlign: 'center',
+    fontFamily: "Archivo",
+  },
+  loadingContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,0.8)',
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: "#fff",
   },
 });
+
 export default styles;

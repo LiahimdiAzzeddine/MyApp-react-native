@@ -6,6 +6,10 @@ import {
   Dimensions,
   Alert,
   ActivityIndicator,
+  Modal,
+  Pressable,
+  TouchableOpacity,
+  StyleSheet,
 } from "react-native";
 import React, { useState } from "react";
 import PagerView from "react-native-pager-view";
@@ -14,7 +18,7 @@ import * as FileSystem from "expo-file-system";
 import CustomButton from "@/components/ui/CustomButton";
 import { useTheme } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useStories } from "@/hooks/useStories"; // chemin à adapter
+import { useStories } from "@/hooks/useStories";
 
 const { width, height } = Dimensions.get("window");
 
@@ -22,6 +26,8 @@ export default function Story(): JSX.Element {
   const { stories, loading, error } = useStories();
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [isSharing, setIsSharing] = useState<boolean>(false);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [selectedStory, setSelectedStory] = useState<any>(null);
   const { colors } = useTheme();
 
   const getShareableImageUri = async (): Promise<string | null> => {
@@ -44,16 +50,12 @@ export default function Story(): JSX.Element {
 
   const shareStory = async (): Promise<void> => {
     if (isSharing) return;
-
     setIsSharing(true);
 
     try {
       const isAvailable = await Sharing.isAvailableAsync();
       if (!isAvailable) {
-        Alert.alert(
-          "Erreur",
-          "Le partage n'est pas disponible sur cet appareil"
-        );
+        Alert.alert("Erreur", "Le partage n'est pas disponible sur cet appareil");
         setIsSharing(false);
         return;
       }
@@ -81,11 +83,20 @@ export default function Story(): JSX.Element {
     setCurrentPage(e.nativeEvent.position);
   };
 
+  // Ouvre le modal fullscreen avec la story cliquée
+  const openModal = (story: any) => {
+    setSelectedStory(story);
+    setModalVisible(true);
+  };
+
+  // Ferme le modal fullscreen
+  const closeModal = () => {
+    setModalVisible(false);
+    setSelectedStory(null);
+  };
+
   return (
-    <SafeAreaView
-      className="flex-1 bg-white w-full"
-      edges={["bottom", "left", "right"]}
-    >
+    <SafeAreaView className="flex-1 bg-white w-full" edges={["bottom", "left", "right"]}>
       <ImageBackground
         source={require("@/assets/images/profil/backgroundProfil.png")}
         resizeMode="contain"
@@ -117,22 +128,35 @@ export default function Story(): JSX.Element {
           <View className="flex-1 justify-around items-center">
             <PagerView
               style={{
-                width: width - 60,
-                height: height / 2.7,
+                width: width - 80,
+                height: height / 2.2,
                 marginBottom: 10,
+                borderRadius: 16,
+                overflow: "hidden",
               }}
               initialPage={0}
               onPageSelected={onPageSelected}
             >
               {stories.map((story) => (
-                <View key={story.id} style={{ flex: 1 }}>
+                <TouchableOpacity
+                  key={story.id}
+                  activeOpacity={0.8}
+                  onPress={() => openModal(story)}
+                  style={{ flex: 1, padding: 6 }}
+                >
                   <View
                     style={{
                       flex: 1,
+                      borderRadius: 16,
+                      overflow: "hidden",
+                      backgroundColor: "#f9f9f9",
+                      elevation: 5,
+                      shadowColor: "#000",
+                      shadowOffset: { width: 0, height: 4 },
+                      shadowOpacity: 0.2,
+                      shadowRadius: 6,
                       justifyContent: "center",
                       alignItems: "center",
-                      padding: 5,
-                      position: "relative",
                     }}
                   >
                     <Image
@@ -140,30 +164,30 @@ export default function Story(): JSX.Element {
                       style={{
                         width: "100%",
                         height: "100%",
-                        resizeMode: "contain",
+                        resizeMode: "cover",
+                        borderRadius: 16,
                       }}
                     />
-
-                    <View
-                      style={{
-                        position: "absolute",
-                        top: 20,
-                        right: 20,
-                        opacity: 0.7,
-                      }}
-                    >
+                    {story.title && (
                       <Text
                         style={{
-                          fontSize: 10,
-                          color: "#2D5A3D",
-                          fontWeight: "bold",
+                          position: "absolute",
+                          bottom: 12,
+                          left: 12,
+                          right: 12,
+                          backgroundColor: "rgba(0,0,0,0.5)",
+                          color: "#fff",
+                          padding: 8,
+                          borderRadius: 8,
+                          fontSize: 14,
+                          textAlign: "center",
                         }}
                       >
-                        TiCO
+                        {story.title}
                       </Text>
-                    </View>
+                    )}
                   </View>
-                </View>
+                </TouchableOpacity>
               ))}
             </PagerView>
 
@@ -172,11 +196,10 @@ export default function Story(): JSX.Element {
                 <View
                   key={index}
                   style={{
-                    width: 12,
-                    height: 12,
-                    borderRadius: 6,
-                    backgroundColor:
-                      currentPage === index ? "#2D5A3D" : "#C0C0C0",
+                    width: currentPage === index ? 20 : 10,
+                    height: 8,
+                    borderRadius: 4,
+                    backgroundColor: currentPage === index ? "#2D5A3D" : "#C0C0C0",
                     marginHorizontal: 4,
                   }}
                 />
@@ -205,9 +228,61 @@ export default function Story(): JSX.Element {
             >
               Le partage ouvrira vos apps installées (Instagram, Facebook, WhatsApp, etc.)
             </Text>
+
+            {/* Modal fullscreen pour l'image story */}
+            <Modal
+              animationType="fade"
+              transparent={true}
+              visible={modalVisible}
+              onRequestClose={closeModal}
+            >
+              <View style={styles.modalContainer}>
+                <Pressable style={styles.modalBackground} onPress={closeModal} />
+                {selectedStory && (
+                  <Image
+                    source={{ uri: selectedStory.image }}
+                    style={styles.fullscreenImage}
+                    resizeMode="contain"
+                  />
+                )}
+                <Pressable style={styles.closeButton} onPress={closeModal}>
+                  <Text style={styles.closeText}>✕</Text>
+                </Pressable>
+              </View>
+            </Modal>
           </View>
         )}
       </View>
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  modalContainer: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.95)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalBackground: {
+    ...StyleSheet.absoluteFillObject,
+  },
+  fullscreenImage: {
+    width: width,
+    height: height,
+  },
+  closeButton: {
+    position: "absolute",
+    top: 25,
+    right: 20,
+    backgroundColor: "#4E986D",
+    borderRadius: 25,
+    paddingHorizontal: 12,
+    paddingVertical: 4.54,
+  },
+  closeText: {
+    color: "#fff",
+    fontSize: 28,
+    fontFamily:"Archivo"
+  },
+});

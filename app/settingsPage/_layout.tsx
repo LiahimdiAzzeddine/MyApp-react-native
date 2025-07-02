@@ -5,12 +5,19 @@ export default function _layout() {
   return (
     <Stack
       screenOptions={({ route }) => ({
-        header: (props) => (
+        header: () => (
           <CustomHeader
-            color={(route.name === "inviteTico" ||route.name === "fqas"  ||route.name === "CGUConfidentiality") ? "#ffffff" : "#ffeda3"}
+            color={
+              route.name === "inviteTico" ||
+              route.name === "fqas" ||
+              route.name === "CGUConfidentiality"
+                ? "#ffffff"
+                : "#ffeda3"
+            }
             image="bf"
           />
         ),
+        animation: "fade", 
       })}
     >
       <Stack.Screen name="personalInfo" />

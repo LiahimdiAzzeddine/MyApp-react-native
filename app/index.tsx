@@ -58,6 +58,7 @@ export default function IndexPage() {
       alignItems: 'center',
       backgroundColor: '#fff'
     }} edges={['bottom', 'left', 'right','top']}>
+      
       <ActivityIndicator size="large" color="#007AFF" />
     </SafeAreaView>
   );

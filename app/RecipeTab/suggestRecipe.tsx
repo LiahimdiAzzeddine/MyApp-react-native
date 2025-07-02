@@ -13,51 +13,48 @@ import {
   Image,
   Modal,
   StyleSheet,
+  Platform,
+  Dimensions,
 } from "react-native";
 import { Picker } from '@react-native-picker/picker';
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import { Check } from 'lucide-react-native';
+import * as ImagePicker from "expo-image-picker";
 
 import useSuggestRecipe from "@/hooks/recipes/useSuggestRecipe";
 import { useRouter } from "expo-router";
 import RenderHeaderTab from "@/components/ui/renderHeader";
-import * as ImagePicker from "expo-image-picker";
-import { IngredientInput, RecipeValues } from "@/types/recipe";
+import { IngredientInput, RecipeValues, ValidationErrors, MappedRecipe } from "@/types/recipe";
 import RecipeDetails from "@/components/recipes/RecipeDetails";
 import RecipesHeader from "@/components/ui/recipeHeader";
-//import styles from "./styles";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Ionicons } from '@expo/vector-icons'; // ou autre lib pour icône
+import FormInput from "@/components/form/FormInput";
+import ButtonGroup from "@/components/form/ButtonGroup";
+import styles from "./styles";
 
+// Mock images - replace with actual Pexels URLs
 
 const backgroundImage = require("@/assets/images/recipes/background.png");
 const backgroundPicker = require("@/assets/images/recipes/pickerbg.png");
 
-interface ValidationErrors {
-  titre?: string;
-  nbperson?: string;
-  types?: string;
-  difficulty?: string;
-  prep_time?: string;
-  cook_time?: string;
-  rest_time?: string;
-  ingredients?: string;
-  steps?: string;
-  cgus?: string;
-}
+const DISH_TYPES = ["Entrée", "Plat", "Dessert", "Apéritif", "Boisson"];
+const DIFFICULTY_LEVELS = ["Facile", "Moyen", "Difficile"];
+const DIETARY_FILTERS = ["Végétarien", "Végan", "Sans lactose", "Sans gluten", "Sans oeufs"];
 
-const Suggestrecipe: React.FC = () => {
+const SuggestRecipe: React.FC = () => {
   const { handleSubmit, loading, error, success } = useSuggestRecipe();
   const [stepInput, setStepInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [acceptedCGUs, setAcceptedCGUs] = useState<boolean>(false);
-  const [unit, setUnit] = useState<'min' | 'hour'>('hour');
-
+  const [restTimeUnit, setRestTimeUnit] = useState<'min' | 'hour'>('hour');
   const [image, setImage] = useState<string | null>(null);
-  const [validationErrors, setValidationErrors] = useState<ValidationErrors>(
-    {}
-  );
+  const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
   const [modalVisible, setModalVisible] = useState(false);
-  const [selectedRecipe, setSelectedRecipe] = useState<any | null>(null);
+  const [selectedRecipe, setSelectedRecipe] = useState<MappedRecipe | null>(null);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const [screenHeight, setScreenHeight] = useState(Dimensions.get('window').height);
   const router = useRouter();
+  const insets = useSafeAreaInsets();
+
 
   const [values, setValues] = useState<RecipeValues>({
     titre: "",
@@ -70,7 +67,7 @@ const Suggestrecipe: React.FC = () => {
     rest_time: "",
     ingredients: [],
     steps: [],
-    image: image,
+    image: null,
   });
 
   const [ingredientInput, setIngredientInput] = useState<IngredientInput>({
@@ -79,12 +76,82 @@ const Suggestrecipe: React.FC = () => {
     unit: "",
   });
 
-  // Fonction de validation des données
-  const validateForm = (): boolean => {
+  // Enhanced keyboard handling for Android
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      (e) => {
+        setKeyboardHeight(e.endCoordinates.height);
+      }
+    );
+
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setKeyboardHeight(0);
+        // Force layout recalculation on Android
+        if (Platform.OS === 'android') {
+          // Multiple timeouts to ensure proper layout reset
+          setTimeout(() => setKeyboardHeight(0), 50);
+          setTimeout(() => setKeyboardHeight(0), 100);
+          setTimeout(() => setKeyboardHeight(0), 200);
+        }
+      }
+    );
+
+    // Listen for screen dimension changes
+    const subscription = Dimensions.addEventListener('change', ({ window }) => {
+      setScreenHeight(window.height);
+    });
+
+    return () => {
+      keyboardDidHideListener?.remove();
+      keyboardDidShowListener?.remove();
+      subscription?.remove();
+    };
+  }, []);
+
+  // Function to format validation errors for alert display
+  const formatErrorsForAlert = (errors: ValidationErrors): string => {
+    const errorMessages: string[] = [];
+
+    if (errors.titre) errorMessages.push(`• ${errors.titre}`);
+    if (errors.nbperson) errorMessages.push(`• ${errors.nbperson}`);
+    if (errors.types) errorMessages.push(`• ${errors.types}`);
+    if (errors.difficulty) errorMessages.push(`• ${errors.difficulty}`);
+    if (errors.prep_time) errorMessages.push(`• ${errors.prep_time}`);
+    if (errors.cook_time) errorMessages.push(`• ${errors.cook_time}`);
+    if (errors.rest_time) errorMessages.push(`• ${errors.rest_time}`);
+    if (errors.ingredients) errorMessages.push(`• ${errors.ingredients}`);
+    if (errors.steps) errorMessages.push(`• ${errors.steps}`);
+    if (errors.cgus) errorMessages.push(`• ${errors.cgus}`);
+
+    return errorMessages.join('\n');
+  };
+
+  // Function to format server errors for alert display
+  const formatServerErrorsForAlert = (serverErrors: any): string => {
+    const errorMessages: string[] = [];
+
+    if (serverErrors?.titre) errorMessages.push(`• Titre: ${serverErrors.titre.join(', ')}`);
+    if (serverErrors?.nbperson) errorMessages.push(`• Nombre de personnes: ${serverErrors.nbperson.join(', ')}`);
+    if (serverErrors?.type) errorMessages.push(`• Type de plat: ${serverErrors.type.join(', ')}`);
+    if (serverErrors?.difficulty) errorMessages.push(`• Difficulté: ${serverErrors.difficulty.join(', ')}`);
+    if (serverErrors?.prep_time) errorMessages.push(`• Temps de préparation: ${serverErrors.prep_time.join(', ')}`);
+    if (serverErrors?.cook_time) errorMessages.push(`• Temps de cuisson: ${serverErrors.cook_time.join(', ')}`);
+    if (serverErrors?.rest_time) errorMessages.push(`• Temps de repos: ${serverErrors.rest_time.join(', ')}`);
+    if (serverErrors?.ingredients) errorMessages.push(`• Ingrédients: ${serverErrors.ingredients.join(', ')}`);
+    if (serverErrors?.steps) errorMessages.push(`• Étapes: ${serverErrors.steps.join(', ')}`);
+    if (serverErrors?.filters) errorMessages.push(`• Régimes: ${serverErrors.filters.join(', ')}`);
+
+    return errorMessages.join('\n');
+  };
+
+  const validateForm = (cgu: boolean): { isValid: boolean; errors: ValidationErrors } => {
     const errors: ValidationErrors = {};
     let isValid = true;
 
-    // Validation du titre
+    // Title validation
     if (!values.titre.trim()) {
       errors.titre = "Le titre de la recette est obligatoire";
       isValid = false;
@@ -92,7 +159,8 @@ const Suggestrecipe: React.FC = () => {
       errors.titre = "Le titre doit contenir au moins 3 caractères";
       isValid = false;
     }
-    // Validation du nombre de personnes
+
+    // Number of people validation
     if (!values.nbperson.trim()) {
       errors.nbperson = "Le nombre de personnes est obligatoire";
       isValid = false;
@@ -100,70 +168,57 @@ const Suggestrecipe: React.FC = () => {
       errors.nbperson = "Le nombre de personnes doit être un nombre entre 1 et 50";
       isValid = false;
     }
-    if (!acceptedCGUs) {
+
+    // CGU validation
+    if (!acceptedCGUs && cgu) {
       errors.cgus = "Vous devez accepter les CGU.";
       isValid = false;
     }
 
-    // Validation du type de plat
+    // Dish type validation
     if (values.types.length === 0) {
       errors.types = "Veuillez sélectionner au moins un type de plat";
       isValid = false;
     }
 
-    // Validation de la difficulté
+    // Difficulty validation
     if (!values.difficulty) {
       errors.difficulty = "Veuillez sélectionner une difficulté";
       isValid = false;
     }
 
-    // Validation des temps (doivent être des nombres positifs)
-    if (
-      !values.prep_time ||
-      isNaN(Number(values.prep_time)) ||
-      Number(values.prep_time) <= 0
-    ) {
+    // Time validations
+    if (!values.prep_time || isNaN(Number(values.prep_time)) || Number(values.prep_time) <= 0) {
       errors.prep_time = "Le temps de préparation doit être un nombre positif";
       isValid = false;
     }
 
-    if (
-      !values.cook_time ||
-      isNaN(Number(values.cook_time)) ||
-      Number(values.cook_time) < 0
-    ) {
-      errors.cook_time =
-        "Le temps de cuisson doit être un nombre positif ou zéro";
+    if (!values.cook_time || isNaN(Number(values.cook_time)) || Number(values.cook_time) < 0) {
+      errors.cook_time = "Le temps de cuisson doit être un nombre positif ou zéro";
       isValid = false;
     }
 
-    if (
-      values.rest_time &&
-      (isNaN(Number(values.rest_time)) || Number(values.rest_time) < 0)
-    ) {
-      errors.rest_time =
-        "Le temps de repos doit être un nombre positif ou zéro";
+    if (values.rest_time && (isNaN(Number(values.rest_time)) || Number(values.rest_time) < 0)) {
+      errors.rest_time = "Le temps de repos doit être un nombre positif ou zéro";
       isValid = false;
     }
 
-    // Validation des ingrédients
+    // Ingredients validation
     if (values.ingredients.length === 0) {
       errors.ingredients = "Veuillez ajouter au moins un ingrédient";
       isValid = false;
     }
 
-    // Validation des étapes
+    // Steps validation
     if (values.steps.length === 0) {
       errors.steps = "Veuillez ajouter au moins une étape";
       isValid = false;
     }
 
     setValidationErrors(errors);
-    console.log("🚀 ~ validateForm ~ errors:", errors)
-    return isValid;
-  };
-    
 
+    return { isValid, errors };
+  };
 
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -178,8 +233,8 @@ const Suggestrecipe: React.FC = () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [1, 1], // Forcer un recadrage carré
-      quality: 1,
+      aspect: [1, 1],
+      quality: 0.8,
     });
 
     if (!result.canceled && result.assets.length > 0) {
@@ -188,66 +243,88 @@ const Suggestrecipe: React.FC = () => {
     }
   };
 
-  const visualiseRecette = () => {
-    if (validateForm()) {
-      const mappedRecipe = {
-        id: Date.now(), // ou un UUID si disponible
+  const visualizeRecipe = () => {
+    const { isValid, errors } = validateForm(false);
+    setValidationErrors(errors); // on met quand même à jour l’état pour affichage visuel dans le formulaire
+
+    if (isValid) {
+      const restTimeInMinutes = restTimeUnit === 'hour'
+        ? Number(values.rest_time) * 60
+        : Number(values.rest_time);
+
+      const mappedRecipe: MappedRecipe = {
+        id: Date.now(),
         title: values.titre,
         nbperson: Number(values.nbperson),
         difficulte: values.difficulty,
         timecook: values.cook_time + "min",
         timebake: values.prep_time + "min",
-        timerest: values.rest_time + "min",
+        timerest: restTimeInMinutes + "min",
         regimes: values.filters,
         ingredients: values.ingredients.map((i) => ({
           qt: i.quantity,
           unit: i.unit,
           name: i.name,
         })),
-
-        recette: values.steps.reduce(
-          (acc: { [key: string]: string }, step, index) => {
-            acc[`etape${index + 1}`] = step;
-            return acc;
-          },
-          {}
-        ),
-        image_name: image ? { uri: image } : null, // vide ou une valeur par défaut si besoin
+        recette: values.steps.reduce((acc: { [key: string]: string }, step, index) => {
+          acc[`etape${index + 1}`] = step;
+          return acc;
+        }, {}),
+        image_name: image ? { uri: image } : null,
       };
+
       setSelectedRecipe(mappedRecipe);
       setModalVisible(true);
     } else {
-      Alert.alert(
-        "Erreur de validation",
-        "Veuillez corriger les erreurs dans le formulaire.",
-        [{ text: "OK" }]
-      );
+      const errorMessage = formatErrorsForAlert(errors); // on utilise les erreurs retournées directement
+      if (errorMessage.trim() !== '') {
+        Alert.alert(
+          "Erreurs de validation",
+          `Veuillez corriger les erreurs suivantes :\n\n${errorMessage}`,
+          [{ text: "OK", style: "default" }]
+        );
+      }
     }
-
   };
 
-  const handleFormSubmit = async () => {
-    // Réinitialiser les erreurs de validation
-    setValidationErrors({});
 
-    // Valider le formulaire
-    if (!validateForm()) {
+  const handleFormSubmit = async () => {
+    setValidationErrors({});
+    const { isValid, errors } = validateForm(true);
+
+    if (!isValid) {
+      const errorMessage = formatErrorsForAlert(validationErrors);
       Alert.alert(
-        "Erreur de validation",
-        "Veuillez corriger les erreurs dans le formulaire avant de soumettre.",
-        [{ text: "OK" }]
+        "Erreurs de validation",
+        `Veuillez corriger les erreurs suivantes avant de soumettre :\n\n${errorMessage}`,
+        [{ text: "OK", style: "default" }]
       );
       return;
     }
 
-    // Mettre à jour l'image dans les valeurs
     const finalValues = { ...values };
+    if (restTimeUnit === 'hour' && values.rest_time) {
+      finalValues.rest_time = (Number(values.rest_time) * 60).toString();
+    }
 
     setIsLoading(true);
     try {
       await handleSubmit(finalValues);
     } catch (err) {
-      Alert.alert("Erreur", "Une erreur est survenue lors de la soumission.");
+      let errorMessage = "Une erreur inattendue est survenue lors de la soumission.";
+
+      if (error) {
+        const serverErrorMessage = formatServerErrorsForAlert(error);
+        if (serverErrorMessage) {
+          errorMessage = `Erreurs du serveur :\n\n${serverErrorMessage}`;
+        }
+      }
+
+      Alert.alert(
+        "Erreur de soumission",
+        errorMessage,
+        [{ text: "OK", style: "default" }]
+      );
     } finally {
       setTimeout(() => {
         setIsLoading(false);
@@ -255,22 +332,29 @@ const Suggestrecipe: React.FC = () => {
     }
   };
 
+  // Show server errors in alert when they occur
+  useEffect(() => {
+    if (error && Object.keys(error).length > 0) {
+      const serverErrorMessage = formatServerErrorsForAlert(error);
+      if (serverErrorMessage) {
+        Alert.alert(
+          "Erreurs de validation du serveur",
+          `Veuillez corriger les erreurs suivantes :\n\n${serverErrorMessage}`,
+          [{ text: "OK", style: "default" }]
+        );
+      }
+    }
+  }, [error]);
+
   const handleInputChange = (name: keyof RecipeValues, value: string) => {
     setValues((prevValues) => ({ ...prevValues, [name]: value }));
-    // Effacer l'erreur de validation pour ce champ
     if (validationErrors[name as keyof ValidationErrors]) {
       setValidationErrors((prev) => ({ ...prev, [name]: undefined }));
     }
   };
 
-  const handleIngredientChange = (
-    name: keyof IngredientInput,
-    value: string
-  ) => {
-    setIngredientInput((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+  const handleIngredientChange = (name: keyof IngredientInput, value: string) => {
+    setIngredientInput((prev) => ({ ...prev, [name]: value }));
   };
 
   const addIngredient = () => {
@@ -288,36 +372,38 @@ const Suggestrecipe: React.FC = () => {
         ],
       }));
       setIngredientInput({ name: "", quantity: "", unit: "" });
-      // Effacer l'erreur de validation pour les ingrédients
       if (validationErrors.ingredients) {
         setValidationErrors((prev) => ({ ...prev, ingredients: undefined }));
       }
     } else {
       Alert.alert(
-        "Erreur",
-        "Veuillez remplir au moins le nom et la quantité de l'ingrédient."
+        "Ingrédient incomplet",
+        "Veuillez remplir au moins le nom et la quantité de l'ingrédient.",
+        [{ text: "OK", style: "default" }]
       );
     }
   };
 
+
   const removeIngredient = (indexToRemove: number) => {
-    Alert.alert("Attention", "Supprimer l'ingrédient ?", [
-      {
-        text: "Annuler",
-        style: "cancel",
-      },
-      {
-        text: "Supprimer",
-        onPress: () => {
-          setValues((prevValues) => ({
-            ...prevValues,
-            ingredients: prevValues.ingredients.filter(
-              (_, index) => index !== indexToRemove
-            ),
-          }));
+    const ingredientToRemove = values.ingredients[indexToRemove];
+    Alert.alert(
+      "Supprimer l'ingrédient",
+      `Êtes-vous sûr de vouloir supprimer "${ingredientToRemove.quantity} ${ingredientToRemove.unit} ${ingredientToRemove.name}" ?`,
+      [
+        { text: "Annuler", style: "cancel" },
+        {
+          text: "Supprimer",
+          style: "destructive",
+          onPress: () => {
+            setValues((prevValues) => ({
+              ...prevValues,
+              ingredients: prevValues.ingredients.filter((_, index) => index !== indexToRemove),
+            }));
+          },
         },
-      },
-    ]);
+      ]
+    );
   };
 
   const addStep = () => {
@@ -327,42 +413,39 @@ const Suggestrecipe: React.FC = () => {
         steps: [...prevValues.steps, stepInput.trim()],
       }));
       setStepInput("");
-      // Effacer l'erreur de validation pour les étapes
       if (validationErrors.steps) {
         setValidationErrors((prev) => ({ ...prev, steps: undefined }));
       }
     } else {
-      Alert.alert("Erreur", "Veuillez saisir une étape valide.");
+      Alert.alert(
+        "Étape vide",
+        "Veuillez saisir une étape valide avant de l'ajouter.",
+        [{ text: "OK", style: "default" }]
+      );
     }
   };
 
   const removeStep = (indexToRemove: number) => {
-    Alert.alert("Attention", "Supprimer cette étape ?", [
-      {
-        text: "Annuler",
-        style: "cancel",
-      },
-      {
-        text: "Supprimer",
-        onPress: () => {
-          setValues((prevValues) => ({
-            ...prevValues,
-            steps: prevValues.steps.filter(
-              (_, index) => index !== indexToRemove
-            ),
-          }));
-        },
-      },
-    ]);
-  };
+    const stepToRemove = values.steps[indexToRemove];
+    const truncatedStep = stepToRemove.length > 50 ? stepToRemove.substring(0, 50) + "..." : stepToRemove;
 
-  const addFilter = (filter: string) => {
-    setValues((prevValues) => {
-      const filters = prevValues.filters.includes(filter)
-        ? prevValues.filters.filter((f) => f !== filter)
-        : [...prevValues.filters, filter];
-      return { ...prevValues, filters };
-    });
+    Alert.alert(
+      "Supprimer l'étape",
+      `Êtes-vous sûr de vouloir supprimer l'étape ${indexToRemove + 1} ?\n\n"${truncatedStep}"`,
+      [
+        { text: "Annuler", style: "cancel" },
+        {
+          text: "Supprimer",
+          style: "destructive",
+          onPress: () => {
+            setValues((prevValues) => ({
+              ...prevValues,
+              steps: prevValues.steps.filter((_, index) => index !== indexToRemove),
+            }));
+          },
+        },
+      ]
+    );
   };
 
   const handleTypeToggle = (type: string) => {
@@ -372,7 +455,6 @@ const Suggestrecipe: React.FC = () => {
         return { ...prevValues, types: types.filter((t) => t !== type) };
       } else {
         const newTypes = [...types, type];
-        // Effacer l'erreur de validation pour les types
         if (validationErrors.types && newTypes.length > 0) {
           setValidationErrors((prev) => ({ ...prev, types: undefined }));
         }
@@ -381,22 +463,39 @@ const Suggestrecipe: React.FC = () => {
     });
   };
 
-  const handleDifficultyChange = (difficulty: string) => {
-    handleInputChange("difficulty", difficulty);
-    // Effacer l'erreur de validation pour la difficulté
-    if (validationErrors.difficulty) {
+  const handleDifficultyToggle = (difficulty: string) => {
+    const newDifficulty = values.difficulty === difficulty ? "" : difficulty;
+    handleInputChange("difficulty", newDifficulty);
+    if (validationErrors.difficulty && newDifficulty) {
       setValidationErrors((prev) => ({ ...prev, difficulty: undefined }));
     }
   };
 
-  // Fonction utilitaire pour convertir les minutes en heures et minutes
-  function formatTime(totalMinutes: number): string {
+  const handleFilterToggle = (filter: string) => {
+    setValues((prevValues) => {
+      const filters = prevValues.filters.includes(filter)
+        ? prevValues.filters.filter((f) => f !== filter)
+        : [...prevValues.filters, filter];
+      return { ...prevValues, filters };
+    });
+  };
+
+  const formatTime = (totalMinutes: number): string => {
     const hours = Math.floor(totalMinutes / 60);
     const minutes = totalMinutes % 60;
     return hours > 0
       ? `${hours}h ${minutes > 0 ? `${minutes}min` : ""}`
       : `${minutes}min`;
-  }
+  };
+
+  const getTotalTime = (): number => {
+    const prepTime = Number(values.prep_time) || 0;
+    const cookTime = Number(values.cook_time) || 0;
+    const restTime = Number(values.rest_time) || 0;
+    const restTimeInMinutes = restTimeUnit === 'hour' ? restTime * 60 : restTime;
+    return prepTime + cookTime + restTimeInMinutes;
+  };
+
   useEffect(() => {
     if (success) {
       setValues({
@@ -413,301 +512,172 @@ const Suggestrecipe: React.FC = () => {
         image: null,
       });
       setImage(null);
-
-      Alert.alert("Succès", "Votre recette a été soumise avec succès !");
-      //router.replace("/recipetab/recipes")
+      setAcceptedCGUs(false);
+      Alert.alert(
+        "Succès",
+        "Votre recette a été soumise avec succès ! Elle sera examinée par notre équipe avant publication.",
+        [{ text: "Parfait !", style: "default" }]
+      );
     }
-  }, [success])
+  }, [success]);
+
+  // Calculate dynamic container height to prevent black space
+  const containerHeight = Platform.OS === 'android' && keyboardHeight > 0
+    ? screenHeight - keyboardHeight
+    : screenHeight;
 
   return (
-    <>
+    <SafeAreaView style={[styles.outerContainer, { height: containerHeight }]} edges={['bottom']}>
       <KeyboardAvoidingView
-        style={{ flex: 1, backgroundColor: "#fff" }}
-        behavior={"padding"}
+        style={styles.container}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 100 : insets.bottom}
       >
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <ScrollView style={styles.container}>
+        {/* <TouchableWithoutFeedback onPress={Keyboard.dismiss} > */}
+        <View style={styles.innerContainer}>
+          <ScrollView
+            style={styles.scrollView}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={[
+              styles.scrollContent,
+              // Dynamic padding based on keyboard state
+              Platform.OS === 'android' && keyboardHeight > 0 && {
+                paddingBottom: Math.max(20, keyboardHeight * 0.1)
+              }
+            ]}
+            keyboardShouldPersistTaps="handled"
+            removeClippedSubviews={false}
+            // Force scroll view to maintain proper height
+            scrollEventThrottle={16}
+
+          >
             <RenderHeaderTab
               title="Proposer une recette"
               titleColor="#c32721"
               backgroundImage={backgroundImage}
             />
+
             <View style={styles.formContainer}>
-              {/* Titre de la recette */}
+              <FormInput
+                label="Titre de la recette"
+                value={values.titre}
+                onChangeText={(text) => handleInputChange("titre", text)}
+                placeholder="Titre de la recette"
+                error={error?.titre?.[0] || validationErrors.titre}
+                required
+              />
+
+              <FormInput
+                label="Pour combien de personnes ?"
+                value={values.nbperson}
+                onChangeText={(text) => handleInputChange("nbperson", text)}
+                placeholder="Nombre de personnes"
+                keyboardType="numeric"
+                error={error?.nbperson?.[0] || validationErrors.nbperson}
+                required
+              />
+
               <View style={styles.inputGroup}>
-                <Text className="text-base" style={styles.label}>
-                  Titre de la recette :
-                </Text>
-                <TextInput
-                  style={[
-                    styles.input,
-                    error?.titre || validationErrors.titre
-                      ? styles.inputError
-                      : null,
-                  ]}
-                  value={values.titre}
-                  onChangeText={(text) => handleInputChange("titre", text)}
-                  placeholder="Titre de la recette"
-                  placeholderTextColor="#999"
+                <Text style={styles.label}>Type de plats <Text style={styles.required}>*</Text></Text>
+                <ButtonGroup
+                  options={DISH_TYPES}
+                  selectedValues={values.types}
+                  onToggle={handleTypeToggle}
+                  error={error?.type?.[0] || validationErrors.types}
                 />
-                {(error?.titre || validationErrors.titre) && (
-                  <Text style={styles.errorText}>
-                    {error?.titre?.[0] || validationErrors.titre}
-                  </Text>
-                )}
               </View>
-              {/* Nombre des personnes */}
+
               <View style={styles.inputGroup}>
-                <Text className="text-base" style={styles.label}>
-                  Pour combien de personnes ?
-                </Text>
-                <TextInput
-                  style={[
-                    styles.input,
-                    error?.nbperson || validationErrors.nbperson
-                      ? styles.inputError
-                      : null,
-                  ]}
-                  value={values.nbperson}
-                  onChangeText={(text) => handleInputChange("nbperson", text)}
-                  placeholder="Nombre de personnes"
-                  placeholderTextColor="#999"
-                  keyboardType="numeric"
+                <Text style={styles.label}>Difficulté <Text style={styles.required}>*</Text></Text>
+                <ButtonGroup
+                  options={DIFFICULTY_LEVELS}
+                  selectedValues={values.difficulty ? [values.difficulty] : []}
+                  onToggle={handleDifficultyToggle}
+                  multiSelect={false}
+                  error={error?.difficulty?.[0] || validationErrors.difficulty}
                 />
-                {(error?.nbperson || validationErrors.nbperson) && (
+              </View>
+
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>Régimes</Text>
+                <ButtonGroup
+                  options={DIETARY_FILTERS}
+                  selectedValues={values.filters}
+                  onToggle={handleFilterToggle}
+                  error={error?.filters?.[0]}
+                />
+              </View>
+
+              <FormInput
+                label="Temps de préparation (en min)"
+                value={values.prep_time}
+                onChangeText={(text) => handleInputChange("prep_time", text)}
+                placeholder="Temps de préparation"
+                keyboardType="numeric"
+                error={error?.prep_time?.[0] || validationErrors.prep_time}
+                required
+              />
+
+              <FormInput
+                label="Temps de cuisson (en min)"
+                value={values.cook_time}
+                onChangeText={(text) => handleInputChange("cook_time", text)}
+                placeholder="Temps de cuisson"
+                keyboardType="numeric"
+                error={error?.cook_time?.[0] || validationErrors.cook_time}
+                required
+              />
+
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>Temps de repos</Text>
+                <View style={styles.timeInputContainer}>
+                  <TextInput
+                    style={[
+                      styles.timeInput,
+                      (error?.rest_time || validationErrors.rest_time) ? styles.inputError : null,
+                    ]}
+                    value={values.rest_time}
+                    onChangeText={(text) => handleInputChange("rest_time", text)}
+                    placeholder="Temps de repos"
+                    placeholderTextColor="#999"
+                    keyboardType="numeric"
+                  />
+                  <View style={styles.pickerContainer}>
+                    <Picker
+                      selectedValue={restTimeUnit}
+                      style={styles.picker}
+                      onValueChange={(itemValue) => setRestTimeUnit(itemValue)}
+                    >
+                      <Picker.Item label="Heures" value="hour" style={{ color: "#666", }} />
+                      <Picker.Item label="Minutes" value="min" style={{ color: "#666", }} />
+                    </Picker>
+                  </View>
+                </View>
+                {(error?.rest_time || validationErrors.rest_time) && (
                   <Text style={styles.errorText}>
-                    {error?.nbperson?.[0] || validationErrors.nbperson}
+                    {error?.rest_time?.[0] || validationErrors.rest_time}
                   </Text>
                 )}
               </View>
 
-              {/* Type de plats */}
               <View style={styles.inputGroup}>
-                <Text style={styles.label}>Type de plats :</Text>
-                <View style={styles.buttonGroup}>
-                  {["Entrée", "Plat", "Dessert", "Apéritif", "Boisson"].map(
-                    (type) => (
-                      <TouchableOpacity
-                        key={type}
-                        onPress={() => handleTypeToggle(type)}
-                        style={[
-                          styles.filterButton,
-                          values.types.includes(type)
-                            ? styles.activeButton
-                            : null,
-                        ]}
-                      >
-                        <Text
-                          style={[
-                            styles.buttonText,
-                            values.types.includes(type)
-                              ? styles.activeButtonText
-                              : null,
-                          ]}
-                        >
-                          {type}
-                        </Text>
-                      </TouchableOpacity>
-                    )
+                <Text style={styles.label}>
+                  Temps total : {getTotalTime() > 0 && (
+                    <Text style={styles.boldText}>{formatTime(getTotalTime())}</Text>
                   )}
-                </View>
-                {(error?.type || validationErrors.types) && (
-                  <Text style={styles.errorText}>
-                    {error?.type?.[0] || validationErrors.types}
-                  </Text>
-                )}
-              </View>
-
-              {/* Difficulté */}
-              <View style={styles.inputGroup}>
-                <Text style={styles.label}>Difficulté :</Text>
-                <View style={styles.buttonGroup}>
-                  {["Facile", "Moyen", "Difficile"].map((difficulty) => (
-                    <TouchableOpacity
-                      key={difficulty}
-                      onPress={() => handleDifficultyChange(difficulty)}
-                      style={[
-                        styles.filterButton,
-                        values.difficulty === difficulty
-                          ? styles.activeButton
-                          : null,
-                      ]}
-                    >
-                      <Text
-                        style={[
-                          styles.buttonText,
-                          values.difficulty === difficulty
-                            ? styles.activeButtonText
-                            : null,
-                        ]}
-                      >
-                        {difficulty}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-                {(error?.difficulty || validationErrors.difficulty) && (
-                  <Text style={styles.errorText}>
-                    {error?.difficulty?.[0] || validationErrors.difficulty}
-                  </Text>
-                )}
-              </View>
-
-              {/* Filtres */}
-              <View style={styles.inputGroup}>
-                <Text style={styles.label}>Régimes :</Text>
-                <View style={styles.buttonGroup}>
-                  {[
-                    "Végétarien",
-                    "Végan",
-                    "Sans lactose",
-                    "Sans gluten",
-                    "Sans oeufs",
-                  ].map((filter) => (
-                    <TouchableOpacity
-                      key={filter}
-                      onPress={() => addFilter(filter)}
-                      style={[
-                        styles.filterButton,
-                        values.filters.includes(filter)
-                          ? styles.activeButton
-                          : null,
-                      ]}
-                    >
-                      <Text
-                        style={[
-                          styles.buttonText,
-                          values.filters.includes(filter)
-                            ? styles.activeButtonText
-                            : null,
-                        ]}
-                      >
-                        {filter}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-                {error?.filters && (
-                  <Text style={styles.errorText}>{error.filters[0]}</Text>
-                )}
-              </View>
-
-              {/* Temps de préparation */}
-              <View style={styles.inputGroup}>
-                <Text style={styles.label}>
-                  Temps de préparation (en min) :
-                </Text>
-                <TextInput
-                  style={[
-                    styles.input,
-                    error?.prep_time || validationErrors.prep_time
-                      ? styles.inputError
-                      : null,
-                  ]}
-                  value={values.prep_time}
-                  onChangeText={(text) => handleInputChange("prep_time", text)}
-                  placeholder="Temps de préparation"
-                  placeholderTextColor="#999"
-                  keyboardType="numeric"
-                />
-                {(error?.prep_time || validationErrors.prep_time) && (
-                  <Text style={styles.errorText}>
-                    {error?.prep_time?.[0] || validationErrors.prep_time}
-                  </Text>
-                )}
-              </View>
-
-              {/* Temps de cuisson */}
-              <View style={styles.inputGroup}>
-                <Text style={styles.label}>Temps de cuisson (en min) :</Text>
-                <TextInput
-                  style={[
-                    styles.input,
-                    error?.cook_time || validationErrors.cook_time
-                      ? styles.inputError
-                      : null,
-                  ]}
-                  value={values.cook_time}
-                  onChangeText={(text) => handleInputChange("cook_time", text)}
-                  placeholder="Temps de cuisson"
-                  placeholderTextColor="#999"
-                  keyboardType="numeric"
-                />
-                {(error?.cook_time || validationErrors.cook_time) && (
-                  <Text style={styles.errorText}>
-                    {error?.cook_time?.[0] || validationErrors.cook_time}
-                  </Text>
-                )}
-              </View>
-
-              {/* Temps de repos */}
-              <View style={styles.inputGroup}>
-  <Text style={styles.label}>Temps de repos :</Text>
-  <View style={{ flexDirection: "row", alignItems: "center" }}>
-    <TextInput
-      style={[
-        styles.input,
-        { flex: 1 },
-        error?.rest_time || validationErrors.rest_time ? styles.inputError : null,
-      ]}
-      value={values.rest_time}
-      onChangeText={(text) => handleInputChange("rest_time", text)}
-      placeholder="Temps de repos"
-      placeholderTextColor="#999"
-      keyboardType="numeric"
-    />
-
-    <Picker
-      selectedValue={unit}
-      style={{ height: 50, width: 120 }}
-      onValueChange={(itemValue) => setUnit(itemValue)}
-    >
-      <Picker.Item label="Heure(s)" value="hour" />
-      <Picker.Item label="Minute(s)" value="min" />
-    </Picker>
-  </View>
-
-  {(error?.rest_time || validationErrors.rest_time) && (
-    <Text style={styles.errorText}>
-      {error?.rest_time?.[0] || validationErrors.rest_time}
-    </Text>
-  )}
-</View>
-
-
-              {/* Temps total */}
-              <View style={styles.inputGroup}>
-                <Text style={styles.label}>
-                  Temps total :{" "}
-                  {Number(values.cook_time) +
-                    Number(values.prep_time) +
-                    Number(values.rest_time) >
-                    0 && (
-                      <Text style={styles.boldText}>
-                        {formatTime(
-                          Number(values.cook_time) +
-                          Number(values.prep_time) +
-                          Number(values.rest_time)
-                        )}
-                      </Text>
-                    )}
                 </Text>
                 <Text style={styles.infoText}>
-                  Temps total calculé à partir du temps de cuisson, préparation
-                  et repos.
+                  Temps total calculé à partir du temps de cuisson, préparation et repos.
                 </Text>
               </View>
 
-              {/* Ingrédients */}
               <View style={styles.inputGroup}>
-                <Text style={styles.label}>Ingrédients :</Text>
+                <Text style={styles.label}>Ingrédients <Text style={styles.required}>*</Text></Text>
                 <View style={styles.ingredientInputGroup}>
                   <TextInput
                     style={[styles.ingredientInput, { flex: 1 }]}
                     value={ingredientInput.quantity}
-                    onChangeText={(text) =>
-                      handleIngredientChange("quantity", text)
-                    }
+                    onChangeText={(text) => handleIngredientChange("quantity", text)}
                     placeholder="Quantité"
                     placeholderTextColor="#999"
                     keyboardType="numeric"
@@ -715,18 +685,14 @@ const Suggestrecipe: React.FC = () => {
                   <TextInput
                     style={[styles.ingredientInput, { flex: 1 }]}
                     value={ingredientInput.unit}
-                    onChangeText={(text) =>
-                      handleIngredientChange("unit", text)
-                    }
+                    onChangeText={(text) => handleIngredientChange("unit", text)}
                     placeholder="Unité"
                     placeholderTextColor="#999"
                   />
                   <TextInput
                     style={[styles.ingredientInput, { flex: 2 }]}
                     value={ingredientInput.name}
-                    onChangeText={(text) =>
-                      handleIngredientChange("name", text)
-                    }
+                    onChangeText={(text) => handleIngredientChange("name", text)}
                     placeholder="Nom de l'ingrédient"
                     placeholderTextColor="#999"
                   />
@@ -736,21 +702,15 @@ const Suggestrecipe: React.FC = () => {
                     {error?.ingredients?.[0] || validationErrors.ingredients}
                   </Text>
                 )}
-                <TouchableOpacity
-                  onPress={addIngredient}
-                  style={styles.addButton}
-                >
-                  <Text style={styles.addButtonText}>
-                    + ajouter un ingrédient
-                  </Text>
+                <TouchableOpacity onPress={addIngredient} style={styles.addButton}>
+                  <Text style={styles.addButtonText}>+ Ajouter un ingrédient</Text>
                 </TouchableOpacity>
 
                 <View style={styles.tagsContainer}>
                   {values.ingredients.map((ingredient, index) => (
                     <View key={index} style={styles.tag}>
                       <Text style={styles.tagText}>
-                        {ingredient.quantity}
-                        {ingredient.unit} - {ingredient.name}
+                        {ingredient.quantity} {ingredient.unit} {ingredient.name}
                       </Text>
                       <TouchableOpacity
                         onPress={() => removeIngredient(index)}
@@ -763,22 +723,20 @@ const Suggestrecipe: React.FC = () => {
                 </View>
               </View>
 
-              {/* Étapes */}
               <View style={styles.inputGroup}>
-                <Text style={styles.label}>Étapes :</Text>
+                <Text style={styles.label}>Étapes <Text style={styles.required}>*</Text></Text>
                 <TextInput
                   style={[
                     styles.input,
                     styles.multilineInput,
-                    error?.steps || validationErrors.steps
-                      ? styles.inputError
-                      : null,
+                    (error?.steps || validationErrors.steps) ? styles.inputError : null,
                   ]}
                   value={stepInput}
                   onChangeText={setStepInput}
-                  placeholder="Étape"
+                  placeholder="Décrivez une étape de la recette"
                   placeholderTextColor="#999"
                   multiline
+                  textAlignVertical="top"
                 />
                 {(error?.steps || validationErrors.steps) && (
                   <Text style={styles.errorText}>
@@ -786,18 +744,17 @@ const Suggestrecipe: React.FC = () => {
                   </Text>
                 )}
                 <TouchableOpacity onPress={addStep} style={styles.addButton}>
-                  <Text style={styles.addButtonText}>+ ajouter une étape</Text>
+                  <Text style={styles.addButtonText}>+ Ajouter une étape</Text>
                 </TouchableOpacity>
 
                 <View style={styles.tagsContainer}>
                   {values.steps.map((step, index) => (
-                    <View key={index} style={styles.tag}>
-                      <Text style={styles.tagText}>
-                        Étape {index + 1}: {step}
-                      </Text>
+                    <View key={index} style={styles.stepTag}>
+                      <Text style={styles.stepNumber}>Étape {index + 1}</Text>
+                      <Text style={styles.stepText}>{step}</Text>
                       <TouchableOpacity
                         onPress={() => removeStep(index)}
-                        style={styles.removeTagButton}
+                        style={styles.removeTagButtonStep}
                       >
                         <Text style={styles.removeTagButtonText}>×</Text>
                       </TouchableOpacity>
@@ -807,34 +764,28 @@ const Suggestrecipe: React.FC = () => {
               </View>
 
               <View style={styles.submitContainer}>
-                <View style={styles.containerImg}>
+                <View style={styles.imageContainer}>
                   {image ? (
-                    <Image
-                      source={{ uri: image }}
-                      style={styles.imagePreview}
-                    />
+                    <Image source={{ uri: image }} style={styles.imagePreview} />
                   ) : (
                     <TouchableOpacity onPress={pickImage}>
-                      <View style={styles.placeholder}>
-                        <Image
-                          source={backgroundPicker}
-                          style={{
-                            width: "100%",
-                            height: "100%",
-                            borderRadius: 15,
-                          }}
-                        />
+                      <View style={styles.imagePlaceholder}>
+                        <Image source={backgroundPicker} style={styles.placeholderImage} />
                       </View>
                     </TouchableOpacity>
                   )}
-                  <TouchableOpacity onPress={pickImage} style={styles.button}>
-                    <Text style={styles.addButtonText}>Ajouter une photo</Text>
+                  <TouchableOpacity onPress={pickImage} style={styles.imageButton}>
+                    <Text style={styles.addButtonText}>
+                      {image ? "Changer la photo" : "Ajouter une photo"}
+                    </Text>
                   </TouchableOpacity>
-
                 </View>
-                <View style={styles.containerg}>
-                  <Text className="text-custom-gray" style={{ fontFamily: "ArchivoLight" }}>Vous n’avez pas de photo ?</Text>
-                  <Text className="text-custom-gray text-center" style={{ fontFamily: "ArchivoLight" }}>Pas d’inquiétude on se charge du shooting pour vous !</Text>
+
+                <View style={styles.cguContainer}>
+                  <Text style={styles.noPhotoText}>Vous n'avez pas de photo ?</Text>
+                  <Text style={styles.noPhotoSubtext}>
+                    Pas d'inquiétude on se charge du shooting pour vous !
+                  </Text>
 
                   <TouchableOpacity
                     onPress={() => setAcceptedCGUs(!acceptedCGUs)}
@@ -844,11 +795,9 @@ const Suggestrecipe: React.FC = () => {
                     style={styles.checkboxContainer}
                   >
                     <View style={[styles.checkbox, acceptedCGUs && styles.checkedCheckbox]}>
-                      {acceptedCGUs && (
-                        <Ionicons name="checkmark" size={16} color="#fff" />
-                      )}
+                      {acceptedCGUs && <Check size={16} color="#fff" />}
                     </View>
-                    <Text style={styles.labelText}>
+                    <Text style={styles.cguText}>
                       J'accepte les{" "}
                       <Text
                         onPress={() => router.push('/settingsPage/CGUConfidentiality')}
@@ -858,272 +807,55 @@ const Suggestrecipe: React.FC = () => {
                       </Text>
                     </Text>
                   </TouchableOpacity>
-                  {(error?.nbperson || validationErrors.cgus) && (
-                    <Text style={styles.errorTextcgu}>
-                      {error?.nbperson || validationErrors.cgus}
-                    </Text>
+                  {validationErrors.cgus && (
+                    <Text style={styles.errorText}>{validationErrors.cgus}</Text>
                   )}
-
                 </View>
+
                 <TouchableOpacity
-                  onPress={visualiseRecette}
+                  onPress={visualizeRecipe}
                   style={styles.visualizeButton}
-                  className="bg-custom-red rounded-xl py-3 px-4 mb-4 m-auto"
+                  disabled={loading || isLoading}
                 >
-                  <Text className="text-base text-white ArchivoLight">
-                    Je visualise ma recette
-                  </Text>
+                  <Text style={styles.visualizeButtonText}>Je visualise ma recette</Text>
                 </TouchableOpacity>
+
                 <TouchableOpacity
                   onPress={handleFormSubmit}
                   style={styles.submitButton}
                   disabled={loading || isLoading}
-                  className="rounded-xl py-3 px-4 mb-6 m-auto"
                 >
-                  <Text style={styles.submitButtonText} className="text-base">
+                  <Text style={styles.submitButtonText}>
                     {loading || isLoading ? "Envoi..." : "Envoyer ma recette"}
                   </Text>
                 </TouchableOpacity>
               </View>
             </View>
-            {isLoading && <ActivityIndicator size="large" color="#2196F3" />}
+
+            {(loading || isLoading) && (
+              <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#D32F2F" />
+              </View>
+            )}
           </ScrollView>
-        </TouchableWithoutFeedback>
+        </View>
+        {/* </TouchableWithoutFeedback> */}
       </KeyboardAvoidingView>
+
       <Modal
-        animationType="slide"
+        animationType="fade"
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
       >
         {selectedRecipe && (
-          <SafeAreaView style={{ flex: 1, backgroundColor: "#fad4ce" }} edges={['top', 'left', 'right']}>
+          <SafeAreaView style={styles.modalContainer} edges={['top', 'left', 'right']}>
             <RecipesHeader goToPage={() => setModalVisible(false)} />
             <RecipeDetails recipe={selectedRecipe} custom={true} />
           </SafeAreaView>
         )}
-
       </Modal>
-    </>
+    </SafeAreaView>
   );
 };
-const styles = StyleSheet.create({
-  containerImg: {
-    alignItems: "center",
-  },
-  containerg: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingVertical: 15,
-    gap: 2,
-  },
-  checkboxContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: "center",
-    gap: 8,
-    paddingTop: 15
-  },
-  checkbox: {
-    width: 22,
-    height: 22,
-    borderWidth: 1,
-    borderColor: '#aaa',
-    borderRadius: 4,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-  },
-  checkedCheckbox: {
-    backgroundColor: "#B71C1C",
-    borderColor: "#B71C1C",
-  },
-  labelText: {
-    fontSize: 14,
-    color: "#B71C1C",
 
-  },
-  linkText: {
-    color: "#B71C1C",
-    textDecorationLine: 'underline',
-  },
-
-  placeholder: {
-    width: 160,
-    height: 140,
-    borderWidth: 1,
-    borderColor: "#f3cfcf",
-    borderRadius: 10,
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  imagePreview: {
-    width: 160,
-    height: 140,
-    borderRadius: 10,
-    marginBottom: 20,
-  },
-
-  container: {
-    flex: 1,
-    padding: 18,
-    backgroundColor: "#fff",
-  },
-
-  formContainer: {
-    flex: 1,
-    marginBottom: 20,
-  },
-  inputGroup: {
-    marginBottom: 16,
-  },
-  label: {
-    marginBottom: 8,
-    color: "#D32F2F",
-    fontFamily: "ArchivoLight",
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#FFCDD2", // custom-red-clear equivalent
-    borderRadius: 12,
-    padding: 12,
-    fontFamily: "ArchivoLight",
-    color: "#333",
-  },
-  multilineInput: {
-    minHeight: 80,
-    textAlignVertical: "top",
-  },
-  inputError: {
-    borderColor: "#B71C1C", // dark red for error
-  },
-  errorText: {
-    color: "#B71C1C", // dark red for error
-    fontSize: 14,
-    marginTop: 4,
-    fontFamily: "ArchivoLight",
-  },
-  errorTextcgu: {
-    color: "#B71C1C", // dark red for error
-    fontSize: 14,
-    fontFamily: "ArchivoLight",
-  },
-  buttonGroup: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    fontFamily: "ArchivoLight",
-  },
-  filterButton: {
-    borderWidth: 1,
-    borderColor: "#D32F2F",
-    borderRadius: 20,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    marginRight: 8,
-    marginBottom: 8,
-    backgroundColor: "#FFF",
-    fontFamily: "ArchivoLight",
-  },
-  activeButton: {
-    backgroundColor: "#D32F2F",
-    borderColor: "#D32F2F",
-  },
-  buttonText: {
-    color: "#D32F2F",
-    fontFamily: "ArchivoLight",
-  },
-  activeButtonText: {
-    color: "#FFF",
-  },
-  boldText: {
-    fontWeight: "bold",
-  },
-  infoText: {
-    color: "#666",
-    fontSize: 14,
-    padding: 10,
-    fontFamily: "ArchivoLight",
-  },
-  ingredientInputGroup: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 8,
-  },
-  ingredientInput: {
-    borderWidth: 1,
-    borderColor: "#FFCDD2",
-    borderRadius: 12,
-    padding: 12,
-    marginRight: 8,
-  },
-  addButton: {
-    backgroundColor: "#D32F2F",
-    borderRadius: 20,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    alignSelf: "flex-start",
-    marginTop: 8,
-  },
-  button: {
-    backgroundColor: "#D32F2F", // rouge
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-  },
-  addButtonText: {
-    color: "#FFF",
-    fontFamily: "ArchivoLight",
-  },
-  tagsContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    marginTop: 12,
-  },
-  tag: {
-    backgroundColor: "#FFF",
-    borderWidth: 1,
-    borderColor: "#D32F2F",
-    borderRadius: 20,
-    paddingVertical: 6,
-    paddingHorizontal: 6,
-    flexDirection: "row",
-    alignItems: "center",
-    marginRight: 8,
-    marginBottom: 8,
-  },
-  tagText: {
-    color: "#D32F2F",
-    fontFamily: "ArchivoLight",
-    marginRight: 8,
-  },
-  removeTagButton: {
-    backgroundColor: "#EF5350",
-    width: 25,
-    height: 25,
-    justifyContent: "center",
-    borderRadius: 12,
-    margin: "auto",
-  },
-  removeTagButtonText: {
-    color: "white",
-    margin: "auto",
-  },
-  submitContainer: {
-    alignItems: "center",
-    marginBottom: 32,
-  },
-  visualizeButton: {
-    backgroundColor: "#D32F2F",
-  },
-
-  submitButton: {
-    backgroundColor: "#FAD4CE",
-    borderColor: "#FAD4CE",
-  },
-  submitButtonText: {
-    color: "#B71C1C",
-    fontFamily: "ArchivoLight",
-  },
-});
-export default Suggestrecipe;
+export default SuggestRecipe;
