@@ -34,7 +34,7 @@ const levels = [
     image: require("@/assets/images/storys/17.png"),
     route: "/tips",
     btnText: "Débloquer les Ti’Conseils​​",
-    goal: 120,
+    goal: 80,
   },
   {
     id: 3,
@@ -44,7 +44,7 @@ const levels = [
       "Recevez gratuitement votre calendrier perpétuel de fruits et légumes TiCO avec des recettes gourmandes et des astuces à essayer au quotidien.",
     image: require("@/assets/images/storys/18.png"),
     btnText: "Recevoir mon calendrier​",
-    goal: 150,
+    goal: 120,
   },
   {
     id: 4,
