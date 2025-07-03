@@ -10,7 +10,7 @@
     "newArchEnabled": true,
     "ios": {
       "name": "TiCO Scan",
-      "buildNumber": "2",
+      "buildNumber": "3",
       "supportsTablet": true,
       "bundleIdentifier": "com.tico.foodhea.tico",
       "associatedDomains": [
