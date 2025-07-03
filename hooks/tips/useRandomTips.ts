@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "@/api/axios";
+import api from '@/utils/axiosInstance';
 import { Tip } from "@/types/tip";
 
 const useRandomTips = () => {
@@ -15,7 +15,7 @@ const useRandomTips = () => {
       setError(null);
 
       try {
-        const response = await axios.get("/api/tips/random");
+        const response = await api.get("/api/exclusive-advices");
 
         if (isMounted && response.data?.success) {
           setTips(response.data.data);

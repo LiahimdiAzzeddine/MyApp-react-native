@@ -23,7 +23,7 @@ import {  useAppContext } from "@/context/AppContext";
 
 const apiUrl = "https://tico.foodhea.com";
 
-const TipDetails: React.FC<any> = ({ tip }:any) => {
+const TipDetails: React.FC<any> = ({ tip,partager=true }:any) => {
   const { id, title, details } = tip;
   const [favorite, setFavorite] = useState(false);
   const {refreshFTips,lastUpdatedF} = useAppContext()
@@ -85,6 +85,7 @@ const TipDetails: React.FC<any> = ({ tip }:any) => {
                 />
               </View>
             </ImageBackground>
+            {partager&&(
             <TouchableOpacity
               onPress={toggleFavorite}
               style={{
@@ -103,7 +104,7 @@ const TipDetails: React.FC<any> = ({ tip }:any) => {
                 style={{ width: 50, height: 50 }}
                 resizeMode="contain"
               />
-            </TouchableOpacity>
+            </TouchableOpacity>)}
           </View>
 
           {/* Section Détails */}
@@ -120,11 +121,15 @@ const TipDetails: React.FC<any> = ({ tip }:any) => {
       </View>
 
       {/* Section Bouton */}
-      <View style={styles.buttonSection}>
+      {partager&&(
+
+        <View style={styles.buttonSection}>
         <TouchableOpacity onPress={shareTip} style={styles.shareButton}>
           <Text style={styles.shareButtonText}>Partager autour de moi</Text>
         </TouchableOpacity>
       </View>
+      )}
+      
     </SafeAreaView>
   );
 };

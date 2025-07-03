@@ -49,7 +49,7 @@ export default function _layout() {
   }
 
   return (
-    <Stack>
+    <Stack screenOptions={{ animation: "fade" }}>
       <Stack.Screen
         name="recipes"
         options={{

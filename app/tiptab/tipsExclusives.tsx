@@ -46,8 +46,9 @@ const Tips = () => {
   const isOnline = context.isOnline;
 
   const OpenTip = (tip: any) => {
+    console.log("🚀 ~ OpenTip ~ tip:", tip)
     router.push({
-      pathname: "/tiptab/tip/[id]",
+      pathname: "/tiptab/exclusifs/[id]",
       params: { id: tip.id.toString() },
     });
   };

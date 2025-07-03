@@ -46,8 +46,13 @@ export default function _layout() {
         );
       }
   return (
-    <Stack >
+    <Stack  screenOptions={{ animation: "fade" }} >
       <Stack.Screen name="tip/[id]"
+        options={{
+          header: (props) => <CustomHeader color={"#ffeda3"} image={"of"} />,
+        }}
+      />
+       <Stack.Screen name="exclusifs/[id]"
         options={{
           header: (props) => <CustomHeader color={"#ffeda3"} image={"of"} />,
         }}
