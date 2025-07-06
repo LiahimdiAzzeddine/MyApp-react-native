@@ -28,21 +28,22 @@ const useSuggestRecipe = () => {
     setSuccess(false);
 
     try {
-      const response = await privateClient.post(recipe_URL, formValues);
+      const response = await privateClient.post(recipe_URL, formValues.image);
       triggerToast("Recette envoyée avec succès !", "success");
       setSuccess(true);
     } catch (err: any) {
       const errorMessage = err?.response?.data?.message || "Une erreur est survenue";
       const errors: ApiError = err?.response?.data?.errors || {};
-
+ console.log("🚀 ~ handleSubmit ~ errors:", errors)
       setError(errors);
       triggerToast(errorMessage, "error");
-
       console.error("Erreur lors de l'envoi de la recette:", err);
     } finally {
       setLoading(false);
       setSpinner(false)
     }
+      
+     
   };
 
   return {
