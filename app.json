@@ -2,7 +2,7 @@
   "expo": {
     "name": "TiCO Scan",
     "slug": "tico",
-    "version": "2.2",
+    "version": "8",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "tico",
@@ -21,7 +21,7 @@
       }
     },
     "android": {
-      "versionCode": 7,
+      "versionCode": 8,
       "label": "TiCO Scan",
       "package": "com.tico.foodhea.tico",
       "intentFilters": [
@@ -84,9 +84,7 @@
       "typedRoutes": true
     },
     "owner": "azzeddinehamman",
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
+    "runtimeVersion": "7.1.0",
     "updates": {
       "url": "https://u.expo.dev/c784d721-95d0-447c-bcd5-1b86d9e7f0fb"
     },

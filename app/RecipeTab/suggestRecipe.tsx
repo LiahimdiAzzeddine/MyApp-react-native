@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -54,7 +54,10 @@ const SuggestRecipe: React.FC = () => {
   const [screenHeight, setScreenHeight] = useState(Dimensions.get('window').height);
   const router = useRouter();
   const insets = useSafeAreaInsets();
-
+  
+  // Add ref to track if we've already shown the error alert
+  const errorAlertShown = useRef<boolean>(false);
+  const lastErrorRef = useRef<any>(null);
 
   const [values, setValues] = useState<RecipeValues>({
     titre: "",
@@ -245,7 +248,7 @@ const SuggestRecipe: React.FC = () => {
 
   const visualizeRecipe = () => {
     const { isValid, errors } = validateForm(false);
-    setValidationErrors(errors); // on met quand même à jour l’état pour affichage visuel dans le formulaire
+    setValidationErrors(errors); // on met quand même à jour l'état pour affichage visuel dans le formulaire
 
     if (isValid) {
       const restTimeInMinutes = restTimeUnit === 'hour'
@@ -287,13 +290,12 @@ const SuggestRecipe: React.FC = () => {
     }
   };
 
-
   const handleFormSubmit = async () => {
     setValidationErrors({});
     const { isValid, errors } = validateForm(true);
 
     if (!isValid) {
-      const errorMessage = formatErrorsForAlert(validationErrors);
+      const errorMessage = formatErrorsForAlert(errors);
       Alert.alert(
         "Erreurs de validation",
         `Veuillez corriger les erreurs suivantes avant de soumettre :\n\n${errorMessage}`,
@@ -307,24 +309,16 @@ const SuggestRecipe: React.FC = () => {
       finalValues.rest_time = (Number(values.rest_time) * 60).toString();
     }
 
+    // Reset error alert tracking before submission
+    errorAlertShown.current = false;
+    lastErrorRef.current = null;
+
     setIsLoading(true);
     try {
       await handleSubmit(finalValues);
     } catch (err) {
-      let errorMessage = "Une erreur inattendue est survenue lors de la soumission.";
-
-      if (error) {
-        const serverErrorMessage = formatServerErrorsForAlert(error);
-        if (serverErrorMessage) {
-          errorMessage = `Erreurs du serveur :\n\n${serverErrorMessage}`;
-        }
-      }
-
-      Alert.alert(
-        "Erreur de soumission",
-        errorMessage,
-        [{ text: "OK", style: "default" }]
-      );
+      // Error handling is now done in the useEffect below
+      console.error("Form submission error:", err);
     } finally {
       setTimeout(() => {
         setIsLoading(false);
@@ -332,17 +326,47 @@ const SuggestRecipe: React.FC = () => {
     }
   };
 
-  // Show server errors in alert when they occur
+  // Fixed useEffect for showing server errors
   useEffect(() => {
+    // Only show alert if:
+    // 1. There are errors
+    // 2. We haven't shown this specific error before
+    // 3. The error object has actually changed
     if (error && Object.keys(error).length > 0) {
-      const serverErrorMessage = formatServerErrorsForAlert(error);
-      if (serverErrorMessage) {
-        Alert.alert(
-          "Erreurs de validation du serveur",
-          `Veuillez corriger les erreurs suivantes :\n\n${serverErrorMessage}`,
-          [{ text: "OK", style: "default" }]
-        );
+      const errorString = JSON.stringify(error);
+      
+      if (!errorAlertShown.current || lastErrorRef.current !== errorString) {
+        const serverErrorMessage = formatServerErrorsForAlert(error);
+        
+        if (serverErrorMessage.trim() !== '') {
+          errorAlertShown.current = true;
+          lastErrorRef.current = errorString;
+          
+          // Use setTimeout to ensure the error state is fully updated
+          setTimeout(() => {
+            Alert.alert(
+              "Erreurs de validation du serveur",
+              `Veuillez corriger les erreurs suivantes :\n\n${serverErrorMessage}`,
+              [{ 
+                text: "OK", 
+                style: "default",
+                onPress: () => {
+                  // Reset the alert tracking when user dismisses
+                  errorAlertShown.current = false;
+                }
+              }]
+            );
+          }, 100);
+        }
       }
+    }
+  }, [error]);
+
+  // Reset error alert tracking when error is cleared
+  useEffect(() => {
+    if (!error || Object.keys(error).length === 0) {
+      errorAlertShown.current = false;
+      lastErrorRef.current = null;
     }
   }, [error]);
 
@@ -383,7 +407,6 @@ const SuggestRecipe: React.FC = () => {
       );
     }
   };
-
 
   const removeIngredient = (indexToRemove: number) => {
     const ingredientToRemove = values.ingredients[indexToRemove];
@@ -513,6 +536,9 @@ const SuggestRecipe: React.FC = () => {
       });
       setImage(null);
       setAcceptedCGUs(false);
+      // Reset error tracking on success
+      errorAlertShown.current = false;
+      lastErrorRef.current = null;
       Alert.alert(
         "Succès",
         "Votre recette a été soumise avec succès ! Elle sera examinée par notre équipe avant publication.",

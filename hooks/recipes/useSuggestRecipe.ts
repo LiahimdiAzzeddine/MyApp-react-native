@@ -18,17 +18,65 @@ const useSuggestRecipe = () => {
   const [success, setSuccess] = useState<boolean>(false);
   const { triggerToast } = useToast();
 
-
-
   const handleSubmit = async (formValues: RecipeValues) => {
-    console.log("🚀 ~ handleSubmit ~ formValues:", formValues)
+    // console.log("🚀 ~ handleSubmit ~ formValues:", formValues)
     setLoading(true);
     setSpinner(true)
     setError(null);
     setSuccess(false);
 
     try {
-      const response = await privateClient.post(recipe_URL, formValues.image);
+      // Create FormData for multipart/form-data submission
+      const formData = new FormData();
+      
+      // Add all form fields to FormData
+      formData.append('titre', formValues.titre);
+      formData.append('nbperson', formValues.nbperson);
+      formData.append('difficulty', formValues.difficulty);
+      formData.append('prep_time', formValues.prep_time);
+      formData.append('cook_time', formValues.cook_time);
+      formData.append('rest_time', formValues.rest_time || '0');
+      
+      // Add arrays
+      formValues.types.forEach((type, index) => {
+        formData.append(`types[${index}]`, type);
+      });
+      
+      formValues.filters.forEach((filter, index) => {
+        formData.append(`filters[${index}]`, filter);
+      });
+      
+      formValues.ingredients.forEach((ingredient, index) => {
+        formData.append(`ingredients[${index}][name]`, ingredient.name);
+        formData.append(`ingredients[${index}][quantity]`, ingredient.quantity);
+        formData.append(`ingredients[${index}][unit]`, ingredient.unit);
+      });
+      
+      formValues.steps.forEach((step, index) => {
+        formData.append(`steps[${index}]`, step);
+      });
+      
+      // Add image file if present
+      if (formValues.image && formValues.image.uri) {
+        const imageUri = formValues.image.uri;
+        const filename = imageUri.split('/').pop() || 'image.jpg';
+        const match = /\.(\w+)$/.exec(filename);
+        const type = match ? `image/${match[1]}` : 'image/jpeg';
+        
+        // Create file object for upload
+        formData.append('image', {
+          uri: imageUri,
+          type: type,
+          name: filename,
+        } as any);
+      }
+
+      const response = await privateClient.post(recipe_URL, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      
       triggerToast("Recette envoyée avec succès !", "success");
       setSuccess(true);
     } catch (err: any) {
