@@ -2,7 +2,7 @@
   "expo": {
     "name": "TiCO Scan",
     "slug": "tico",
-    "version": "8",
+    "version": "2.1",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "tico",
@@ -10,7 +10,7 @@
     "newArchEnabled": true,
     "ios": {
       "name": "TiCO Scan",
-      "buildNumber": "3",
+      "buildNumber": "4",
       "supportsTablet": true,
       "bundleIdentifier": "com.tico.foodhea.tico",
       "associatedDomains": [
@@ -83,7 +83,7 @@
     "experiments": {
       "typedRoutes": true
     },
-    "owner": "azzeddinehamman",
+    "owner": "azzeddine22",
     "runtimeVersion": "7.1.0",
     "updates": {
       "url": "https://u.expo.dev/c784d721-95d0-447c-bcd5-1b86d9e7f0fb"
@@ -91,7 +91,7 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "43a0b07f-c2ff-4f1e-8c8c-8d28d00d6818"
+        "projectId": "804fc74c-abdb-4c3c-8876-08adc7e40de8"
       }
     }
   }

@@ -81,7 +81,23 @@ const Tips = () => {
           {loadingTips ? (
             <LoadingState />
           ) : errorTips ? (
-            <ErrorState message={errorTips} />
+            canAccessTips?(
+              <ErrorState message={errorTips} />
+            ):(
+                 <View style={styles.container}>
+                <Ionicons name="alert-circle" size={64} color="#ff8200" style={{paddingBottom:10}}  />
+                <Text style={[styles.title, { color: "#FF8200" }]} className="leading-archivo">
+                  Pour débloquer les Ti'Conseils exclusifs vous devez atteindre
+                  le profil de Ti’défricheur.
+               {'\n'}
+                  Rien de plus simple !
+                {'\n'}
+                  Il vous suffit de faire plus de 80
+                  demandes de transparence !
+                </Text>
+              </View>
+            )
+            
           ) : tips.length > 0 ? (
            canAccessTips ? (
               <FlatList

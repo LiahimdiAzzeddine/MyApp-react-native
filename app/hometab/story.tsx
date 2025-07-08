@@ -17,10 +17,11 @@ import * as Sharing from "expo-sharing";
 import * as FileSystem from "expo-file-system";
 import CustomButton from "@/components/ui/CustomButton";
 import { useTheme } from "@react-navigation/native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useStories } from "@/hooks/useStories";
 
 const { width, height } = Dimensions.get("window");
+
 
 export default function Story(): JSX.Element {
   const { stories, loading, error } = useStories();
@@ -29,6 +30,7 @@ export default function Story(): JSX.Element {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [selectedStory, setSelectedStory] = useState<any>(null);
   const { colors } = useTheme();
+  const insets = useSafeAreaInsets();
 
   const getShareableImageUri = async (): Promise<string | null> => {
     try {
@@ -101,7 +103,8 @@ export default function Story(): JSX.Element {
         source={require("@/assets/images/profil/backgroundProfil.png")}
         resizeMode="contain"
         style={{
-          minHeight: 140,
+          maxHeight:150,
+          minHeight: height /7,
           justifyContent: "center",
           alignItems: "center",
           marginBottom: 25,
@@ -114,7 +117,7 @@ export default function Story(): JSX.Element {
       </ImageBackground>
 
       <View className="flex-1 mt-2 justify-start px-4">
-        <Text className="text-center text-custom-green-text text-base Archivo mb-6 leading-6">
+        <Text className="text-center text-custom-green-text text-base Archivo mb-2 leading-6">
           Choisissez une story et partagez-la directement sur vos réseaux sociaux !
         </Text>
 
@@ -129,8 +132,8 @@ export default function Story(): JSX.Element {
             <PagerView
               style={{
                 width: width - 80,
-                height: height / 2.2,
-                marginBottom: 10,
+                height: height / 2.5,
+                marginBottom: 0,
                 borderRadius: 16,
                 overflow: "hidden",
               }}
@@ -213,7 +216,7 @@ export default function Story(): JSX.Element {
               style={{
                 maxWidth: 250,
                 minWidth: 140,
-                marginBottom: 10,
+                marginBottom: 5,
                 backgroundColor: (colors as any)["custom-green-text"],
               }}
             />
@@ -223,7 +226,7 @@ export default function Story(): JSX.Element {
                 textAlign: "center",
                 fontSize: 12,
                 color: "#666",
-                marginHorizontal: 20,
+                marginHorizontal: 5,
               }}
             >
               Le partage ouvrira vos apps installées (Instagram, Facebook, WhatsApp, etc.)
@@ -235,8 +238,9 @@ export default function Story(): JSX.Element {
               transparent={true}
               visible={modalVisible}
               onRequestClose={closeModal}
+               style={{ paddingTop: insets.top }} 
             >
-              <View style={styles.modalContainer}>
+              <View style={styles.modalContainer} >
                 <Pressable style={styles.modalBackground} onPress={closeModal} />
                 {selectedStory && (
                   <Image
@@ -245,8 +249,8 @@ export default function Story(): JSX.Element {
                     resizeMode="contain"
                   />
                 )}
-                <Pressable style={styles.closeButton} onPress={closeModal}>
-                  <Text style={styles.closeText}>✕</Text>
+                <Pressable style={[styles.closeButton,{top: insets.top}]} onPress={closeModal}>
+                  <Text style={styles.closeText} className="leading-none">✕</Text>
                 </Pressable>
               </View>
             </Modal>
@@ -263,6 +267,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.95)",
     justifyContent: "center",
     alignItems: "center",
+    
   },
   modalBackground: {
     ...StyleSheet.absoluteFillObject,
@@ -273,12 +278,12 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     position: "absolute",
-    top: 25,
+    top: 0,
     right: 20,
     backgroundColor: "#4E986D",
     borderRadius: 25,
     paddingHorizontal: 12,
-    paddingVertical: 4.54,
+    paddingVertical:10.5,
   },
   closeText: {
     color: "#fff",

@@ -83,8 +83,9 @@ const styles = StyleSheet.create({
     flex:4
   },
   picker: {
-    height: 50,
-    width: 140,
+       overflow: 'hidden',
+    maxHeight: 120, // Important pour iOS
+    justifyContent: 'center',
   },
   boldText: {
     fontWeight: "bold",

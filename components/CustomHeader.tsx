@@ -170,9 +170,9 @@ const handleBackPress = () => {
             >
               <Link
                 href={"/hometab/story"}
-                className="ArchivoLight leading-none  text-custom-green-text text-lg underline underline-offset-0"
+                className="ArchivoLight leading-8 text-custom-green-text text-lg underline underline-offset-1"
               >
-                Stories​
+                Stories
               </Link>
               <TouchableOpacity
                 style={styles.iconButton}

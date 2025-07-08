@@ -671,8 +671,8 @@ const SuggestRecipe: React.FC = () => {
                   <View style={styles.pickerContainer}>
                     <Picker
                       selectedValue={restTimeUnit}
-                      style={styles.picker}
                       onValueChange={(itemValue) => setRestTimeUnit(itemValue)}
+                      style={styles.picker}
                     >
                       <Picker.Item label="Heures" value="hour" style={{ color: "#666", }} />
                       <Picker.Item label="Minutes" value="min" style={{ color: "#666", }} />
