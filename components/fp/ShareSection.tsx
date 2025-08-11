@@ -16,7 +16,7 @@ interface SectionsProps {
 const backendUrl = "https://tico.foodhea.com"; // Assure-toi de le définir dans ton .env
 
 const ShareSection: React.FC<SectionsProps> = ({ scrollToTarget, targetRefRecettes, gtin, productName }) => {
-const {  setIsModalContact,closeBottomSheet } = useBottomSheet();
+const {  setIsModalContact,closeBottomSheet, scrollRef,scrollRefpage } = useBottomSheet();
   const { userInfo } = useContext(AuthContext);
   const isAuthenticated = !!userInfo;
     const router = useRouter();
@@ -62,7 +62,7 @@ const {  setIsModalContact,closeBottomSheet } = useBottomSheet();
           <Image source={PartageImg} style={styles.icon} resizeMode="contain" />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button} /*onPress={() => scrollToTarget(targetRefRecettes)}*/>
+        <TouchableOpacity style={styles.button} onPress={() => {scrollRef?.current?.scrollToEnd({ animated: true }),scrollRefpage?.current?.scrollToEnd({ animated: true })}} >
           <Image source={RecettesImg} style={styles.icon} resizeMode="contain" />
         </TouchableOpacity>
 

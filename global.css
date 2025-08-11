@@ -9,11 +9,11 @@
 }
 
 @media (prefers-color-scheme: dark) {
-    :root {
+    /* :root {
         --background: #000000;
         --foreground: #ffffff;
         --primary: #0db4f7;
-    }
+    } */
 }
 body {
   font-family: 'Archivo';

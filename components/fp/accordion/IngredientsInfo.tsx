@@ -87,53 +87,73 @@ const IngredientsInfo: React.FC<Props> = ({
     <View style={styles.container}>
       <View style={{ paddingVertical: 16, paddingHorizontal: 16 }}>
       <View style={styles.innerContainer}>
-        <Text
-          className="text-xl text-custom-blue ArchivoBold "
-          style={{ paddingVertical: 5 }}
-        >
-          <Text className="text-custom-blue ArchivoBold">Ingrédients</Text>
-        </Text>
-        <View style={styles.ingredientList}>
-          {ingredients.length > 0 ? (
-            ingredients.map((ingredient, index) => (
-              <View key={index} style={styles.ingredientItem}>
-                <Text
-                  style={[
-                    styles.ingredientTitle,
-                    ingredient.allergene ? styles.underline : undefined,
-                  ]}
-                >
-                  {ingredient.label || "Inconnu"}
-                  {ingredient.quantity && ` ${ingredient.quantity}`}
-                  {ingredient.children && ingredient.children.length > 0
-                    ? ":"
-                    : ""}
-                </Text>
-                {(ingredient.details || ingredient.children) && (
-                  <Text style={styles.ingredientDetail}>
-                    {ingredient.details || ""}
-                    {ingredient.children && ingredient.children.length > 0 && (
-                      <Text>{formatSubIngredients(ingredient.children)}</Text>
-                    )}
-                  </Text>
-                )}
-              </View>
-            ))
-          ) : (
-            <Text style={styles.noData}>
-              Aucun ingrédient disponible ne revisite ce produit entièrement.
+  <Text
+    className="text-xl text-custom-blue ArchivoBold"
+    style={{ paddingVertical: 5 }}
+  >
+    <Text className="text-custom-blue ArchivoBold">Ingrédients</Text>
+  </Text>
+
+  <View style={styles.ingredientList}>
+    {ingredients && ingredients.filter(
+      i =>
+        i?.label?.trim() ||
+        i?.quantity ||
+        i?.details ||
+        (i?.children && i.children.length > 0)
+    ).length > 0 ? (
+      ingredients
+        .filter(
+          i =>
+            i?.label?.trim() ||
+            i?.quantity ||
+            i?.details ||
+            (i?.children && i.children.length > 0)
+        )
+        .map((ingredient, index) => (
+          <View key={index} style={styles.ingredientItem}>
+            <Text
+            className="leading-archivo"
+              style={[
+                styles.ingredientTitle,
+                ingredient.allergene ? styles.underline : undefined,
+              ]}
+            >
+              {ingredient.label?.trim()
+                ? ingredient.label
+                : "Ingrédient inconnu"}
+              {ingredient.quantity ? ` ${ingredient.quantity}` : ""}
+              {ingredient.children && ingredient.children.length > 0 ? ":" : ""}
             </Text>
-          )}
-        </View>
 
-        {allergenesArray.length > 0 && (
-          <Allergenes allergenes={allergenesArray} />
-        )}
-        <Additifs additifs={additifsArray} />
-      </View>
+            {(ingredient.details || ingredient.children?.length > 0) && (
+              <Text  className="leading-archivo" style={styles.ingredientDetail}>
+                {ingredient.details ? `${ingredient.details} ` : ""}
+                {ingredient.children?.length > 0 && (
+                  <Text  className="leading-archivo">{formatSubIngredients(ingredient.children)}</Text>
+                )}
+              </Text>
+            )}
+          </View>
+        ))
+    ) : (
+      <Text style={styles.noData}>
+        Aucun ingrédient disponible ne revisite ce produit entièrement.
+      </Text>
+    )}
+  </View>
 
-      <TouchableOpacity style={styles.imageWrapper} onPress={()=>onToggle()}>
+  {allergenesArray.length > 0 && (
+    <Allergenes allergenes={allergenesArray} />
+  )}
+  <Additifs additifs={additifsArray} />
+</View>
+
+
+      <TouchableOpacity style={styles.imageWrapper} onPress={()=>{onToggle("2");}}>
+      <TouchableOpacity style={styles.imageWrapper} onPress={()=>{onToggle();}}>
         <Image source={FICHETOP} style={styles.image} />
+      </TouchableOpacity>
       </TouchableOpacity>
       </View>
     </View>
@@ -144,7 +164,7 @@ export default IngredientsInfo;
 
 const styles = StyleSheet.create({
    container: {
-    backgroundColor: "#E6F6EF",
+    backgroundColor: "#D9F2F2",
     borderTopRightRadius: 40,
     borderBottomRightRadius: 40,
     position: "relative",
@@ -158,19 +178,19 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   ingredientItem: {
-    marginBottom: 5,
+    marginBottom: 6,
   },
   ingredientTitle: {
     fontFamily: "ArchivoBold",
-    fontSize: 14,
-    color: "#00425C",
+    fontSize: 13.5,
+    color: "#2B6B67",
   },
   underline: {
     textDecorationLine: "underline",
   },
   ingredientDetail: {
-    fontSize: 14,
-    color: "#00425C",
+    fontSize: 12,
+    color: "#2B6B67",
   },
   noData: {
     fontSize: 12,

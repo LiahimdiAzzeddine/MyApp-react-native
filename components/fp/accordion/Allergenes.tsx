@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 12,
-    color: '#0F548D',
+    color: "#2B6B67",
     fontFamily: 'ArchivoBold',
     textAlign: 'center',
   },

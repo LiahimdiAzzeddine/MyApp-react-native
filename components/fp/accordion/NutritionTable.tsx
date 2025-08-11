@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: "right",
     fontFamily: "Archivo",
-    color:"#333"
+    color:"#2B6B67"
   },
   divider: {
     height: 1,

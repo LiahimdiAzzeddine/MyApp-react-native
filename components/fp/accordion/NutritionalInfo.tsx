@@ -58,7 +58,7 @@ const NutritionalInfo: React.FC<Props> = ({ product,onToggle }) => {
             </Text>
           )}
         </View>
-        <TouchableOpacity style={styles.imageWrapper} onPress={()=>onToggle()}>
+        <TouchableOpacity style={styles.imageWrapper} onPress={()=>onToggle('1')}>
           <Image source={FICHETOP} style={styles.image} />
         </TouchableOpacity>
       </View>
@@ -70,7 +70,7 @@ export default NutritionalInfo;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#E6F6EF",
+    backgroundColor: "#D9F2F2",
     borderTopRightRadius: 40,
     borderBottomRightRadius: 40,
     position: "relative",

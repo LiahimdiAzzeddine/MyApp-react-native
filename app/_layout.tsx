@@ -22,6 +22,7 @@ import { BottomSheetProvider } from "@/context/BottomSheetContext";
 import CustomBottomSheet from "@/components/CustomBottomSheet";
 import { LoadingProvider } from "@/context/LoadingContext";
 import { Text, TextInput } from "react-native";
+import RegisterPushToken from "@/components/RegisterPushToken";
 //import { usePushNotifications } from "@/utils/usePushNotifications";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -155,6 +156,8 @@ export default function RootLayout() {
         </AuthProvider>
       </LoadingProvider>
       <Toast />
+            <RegisterPushToken />
+
     </ThemeProvider>
   );
 }

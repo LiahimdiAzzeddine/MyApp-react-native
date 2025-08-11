@@ -46,7 +46,8 @@ export default function ProductDetailsAccordion({
   } = useBottomSheet();
 
   const togglePanel = (id: string) => {
-    setOpenPanel(openPanel === id ? null : id);
+    // Si le panneau est déjà ouvert, le fermer, sinon l'ouvrir
+    setOpenPanel(prevOpenPanel => prevOpenPanel === id ? null : id);
   };
 
   const OnlyOpen = (id: string) => {
@@ -107,7 +108,7 @@ export default function ProductDetailsAccordion({
       title: "Informations nutritionnelles",
       isEnabled: true,
       component: (
-        <NutritionalInfo product={product} onToggle={() => togglePanel("1")} />
+        <NutritionalInfo product={product} onToggle={togglePanel} />
       ),
     },
     {
@@ -119,7 +120,7 @@ export default function ProductDetailsAccordion({
           ingredients={product?.ingredients}
           allergenesArray={product?.allergens}
           additifsArray={product?.additifs}
-          onToggle={() => togglePanel("2")}
+          onToggle={togglePanel}
         />
       ),
     },

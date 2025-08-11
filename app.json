@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "tico",
-    "userInterfaceStyle": "automatic",
+    "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "ios": {
       "name": "TiCO Scan",
@@ -17,7 +17,10 @@
         "applinks:tico.foodhea.com"
       ],
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "UIBackgroundModes": [
+          "remote-notification"
+        ]
       }
     },
     "android": {
@@ -39,15 +42,16 @@
           ]
         }
       ],
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#fff"
-      },
       "permissions": [
         "com.google.android.gms.permission.AD_ID",
         "android.permission.CAMERA",
         "android.permission.RECORD_AUDIO"
       ]
+    },
+    "androidNavigationBar": {
+      "visible": "sticky-immersive",
+      "barStyle": "dark-content",
+      "backgroundColor": "#ffffff"
     },
     "web": {
       "bundler": "metro",
@@ -67,7 +71,6 @@
         {
           "image": "./assets/images/splash-icon.png",
           "resizeMode": "contain",
-          "backgroundColor": "#fff",
           "imageWidth": 150
         }
       ],
@@ -78,12 +81,13 @@
         }
       ],
       "expo-font",
+      "expo-notifications",
       "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true
     },
-    "owner": "azzeddine22",
+    "owner": "ticoapp",
     "runtimeVersion": "7.1.0",
     "updates": {
       "url": "https://u.expo.dev/c784d721-95d0-447c-bcd5-1b86d9e7f0fb"
@@ -91,7 +95,7 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "804fc74c-abdb-4c3c-8876-08adc7e40de8"
+        "projectId": "d1c1dc9e-8f75-4c4f-ac45-488e14c84320"
       }
     }
   }

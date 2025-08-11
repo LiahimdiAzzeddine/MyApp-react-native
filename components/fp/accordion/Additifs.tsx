@@ -66,14 +66,14 @@ const Additifs: React.FC<Props> = ({ additifs }) => {
               />
               <View className="flex-1">
                 <View className="flex-row items-center flex-wrap">
-                  <Text className="font-bold text-custom-blue text-sm">
+                  <Text className="font-bold text-sm" style={{color:"#2B6B67"}}>
                     {item?.code ?? "Code inconnu"}:
                   </Text>
-                  <Text className="text-custom-blue ml-2 text-sm">
+                  <Text className=" ml-2 text-sm"  style={{color:"#2B6B67"}}>
                     {item?.label ?? "Label indisponible"}
                   </Text>
                 </View>
-                <Text className="text-custom-blue text-sm italic">
+                <Text className=" text-sm italic"  style={{color:"#2B6B67"}}>
                   {[
                     item?.fonction1,
                     item?.fonction2,

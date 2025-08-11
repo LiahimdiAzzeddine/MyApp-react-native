@@ -20,8 +20,6 @@ export default function AccordionItem({
   showBubble = false,
   onBubblePress,
 }: AccordionItemProps) {
-
-
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
@@ -41,13 +39,12 @@ export default function AccordionItem({
           {!disabled && (
             <Image
               source={require("@/assets/images/fp/flechBottom.png")}
-              style={styles.icon}
+              style={[styles.icon, isOpen && styles.iconRotated]}
               resizeMode="contain"
             />
           )}
         </TouchableOpacity>
         
-        {/* Bubble maintenant en dehors du TouchableOpacity */}
         {disabled && showBubble && (
           <TouchableOpacity onPress={onBubblePress} style={styles.bubble}>
             <Image
@@ -65,7 +62,7 @@ export default function AccordionItem({
 const styles = StyleSheet.create({
   container: {},
   headerContainer: {
-    position: 'relative', // Important pour le positionnement absolu de la bubble
+    position: 'relative',
   },
   header: {
     padding: 10,
@@ -93,12 +90,16 @@ const styles = StyleSheet.create({
   icon: {
     width: 20,
     height: 20,
+    transform: [{ rotate: '0deg' }],
+  },
+  iconRotated: {
+    transform: [{ rotate: '60deg' }],
   },
   bubble: {
     position: "absolute",
     right: 20,
     top: 30,
-    zIndex: 10, // Augmenté pour être sûr
+    zIndex: 10,
   },
   bubbleImg: {
     width: 70,
