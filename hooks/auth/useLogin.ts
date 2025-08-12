@@ -3,27 +3,24 @@ import axios from "axios";
 import { AuthContext } from "@/context/AuthContext";
 import { useToast } from "../useToast";
 import { useSpinner } from "@/context/LoadingContext";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const useLogin = () => {
+  const pushTokenKey = process.env.EXPO_PUBLIC_PUSH_TOKEN_KEY??'pushToken';
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<any | null>(null);
   const { login } = useContext(AuthContext);
-  const [status, setStatus] = useState(null);
-  const { setSpinner  } = useSpinner();
+  const [status, setStatus] = useState<number | null>(null);
+  const { setSpinner } = useSpinner();
   const apiUrl = process.env.EXPO_PUBLIC_API_URL;
   const { triggerToast } = useToast();
 
-  // On récupère le token push et son état envoyé une fois au mount
   const [pushToken, setPushToken] = useState<string | null>(null);
-  const [pushTokenSent, setPushTokenSent] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchPushToken() {
-      const token = await AsyncStorage.getItem('pushToken');
-      const sent = await AsyncStorage.getItem('pushTokenSent');
+      const token = await AsyncStorage.getItem(pushTokenKey);
       setPushToken(token);
-      setPushTokenSent(sent);
     }
     fetchPushToken();
   }, []);
@@ -40,14 +37,9 @@ export const useLogin = () => {
     setErrorMessage(null);
 
     try {
-      let sendPushToken = false;
-
-      if (pushToken && pushToken !== pushTokenSent) {
-        sendPushToken = true;
-      }
-
+      // Construire le corps de la requête
       const body: any = { email, password };
-      if (sendPushToken) {
+      if (pushToken) {
         body.push_token = pushToken;
       }
 
@@ -56,12 +48,6 @@ export const useLogin = () => {
       if (response.status === 200) {
         const { access_token, user } = response.data;
         await login(access_token, user);
-
-        // Marquer localement que le token a été envoyé
-        if (sendPushToken && pushToken) {
-          await AsyncStorage.setItem('pushTokenSent', pushToken);
-          setPushTokenSent(pushToken);
-        }
 
         triggerToast(
           "Connexion réussie. Vous êtes maintenant connecté.",
