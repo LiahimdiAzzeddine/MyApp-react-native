@@ -4,18 +4,22 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
+import { useRouter } from "expo-router";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
     shouldPlaySound: true,
     shouldSetBadge: true,
-     shouldShowBanner: true,
+    shouldShowBanner: true,
     shouldShowList: true,
   }),
 });
-
-
+interface NotificationData {
+  pageTitre?: string;
+  pageParagraphe?: string;
+  pageDeeplink?: string;
+}
 async function registerForPushNotificationsAsync() {
   if (Platform.OS === "android") {
     await Notifications.setNotificationChannelAsync("default", {
@@ -60,14 +64,38 @@ async function registerForPushNotificationsAsync() {
 }
 
 export default function RegisterPushToken() {
+    const router = useRouter();
+
   useEffect(() => {
-  const notificationListener = Notifications.addNotificationReceivedListener(notification => {
-  console.log("🚀 ~ Notification reçue ~:", JSON.stringify(notification, null, 2)); // Tout afficher joliment
-  console.log("📦 Data brute :", notification.request.content.data); // Voir uniquement data
-});
+    const notificationListener = Notifications.addNotificationReceivedListener(
+      (notification) => {
+        // console.log(
+        //   "🚀 ~ Notification reçue ~:",
+        //   JSON.stringify(notification, null, 2)
+        // );
+      }
+    );
+    
+  const responseListener =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        const data = response.notification.request.content
+          .data as NotificationData;
+
+        //console.log("📩 Notification cliquée :", JSON.stringify(response.notification, null, 2));
+
+        // Rediriger vers la page avec les paramètres
+        router.push({
+          pathname:'/notification-details',
+          params: {
+            pageTitre: data.pageTitre ?? "",
+            pageParagraphe: data.pageParagraphe ?? "",
+            pageDeeplink: data.pageDeeplink ?? "",
+          },
+        });
+      });
+
 
     const pushTokenKey = process.env.EXPO_PUBLIC_PUSH_TOKEN_KEY ?? "pushToken";
-    console.log("🚀 ~ RegisterPushToken ~ pushTokenKey:", pushTokenKey);
 
     async function saveTokenOnce() {
       const token = await registerForPushNotificationsAsync();
@@ -102,6 +130,11 @@ export default function RegisterPushToken() {
     }
 
     saveTokenOnce();
+    
+    return () => {
+      notificationListener.remove();
+      responseListener.remove();
+    };
   }, []);
 
   return null;

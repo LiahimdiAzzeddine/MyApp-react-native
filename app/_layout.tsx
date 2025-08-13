@@ -31,11 +31,11 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   // Assertion de type pour éviter l'erreur TypeScript
-(Text as any).defaultProps = (Text as any).defaultProps || {};
-(Text as any).defaultProps.allowFontScaling = false;
+  (Text as any).defaultProps = (Text as any).defaultProps || {};
+  (Text as any).defaultProps.allowFontScaling = false;
 
-(TextInput as any).defaultProps = (TextInput as any).defaultProps || {};
-(TextInput as any).defaultProps.allowFontScaling = false;
+  (TextInput as any).defaultProps = (TextInput as any).defaultProps || {};
+  (TextInput as any).defaultProps.allowFontScaling = false;
   // const { expoPushToken, notification } = usePushNotifications();
   // const data = JSON.stringify(notification, undefined, 2);
 
@@ -55,7 +55,6 @@ export default function RootLayout() {
     ArchivoItalic: require("../assets/fonts/Archivo-Italic.otf"),
     ArchivoLightItalic: require("../assets/fonts/Archivo-Italic.otf"),
     pallybold: require("../assets/fonts/Pally-Bold.ttf"),
-    
   });
 
   useEffect(() => {
@@ -68,10 +67,10 @@ export default function RootLayout() {
     return null;
   }
   const style = {
-  backgroundColor: "#9FA8DA",
-  borderRadius: 10,
-  paddingTop: 5,
-};
+    backgroundColor: "#9FA8DA",
+    borderRadius: 10,
+    paddingTop: 5,
+  };
 
   return (
     <ThemeProvider
@@ -81,15 +80,15 @@ export default function RootLayout() {
         <AuthProvider>
           <AppProvider>
             <GestureHandlerRootView style={{ flex: 1 }}>
-            <BottomSheetProvider>
+              <BottomSheetProvider>
                 <Stack>
                   <Stack.Screen
                     name="index"
-                    options={{ headerShown: false, animation: "fade"  }}
+                    options={{ headerShown: false, animation: "fade" }}
                   />
                   <Stack.Screen
                     name="(tabs)"
-                    options={{ headerShown: false, animation: "fade"  }}
+                    options={{ headerShown: false, animation: "fade" }}
                   />
                   <Stack.Screen
                     name="hometab"
@@ -107,7 +106,7 @@ export default function RootLayout() {
                     name="fp/[gtin]"
                     options={{
                       animation: "fade",
-                      header: (props) => <CustomHeader image="bx"  />,
+                      header: (props) => <CustomHeader image="bx" />,
                     }}
                   />
                   <Stack.Screen
@@ -144,20 +143,28 @@ export default function RootLayout() {
                       headerShown: false,
                     }}
                   />
-                 
+                  <Stack.Screen
+                    name="notification-details"
+                    options={{
+                      title: "Détails de la notification",
+                      animation: "fade",
+                      header: (props) => (
+                        <CustomHeader color={"#ffeda3"} image={"bx"} />
+                      ),
+                    }}
+                  />
+
                   <Stack.Screen name="+not-found" />
                 </Stack>
                 <CustomBottomSheet />
-
-            </BottomSheetProvider>
+              </BottomSheetProvider>
             </GestureHandlerRootView>
             <StatusBar style="auto" />
           </AppProvider>
         </AuthProvider>
       </LoadingProvider>
       <Toast />
-            <RegisterPushToken />
-
+      <RegisterPushToken />
     </ThemeProvider>
   );
 }

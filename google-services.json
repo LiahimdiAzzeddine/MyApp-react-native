@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "36927532963",
+    "project_id": "tico-f9d03",
+    "storage_bucket": "tico-f9d03.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:36927532963:android:3d853bef730c193d757416",
+        "android_client_info": {
+          "package_name": "com.tico.foodhea.tico"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBH2TwWy_SNGyiR_IlzteHwrghOtIv8Cyo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

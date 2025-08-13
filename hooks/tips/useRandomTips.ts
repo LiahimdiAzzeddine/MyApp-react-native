@@ -21,6 +21,7 @@ const useRandomTips = () => {
           setTips(response.data.data);
         }
       } catch (err: any) {
+        console.log("🚀 ~ fetchRandomTips ~ err:",JSON.stringify(err,null,2) )
         if (isMounted) {
           setError(err.message || "Une erreur est survenue");
         }
@@ -30,6 +31,7 @@ const useRandomTips = () => {
         }
       }
     };
+    
 
     fetchRandomTips();
 

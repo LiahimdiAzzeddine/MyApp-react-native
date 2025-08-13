@@ -9,7 +9,6 @@
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "ios": {
-      "name": "TiCO Scan",
       "buildNumber": "4",
       "supportsTablet": true,
       "bundleIdentifier": "com.tico.foodhea.tico",
@@ -25,8 +24,8 @@
     },
     "android": {
       "versionCode": 8,
-      "label": "TiCO Scan",
       "package": "com.tico.foodhea.tico",
+       "googleServicesFile": "./google-services.json",
       "intentFilters": [
         {
           "action": "VIEW",
