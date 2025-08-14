@@ -1,5 +1,4 @@
 import { useContext, useState } from 'react';
-import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import api from '@/utils/axiosInstance';
 import { useToast } from '../useToast';
@@ -19,15 +18,13 @@ const useChangePassword = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<Record<string, string[]> | null>(null);
   const { triggerToast } = useToast();
-  const navigation = useNavigation<any>(); // adapt based on your navigator
+
   const { setSpinner  } = useSpinner();
   const router=useRouter();
     const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
 const { logout } = useContext(AuthContext);
-  const goToPage = (path: string) => {
-    navigation.replace(path);
-  };
+
 
   const changePassword = async ({
     currentPassword,
@@ -53,7 +50,7 @@ const { logout } = useContext(AuthContext);
           token,
         });
         triggerToast(response.data.message || 'Mot de passe changé avec succès.', 'success');
-        goToPage('Home'); // ou autre nom d'écran
+        router.replace('/(auth)/login');
       } else {
         // Utilisateur connecté
 

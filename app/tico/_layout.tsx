@@ -15,7 +15,8 @@ export default function TicoLayout() {
         name="validation/[token]"
         options={{
           animation: "fade",
-          header: (props) => <CustomHeader image="x" goTo={"/"} />,
+          headerShown: false,
+
         }}
       />
     </Stack>
