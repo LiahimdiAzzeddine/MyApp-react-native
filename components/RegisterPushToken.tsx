@@ -73,15 +73,24 @@ export default function RegisterPushToken() {
     const router = useRouter();
 
   useEffect(() => {
-    const notificationListener = Notifications.addNotificationReceivedListener(
-      (notification) => {
-        // console.log(
-        //   "🚀 ~ Notification reçue ~:",
-        //   JSON.stringify(notification, null, 2)
-        // );
+  const clearBadge = async () => {
+    if (Platform.OS === "ios") {
+      await Notifications.setBadgeCountAsync(0);
+    }
+  };
+
+  clearBadge(); // Efface le badge au lancement de l'app
+
+  const notificationListener = Notifications.addNotificationReceivedListener(
+    async (notification) => {
+      // Réception d'une notification en foreground
+      if (Platform.OS === "ios") {
+        const currentCount = await Notifications.getBadgeCountAsync();
+        console.log("🚀 ~ RegisterPushToken ~ currentCount:", currentCount)
+        await Notifications.setBadgeCountAsync(currentCount + 1);
       }
-    );
-    
+    }
+  );
     const responseListener = Notifications.addNotificationResponseReceivedListener(
       (response) => {
         const data = response.notification.request.content.data as NotificationData;

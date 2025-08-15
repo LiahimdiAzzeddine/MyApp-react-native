@@ -8,7 +8,6 @@ import {
   StyleSheet,
   ActivityIndicator,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 
 const productDeffaultImg = require("@/assets/images/defaults/500x400.png");
 
@@ -61,7 +60,10 @@ const GlobalInfo: React.FC<GlobalInfoProps> = (props) => {
             {props.Brand}
           </Text>
           <Text style={styles.productTransparency} className="leading-archivo">
-            {Number(props.Transparent) * 10}% de transparence{" "}
+            {Number(props.Transparent) * 10}% de transparence <Text>
+                <Text style={styles.pallyBold}>Ti</Text>
+                <Text style={[styles.pallyBold, styles.trackingTightest]}>CO</Text>
+              </Text>{" "}
             {Number(props.Transparent) === 9 ? "!" : ""}
           </Text>
         </View>
@@ -119,6 +121,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 20,
+  },
+  pallyBold: {
+    fontFamily: 'Pally-Bold',
+    fontWeight: 'bold',
+  },
+  trackingTightest: {
+    letterSpacing: -1,
   },
   floatingCloseButton: {
     position: "absolute",
