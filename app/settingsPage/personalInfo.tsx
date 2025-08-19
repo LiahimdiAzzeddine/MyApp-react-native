@@ -182,57 +182,56 @@ const PersonalInfo = () => {
             </View>
 
             <View className="flex-1 gap-4">
-              <TouchableOpacity
-                style={[
-                  styles.button,
-                  (!isOnline || !displayProfile) && styles.buttonDisabled,
-                ]}
-                disabled={!isOnline || !displayProfile}
-                onPress={() => router.push("/(auth)/changePassword")}
-              >
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    flexDirection: "row",
-                    gap: 5,
-                  }}
-                >
-                  <Ionicons name={"lock-closed"} size={20} color="white" />
-                  <Text className="text-white ArchivoBold text-lg">
-                    Changer mon mot de passe
-                    {!isOnline && (
-                      <p className="text-sm text-gray-500">
-                        (Non disponible hors ligne)
-                      </p>
-                    )}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.button,
-                  (!isOnline || !displayProfile) && styles.buttonDisabled,
-                ]}
-                disabled={!isOnline || !displayProfile}
-                onPress={() => setShowModalDelete(true)}
-              >
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    flexDirection: "row",
-                    gap: 5,
-                  }}
-                >
-                  <Ionicons name={"trash-bin"} size={20} color="white" />
-                  <Text className="text-white ArchivoBold text-lg">
-                    Supprimer mon compte
-                  </Text>
-                </View>
-              </TouchableOpacity>
+             <TouchableOpacity
+  style={[
+    styles.button,
+    (!isOnline || !displayProfile) && styles.buttonDisabled,
+  ]}
+  disabled={!isOnline || !displayProfile}
+  onPress={() => {
+    if (!isOnline) {
+      Alert.alert(
+        "Hors ligne",
+        "Cette action nécessite une connexion Internet."
+      );
+      return;
+    }
+    router.push("/(auth)/changePassword");
+  }}
+>
+  <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+    <Ionicons name="lock-closed" size={20} color="white" />
+    <Text className="text-white ArchivoBold text-lg">
+      Changer mon mot de passe
+    </Text>
+  </View>
+</TouchableOpacity>
+
+<TouchableOpacity
+  style={[
+    styles.button,
+    (!isOnline || !displayProfile) && styles.buttonDisabled,
+  ]}
+  disabled={!isOnline || !displayProfile}
+  onPress={() => {
+    if (!isOnline) {
+      Alert.alert(
+        "Hors ligne",
+        "Cette action nécessite une connexion Internet."
+      );
+      return;
+    }
+    setShowModalDelete(true);
+  }}
+>
+  <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+    <Ionicons name="trash-bin" size={20} color="white" />
+    <Text className="text-white ArchivoBold text-lg">
+      Supprimer mon compte
+    </Text>
+  </View>
+</TouchableOpacity>
+
             </View>
           </View>
           <WhiteModal

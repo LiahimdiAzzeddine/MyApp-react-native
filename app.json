@@ -79,8 +79,16 @@
           "photosPermission": "The $(PRODUCT_NAME) accesses your photos to let you share them."
         }
       ],
+      [
+  "expo-notifications",
+  {
+    "icon": "./assets/images/icon.png",
+    "color": "#ffffff",
+    "defaultChannel": "default",
+    "iosDisplayInForeground": true
+  }
+],
       "expo-font",
-      "expo-notifications",
       "expo-secure-store",
       "expo-web-browser"
     ],

@@ -1,27 +1,55 @@
-import React, { useContext } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
   StyleSheet,
-  ScrollView,
   Platform,
 } from "react-native";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import * as Haptics from "expo-haptics";
+import NetInfo from "@react-native-community/netinfo"; // 👈 Import pour la connexion internet
 import { AuthContext } from "@/context/AuthContext";
+import * as Notifications from "expo-notifications";
+import { Bell} from 'lucide-react-native';
 
 export default function SettingsPage() {
   const { userInfo, logout } = useContext(AuthContext);
   const isAuthenticated = !!userInfo;
+  const [badgeCount, setBadgeCount] = useState<number>(0);
   const router = useRouter();
+   const getBadgeCount = async () => {
+      const count = await Notifications.getBadgeCountAsync();
+      setBadgeCount(count);
+      return count;
+    
+    return 0;
+  };
+
+  const [isOnline, setIsOnline] = useState(false);
+
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener((state) => {
+      setIsOnline(state.isConnected === true);
+    });
+
+    return () => unsubscribe();
+  }, []);
+ 
+
+  useFocusEffect(
+  useCallback(() => {
+    getBadgeCount();
+  }, [])
+);
+  
 
   const triggerHaptic = async () => {
     if (Platform.OS !== "web") {
       try {
         await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
       } catch {
-        // Haptics not supported
+        // Haptics non supporté
       }
     }
   };
@@ -34,26 +62,28 @@ export default function SettingsPage() {
   return (
     <View style={styles.container}>
       <View style={styles.section}>
-        {/** 
-        <Text style={styles.title}>Mon compte</Text>*/}
-
         {isAuthenticated ? (
           <TouchableOpacity
-            style={styles.button}
-            className="bg-custom-text-orange w-3/4 rounded-xl"
-            onPress={() =>
-             router.push("/settingsPage/personalInfo")
-            }
+            style={[
+            styles.button,
+            { backgroundColor: isOnline ? "#FF8200" : "#FF8200" }, // couleur différente si désactivé
+          ]}
+            className="w-3/4 rounded-xl"
+            onPress={() => router.push("/settingsPage/personalInfo")}
           >
             <Text style={styles.buttonText}>Mes informations</Text>
           </TouchableOpacity>
         ) : (
           <TouchableOpacity
-            style={styles.button}
-            className="bg-custom-text-orange w-3/4 rounded-xl"
+            style={[
+            styles.button,
+            { backgroundColor: isOnline ? "#FF8200" : "#c6c5b9" }, // couleur différente si désactivé
+          ]}
+          disabled={!isOnline} // désactive le bouton si offline
+            className="w-3/4 rounded-xl"
             onPress={() =>
               handlePress(() => {
-                router.push("/(auth)/register")
+                router.push("/(auth)/register");
               })
             }
           >
@@ -61,12 +91,41 @@ export default function SettingsPage() {
           </TouchableOpacity>
         )}
 
+        {/* ✅ Bouton notifications visible uniquement si connecté à Internet */}
+      <TouchableOpacity
+  style={[
+    styles.button,
+    { backgroundColor: isOnline ? "#0F548D" : "#0F548D" },
+  ]}
+  className="w-3/4 rounded-xl"
+  onPress={() =>
+    handlePress(() => {
+      router.push("/settingsPage/UnreadNotificationsPage");
+    })
+  }
+>
+  <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
+    <Text style={styles.buttonText}>Notif. récentes</Text>
+
+    {badgeCount > 0 && (
+      <View style={styles.bellContainer}>
+        <Bell size={20} color="#fff" />
+        <View style={styles.redDot} />
+      </View>
+    )}
+  </View>
+</TouchableOpacity>
+
         <TouchableOpacity
-          style={styles.button}
-          className="bg-custom-blue w-3/4 rounded-xl"
+         style={[
+            styles.button,
+            { backgroundColor: isOnline ? "#0F548D" : "#c6c5b9" }, // couleur différente si désactivé
+          ]}
+          disabled={!isOnline} // désactive le bouton si offline
+          className="w-3/4 rounded-xl"
           onPress={() =>
             handlePress(() => {
-              router.push("/settingsPage/contact")
+              router.push("/settingsPage/contact");
             })
           }
         >
@@ -74,11 +133,15 @@ export default function SettingsPage() {
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={styles.button}
-          className="bg-custom-blue w-3/4 rounded-xl"
+           style={[
+            styles.button,
+            { backgroundColor: isOnline ? "#0F548D" : "#c6c5b9" }, // couleur différente si désactivé
+          ]}
+          disabled={!isOnline} // désactive le bouton si offline
+          className="w-3/4 rounded-xl"
           onPress={() =>
             handlePress(() => {
-               router.push("/settingsPage/fqas")
+              router.push("/settingsPage/fqas");
             })
           }
         >
@@ -90,7 +153,7 @@ export default function SettingsPage() {
           className="bg-custom-blue w-3/4 rounded-xl"
           onPress={() =>
             handlePress(() => {
-              router.push("/settingsPage/inviteTico")
+              router.push("/settingsPage/inviteTico");
             })
           }
         >
@@ -109,8 +172,12 @@ export default function SettingsPage() {
           </TouchableOpacity>
         ) : (
           <TouchableOpacity
-            style={styles.buttonLogin}
-            className="bg-custom-text-orange w-2/4 rounded-xl"
+             style={[
+            styles.buttonLogin,
+            { backgroundColor: isOnline ? "#FF8200" : "#c6c5b9" }, // couleur différente si désactivé
+          ]}
+          disabled={!isOnline} // désactive le bouton si offline
+            className="w-2/4 rounded-xl"
             onPressIn={() => router.push("/login")}
           >
             <Text style={styles.buttonText}>Se connecter</Text>
@@ -120,7 +187,7 @@ export default function SettingsPage() {
         <TouchableOpacity
           onPress={() =>
             handlePress(() => {
-             router.push("/settingsPage/CGUConfidentiality")
+              router.push("/settingsPage/CGUConfidentiality");
             })
           }
         >
@@ -140,16 +207,10 @@ const styles = StyleSheet.create({
   },
   section: {
     alignItems: "center",
-    marginBottom: 20, // Réduit l'espace entre les sections
+    marginBottom: 20,
   },
   authSection: {
-    marginTop: 10, // Réduit l'espace entre les sections
-  },
-  title: {
-    fontSize: 24,
-    color: "#007AFF",
-    marginBottom: 12, // Espacement plus compact
-    fontWeight: "bold",
+    marginTop: 10,
   },
   button: {
     paddingVertical: 12,
@@ -179,6 +240,38 @@ const styles = StyleSheet.create({
   link: {
     color: "#FF9500",
     textDecorationLine: "underline",
-    marginTop: 12, // Espacement réduit pour le lien
+    marginTop: 12,
   },
+  badgeContainer: {
+  marginLeft: 8,
+  position: "relative",
+},
+badge: {
+  position: "absolute",
+  top: -6,
+  right: -10,
+  backgroundColor: "red",
+  borderRadius: 8,
+  paddingHorizontal: 5,
+  paddingVertical: 1,
+  minWidth: 16,
+  alignItems: "center",
+  justifyContent: "center",
+},
+
+bellContainer: {
+  marginLeft: 8,
+  position: "relative",
+},
+redDot: {
+  position: "absolute",
+  top: -2,
+  right: -1,
+  width: 9,
+  height: 9,
+  borderRadius: 4,
+  backgroundColor: "red",
+},
+
+
 });

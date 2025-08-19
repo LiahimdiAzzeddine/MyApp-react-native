@@ -25,6 +25,7 @@ export default function _layout() {
       <Stack.Screen name="inviteTico" />
       <Stack.Screen name="CGUConfidentiality" />
       <Stack.Screen name="fqas" />
+      <Stack.Screen name="UnreadNotificationsPage" />
     </Stack>
   );
 }
