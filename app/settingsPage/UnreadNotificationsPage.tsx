@@ -14,22 +14,21 @@ import NetInfo from '@react-native-community/netinfo';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { Bell, Wifi, WifiOff, CircleAlert as AlertCircle, CircleCheck as CheckCircle, Clock, ArrowRight } from 'lucide-react-native';
 import Animated, {
-  FadeInUp,
-  FadeInDown,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
 } from 'react-native-reanimated';
 import useUnreadNotifications, { Notification } from '@/hooks/useUnreadNotifications';
 import { Colors } from '@/constants/Colors';
-const colors =Colors.page;
+const colors = Colors.page;
 
 export default function NotificationsPage() {
   const router = useRouter();
   const [pushToken, setPushToken] = useState<string | null>(null);
+  const [tokenLoaded, setTokenLoaded] = useState(false); // Nouvel état pour tracker si le token est chargé
   const [isConnected, setIsConnected] = useState<boolean>(true);
   const [refreshing, setRefreshing] = useState(false);
-
+  const [showUnreadOnly, setShowUnreadOnly] = useState(true);
 
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener((state) => {
@@ -38,35 +37,48 @@ export default function NotificationsPage() {
     return () => unsubscribe();
   }, []);
 
-
   useEffect(() => {
     const getPushToken = async () => {
       try {
         const pushTokenKey = process.env.EXPO_PUBLIC_PUSH_TOKEN_KEY ?? 'pushToken';
         const storedToken = await AsyncStorage.getItem(pushTokenKey);
-        if (storedToken) setPushToken(storedToken);
+        if (storedToken) {
+          setPushToken(storedToken);
+        }
       } catch (error) {
         console.error('Erreur lors de la récupération du token:', error);
+      } finally {
+        // Marquer le token comme chargé même s'il n'y en a pas
+        setTokenLoaded(true);
       }
     };
     getPushToken();
   }, []);
 
-  const { notifications,notificationsUnread, loading, error, refetch,markAsOpened } = useUnreadNotifications(pushToken ?? '');
+  // Ne pas appeler le hook tant que le token n'est pas chargé
+  const { notifications, notificationsUnread, loading, error, refetch, markAsOpened } = useUnreadNotifications(
+    tokenLoaded ? (pushToken ?? '') : null // Passer null si le token n'est pas encore chargé
+  );
 
-  const onRefresh = useCallback(async () => {
-    setRefreshing(true);
-    await refetch();
-    setRefreshing(false);
-  }, [refetch]);
+  // Détermine quelles notifications afficher selon le filtre
+  const displayedNotifications = showUnreadOnly ? notificationsUnread : notifications;
   
+  const onRefresh = useCallback(async () => {
+    if (refreshing || !tokenLoaded) return; // Évite les appels multiples et attendre que le token soit chargé
+    setRefreshing(true);
+    try {
+      await refetch();
+    } finally {
+      setRefreshing(false);
+    }
+  }, [refetch, refreshing, tokenLoaded]);
 
   const handleNotificationPress = (notification: Notification) => {
     const data = notification.data;
     const openDirectly = data.openDirectly ?? false;
 
     try {
-        markAsOpened(notification.id);
+      markAsOpened(notification.id);
 
       if (openDirectly) {
         if (data.pageDeeplink) {
@@ -113,7 +125,7 @@ export default function NotificationsPage() {
     actionText?: string;
     onAction?: () => void;
   }) => (
-    <Animated.View entering={FadeInUp.duration(600)} style={styles.emptyState}>
+    <View style={styles.emptyState}>
       <View style={styles.emptyIconContainer}>
         <Icon size={48} color={colors.text.tertiary} />
       </View>
@@ -124,7 +136,7 @@ export default function NotificationsPage() {
           <Text style={styles.actionButtonText}>{actionText}</Text>
         </Pressable>
       )}
-    </Animated.View>
+    </View>
   );
 
   const NotificationCard = ({ notification, index }: { notification: Notification; index: number }) => {
@@ -143,13 +155,12 @@ export default function NotificationsPage() {
     };
 
     return (
-      <Animated.View entering={FadeInUp.delay(index * 100).duration(500)}>
-        <Pressable
-          onPressIn={handlePressIn}
-          onPressOut={handlePressOut}
-          onPress={() => handleNotificationPress(notification)}
-          style={[styles.notificationCard, animatedStyle]}
-        >
+      <Pressable
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+        onPress={() => handleNotificationPress(notification)}
+      >
+        <Animated.View style={[styles.notificationCard, animatedStyle]}>
           <View style={styles.notificationHeader}>
             <View style={styles.notificationIcon}>
               <Bell size={20} color={colors.primary} />
@@ -175,10 +186,59 @@ export default function NotificationsPage() {
             </View>
             {!notification.read && <View style={styles.unreadIndicator} />}
           </View>
-        </Pressable>
-      </Animated.View>
+        </Animated.View>
+      </Pressable>
     );
   };
+
+  const FilterTabs = () => (
+    <View style={styles.filterContainer}>
+      <View style={styles.tabsContainer}>
+        <Pressable
+          style={[
+            styles.tab,
+            showUnreadOnly && styles.activeTab,
+          ]}
+          onPress={() => setShowUnreadOnly(true)}
+        >
+          <Text style={[
+            styles.tabText,
+            showUnreadOnly && styles.activeTabText,
+          ]}>
+            Non lues ({notificationsUnread.length})
+          </Text>
+        </Pressable>
+        <Pressable
+          style={[
+            styles.tab,
+            !showUnreadOnly && styles.activeTab,
+          ]}
+          onPress={() => setShowUnreadOnly(false)}
+        >
+          <Text style={[
+            styles.tabText,
+            !showUnreadOnly && styles.activeTabText,
+          ]}>
+            Toutes ({notifications.length})
+          </Text>
+        </Pressable>
+      </View>
+    </View>
+  );
+
+  // Afficher un écran de chargement si le token n'est pas encore chargé
+  if (!tokenLoaded) {
+    return (
+      <View style={styles.container}>
+        <StatusBar barStyle="dark-content" backgroundColor={colors.background} />
+        <EmptyState
+          icon={Clock}
+          title="Chargement..."
+          subtitle="Initialisation de l'application"
+        />
+      </View>
+    );
+  }
 
   if (!isConnected) {
     return (
@@ -215,7 +275,7 @@ export default function NotificationsPage() {
       <StatusBar barStyle="dark-content" backgroundColor={colors.background} />
       
       {/* Header */}
-      <Animated.View entering={FadeInDown.duration(500)} style={styles.header}>
+      <View style={styles.header}>
         <View style={styles.headerContent}>
           <View style={styles.headerTitleContainer}>
             <Bell size={24} color={colors.primary} />
@@ -238,7 +298,10 @@ export default function NotificationsPage() {
             </View>
           )}
         </View>
-      </Animated.View>
+      </View>
+
+      {/* Filter Tabs */}
+      <FilterTabs />
 
       {/* Content */}
       <ScrollView
@@ -260,16 +323,16 @@ export default function NotificationsPage() {
             title="Chargement..."
             subtitle="Récupération de vos notifications"
           />
-        ) : notifications.length === 0 ? (
+        ) : displayedNotifications.length === 0 ? (
           <EmptyState
             icon={CheckCircle}
-            title="Tout est lu !"
-            subtitle="Vous n'avez aucune notification non lue"
+            title={showUnreadOnly ? "Tout est lu !" : "Aucune notification"}
+            subtitle={showUnreadOnly ? "Vous n'avez aucune notification non lue" : "Vous n'avez aucune notification"}
             actionText="Actualiser"
             onAction={onRefresh}
           />
         ) : (
-          notifications.map((notification, index) => (
+          displayedNotifications.map((notification, index) => (
             <NotificationCard
               key={notification.id}
               notification={notification}
@@ -291,9 +354,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
     paddingTop: 20,
     paddingHorizontal: 20,
-    paddingBottom: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    paddingBottom: 0,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
@@ -361,12 +422,45 @@ const styles = StyleSheet.create({
     color: colors.warning,
     fontWeight: '500',
   },
+  filterContainer: {
+    backgroundColor: colors.background,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+  },
+  tabsContainer: {
+    flexDirection: 'row',
+    backgroundColor: colors.surface,
+    borderRadius: 8,
+    padding: 4,
+  },
+  tab: {
+    flex: 1,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 6,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  activeTab: {
+    backgroundColor: colors.primary,
+  },
+  tabText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: colors.text.secondary,
+  },
+  activeTabText: {
+    color: colors.text.inverse,
+    fontWeight: '600',
+  },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
     paddingHorizontal: 20,
-    paddingTop: 20,
+    paddingTop: 16,
     paddingBottom: 40,
   },
   emptyState: {

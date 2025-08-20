@@ -23,7 +23,7 @@ interface NotificationData {
   pageParagraphe?: string;
   pageDeeplink?: string;
   openDirectly?: boolean;
-  notificationId?:number;
+  notificationId?: number;
 }
 
 async function registerForPushNotificationsAsync() {
@@ -37,7 +37,8 @@ async function registerForPushNotificationsAsync() {
   }
 
   if (Device.isDevice) {
-    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    const { status: existingStatus } =
+      await Notifications.getPermissionsAsync();
     let finalStatus = existingStatus;
     if (existingStatus !== "granted") {
       const { status } = await Notifications.requestPermissionsAsync();
@@ -55,7 +56,8 @@ async function registerForPushNotificationsAsync() {
       return null;
     }
     try {
-      const token = (await Notifications.getExpoPushTokenAsync({ projectId })).data;
+      const token = (await Notifications.getExpoPushTokenAsync({ projectId }))
+        .data;
       return token;
     } catch (e) {
       console.warn(`Error getting token: ${e}`);
@@ -74,9 +76,12 @@ const handleOpenDeeplink = (pageDeeplink: string) => {
 };
 
 // Fonction améliorée pour gérer l'envoi avec retry et offline
-async function sendTokenToServer(token: string, maxRetries = 3): Promise<boolean> {
+async function sendTokenToServer(
+  token: string,
+  maxRetries = 3
+): Promise<boolean> {
   const pushTokenKey = process.env.EXPO_PUBLIC_PUSH_TOKEN_KEY ?? "pushToken";
-  
+
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       // Vérifier la connexion réseau
@@ -89,7 +94,7 @@ async function sendTokenToServer(token: string, maxRetries = 3): Promise<boolean
           return false;
         }
         // Attendre avant de retry
-        await new Promise(resolve => setTimeout(resolve, 2000 * attempt));
+        await new Promise((resolve) => setTimeout(resolve, 2000 * attempt));
         continue;
       }
 
@@ -97,7 +102,7 @@ async function sendTokenToServer(token: string, maxRetries = 3): Promise<boolean
         process.env.EXPO_PUBLIC_API_URL + "/api/save-push-token",
         {
           method: "POST",
-          headers: { 
+          headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({ token }),
@@ -117,21 +122,22 @@ async function sendTokenToServer(token: string, maxRetries = 3): Promise<boolean
       await AsyncStorage.setItem(pushTokenKey, token);
       await AsyncStorage.removeItem(`${pushTokenKey}_pending`);
       return true;
-
     } catch (error) {
       console.warn(`Tentative ${attempt} d'envoi du token échouée:`, error);
-      
+
       if (attempt === maxRetries) {
         // Dernière tentative : marquer comme pending
         await AsyncStorage.setItem(`${pushTokenKey}_pending`, token);
         return false;
       }
-      
+
       // Attendre avant de retry (backoff exponentiel)
-      await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, attempt - 1)));
+      await new Promise((resolve) =>
+        setTimeout(resolve, 1000 * Math.pow(2, attempt - 1))
+      );
     }
   }
-  
+
   return false;
 }
 
@@ -139,7 +145,7 @@ async function sendTokenToServer(token: string, maxRetries = 3): Promise<boolean
 async function processPendingTokens() {
   const pushTokenKey = process.env.EXPO_PUBLIC_PUSH_TOKEN_KEY ?? "pushToken";
   const pendingToken = await AsyncStorage.getItem(`${pushTokenKey}_pending`);
-  
+
   if (pendingToken) {
     console.log("Tentative d'envoi du token en attente...");
     const success = await sendTokenToServer(pendingToken);
@@ -149,17 +155,70 @@ async function processPendingTokens() {
   }
 }
 
+// Fonction pour traiter une notification
+async function handleNotificationData(data: NotificationData, router: any) {
+  const notificationId = data.notificationId;
+  const openDirectly = data.openDirectly ?? false;
+  const pushTokenKey = process.env.EXPO_PUBLIC_PUSH_TOKEN_KEY ?? "pushToken";
+  const storedToken = await AsyncStorage.getItem(pushTokenKey);
+  
+  const isEmpty =
+    data == null || // null ou undefined
+    (typeof data === "object" && Object.keys(data).length === 0); // objet vide
+
+  // Marquer la notif comme ouverte sur le serveur
+  if (notificationId && storedToken) {
+    try {
+      await markAsOpened(String(notificationId), storedToken);
+    } catch (e) {
+      console.warn("Erreur markAsOpened:", e);
+    }
+  }
+
+  if (!isEmpty) {
+    if (openDirectly === true) {
+      if (data.pageDeeplink) {
+        // Petit délai pour s'assurer que l'app est prête
+        setTimeout(() => {
+          handleOpenDeeplink(data.pageDeeplink!);
+        }, 100);
+      } else {
+        console.warn("⚠️ pageDeeplink est vide, impossible de rediriger.");
+      }
+    } else {
+      // Petit délai pour s'assurer que le router est prêt
+      setTimeout(() => {
+        router.push({
+          pathname: "/notification-details",
+          params: {
+            pageTitre: data.pageTitre ?? "",
+            pageParagraphe: data.pageParagraphe ?? "",
+            pageDeeplink: data.pageDeeplink ?? "",
+          },
+        });
+      }, 100);
+    }
+  }
+}
+
 export default function RegisterPushToken() {
   const router = useRouter();
-  
 
   useEffect(() => {
-    // const clearBadge = async () => {
-    //   if (Platform.OS === "ios") {
-    //     await Notifications.setBadgeCountAsync(0);
-    //   }
-    // };
-    // clearBadge();
+    // Vérifier s'il y a une notification qui a ouvert l'app (app fermée)
+    const checkInitialNotification = async () => {
+      try {
+        const response = await Notifications.getLastNotificationResponseAsync();
+        if (response) {
+          console.log("📱 App ouverte par notification (app fermée)");
+          const data = response.notification.request.content.data as NotificationData;
+          await handleNotificationData(data, router);
+        }
+      } catch (error) {
+        console.warn("Erreur lors de la vérification de la notification initiale:", error);
+      }
+    };
+
 
     const notificationListener = Notifications.addNotificationReceivedListener(
       async (notification) => {
@@ -171,44 +230,20 @@ export default function RegisterPushToken() {
       }
     );
 
-    const responseListener = Notifications.addNotificationResponseReceivedListener(
-      async (response) => {
-        const data = response.notification.request.content.data as NotificationData;
-        const notificationId = data.notificationId;
-        const openDirectly = data.openDirectly ?? false;
-         const pushTokenKey = process.env.EXPO_PUBLIC_PUSH_TOKEN_KEY ?? "pushToken";
-      const storedToken = await AsyncStorage.getItem(pushTokenKey);
-
-         // Marquer la notif comme ouverte sur le serveur
-    if (notificationId && storedToken) {
-      try {
-        await markAsOpened(String(notificationId), storedToken);
-      } catch (e) {
-        console.warn("Erreur markAsOpened:", e);
-      }
-    }
-
-        if (openDirectly === true) {
-          if (data.pageDeeplink) {
-            handleOpenDeeplink(data.pageDeeplink);
-          } else {
-            console.warn("⚠️ pageDeeplink est vide, impossible de rediriger.");
-          }
-        } else {
-          router.push({
-            pathname: "/notification-details",
-            params: {
-              pageTitre: data.pageTitre ?? "",
-              pageParagraphe: data.pageParagraphe ?? "",
-              pageDeeplink: data.pageDeeplink ?? "",
-            },
-          });
+    const responseListener =
+      Notifications.addNotificationResponseReceivedListener(
+        async (response) => {
+          console.log("📱 Notification tapée (app en arrière-plan/foreground)");
+          const data = response.notification.request.content
+            .data as NotificationData;
+          console.log("🚀 ~ addNotificationResponseReceivedListener ~ data:", data);
+          
+          await handleNotificationData(data, router);
         }
-      }
-    );
+      );
 
     // Gestionnaire de changement d'état réseau
-    const unsubscribeNetInfo = NetInfo.addEventListener(state => {
+    const unsubscribeNetInfo = NetInfo.addEventListener((state) => {
       if (state.isConnected) {
         // Connexion rétablie : traiter les tokens en attente
         processPendingTokens();
@@ -219,7 +254,8 @@ export default function RegisterPushToken() {
       const token = await registerForPushNotificationsAsync();
       if (!token) return;
 
-      const pushTokenKey = process.env.EXPO_PUBLIC_PUSH_TOKEN_KEY ?? "pushToken";
+      const pushTokenKey =
+        process.env.EXPO_PUBLIC_PUSH_TOKEN_KEY ?? "pushToken";
       const storedToken = await AsyncStorage.getItem(pushTokenKey);
       console.log("🚀 ~ saveTokenOnce ~ storedToken:", storedToken);
 
@@ -235,14 +271,18 @@ export default function RegisterPushToken() {
       }
     }
 
+    // Initialisation
     saveTokenOnce();
+    
+    // Vérifier les notifications au démarrage (pour les apps fermées)
+    checkInitialNotification();
 
     return () => {
       notificationListener.remove();
       responseListener.remove();
       unsubscribeNetInfo();
     };
-  }, []);
+  }, []); 
 
   return null;
 }
