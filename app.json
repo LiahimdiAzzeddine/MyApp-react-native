@@ -23,7 +23,7 @@
       }
     },
     "android": {
-      "versionCode": 8,
+      "versionCode": 9,
       "package": "com.tico.foodhea.tico",
       "googleServicesFile": "./google-services.json",
       "intentFilters": [
@@ -74,10 +74,7 @@
         }
       ],
       [
-        "expo-image-picker",
-        {
-          "photosPermission": "The $(PRODUCT_NAME) accesses your photos to let you share them."
-        }
+        "expo-image-picker"
       ],
       [
   "expo-notifications",
