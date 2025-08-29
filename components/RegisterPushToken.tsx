@@ -224,7 +224,6 @@ export default function RegisterPushToken() {
       async (notification) => {
         if (Platform.OS === "ios") {
           const currentCount = await Notifications.getBadgeCountAsync();
-          console.log("🚀 ~ RegisterPushToken ~ currentCount:", currentCount);
           await Notifications.setBadgeCountAsync(currentCount + 1);
         }
       }

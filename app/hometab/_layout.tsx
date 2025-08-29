@@ -55,6 +55,7 @@ export default function Layout() {
             goTo={route.name === "story" ? "/home" : undefined}
           />
         ),
+        animation: 'fade',
       })}
     >
       <Stack.Screen name="profile" />

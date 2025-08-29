@@ -34,6 +34,7 @@ const useGetTotalRequests = () => {
           setCurrentLevel(null);
         }
         return response.data;
+        
       } else {
         setError("Erreur inattendue lors de la récupération des données.");
         return false;

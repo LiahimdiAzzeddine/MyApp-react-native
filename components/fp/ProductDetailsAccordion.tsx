@@ -65,11 +65,9 @@ export default function ProductDetailsAccordion({
       
       // Delay scroll to allow rendering first
       setTimeout(() => {
-        console.log("🚀 ~ OnlyOpen ~ dans setTimeout, openPanel courant:", openPanel);
         const ref = sectionRefs.current[id];
         if (ref && 'measure' in ref) {
           (ref as any).measure((_fx: any, _fy: any, _width: any, _height: any, _px: any, py: number) => {
-            console.log("🚀 ~ measure ~ scrolling to:", py - 50);
             if (scrollRefpage?.current) {
               scrollRefpage?.current?.scrollTo({ y: py - 50, animated: true });
             }

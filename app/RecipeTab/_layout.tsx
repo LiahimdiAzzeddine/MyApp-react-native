@@ -54,18 +54,21 @@ export default function _layout() {
         name="recipes"
         options={{
           header: (props) => <CustomHeader image="rf" isRecipes={true} />,
+          animation: 'fade',
         }}
       />
        <Stack.Screen
         name="recipeSettings"
         options={{
           header: (props) => <CustomHeader image="rf" color="#fdf2f0" />,
+          animation: 'fade',
         }}
       />
       <Stack.Screen
         name="recipe/[id]"
         options={{
           header: (props) => <CustomHeader image="rf" color="#fad4ce" />,
+          animation: 'fade',
         }}
       />
 
@@ -79,6 +82,7 @@ export default function _layout() {
         name="favorites"
         options={{
           header: (props) => <CustomHeader image="rf" />,
+          animation: 'fade',
         }}
       />
      

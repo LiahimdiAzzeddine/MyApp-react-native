@@ -82,7 +82,6 @@ const useSuggestRecipe = () => {
     } catch (err: any) {
       const errorMessage = err?.response?.data?.message || "Une erreur est survenue";
       const errors: ApiError = err?.response?.data?.errors || {};
- console.log("🚀 ~ handleSubmit ~ errors:", errors)
       setError(errors);
       triggerToast(errorMessage, "error");
       console.error("Erreur lors de l'envoi de la recette:", err);

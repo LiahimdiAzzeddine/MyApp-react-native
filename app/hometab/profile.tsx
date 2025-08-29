@@ -100,7 +100,7 @@ export default function Profile(): JSX.Element {
   const router = useRouter();
   const { userInfo } = useContext(AuthContext);
   const userId: number | undefined = userInfo?.id;
-  const apiUrl = "https://tico.foodhea.com";
+  const apiUrl = process.env.EXPO_PUBLIC_API_URL;
   const [nextEligibleLevel, setNextEligibleLevel] = useState<Level | null>(
     null
   );

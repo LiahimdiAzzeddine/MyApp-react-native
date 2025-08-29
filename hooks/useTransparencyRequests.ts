@@ -26,7 +26,6 @@ const useTransparencyRequests = () => {
       setSended(true);
       setHasRequested(true);
     } catch (err) {
-      console.log("🚀 ~ handleSubmit ~ err:", err)
       setError('Erreur lors de l\'envoi.');
       triggerToast('Erreur lors de l\'envoi de la demande.', 'error');
     } finally {

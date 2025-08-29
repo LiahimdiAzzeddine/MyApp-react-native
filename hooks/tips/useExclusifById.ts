@@ -30,7 +30,6 @@ const useExclusifById = (id: string | null) => {
             const response = await api.get(`/api/advices/${id}`);
             const remoteTip = createTip(response.data);
             setTip(remoteTip); 
-            console.log("🚀 ~ findTip ~ response:", response)
           } catch (serverError: any) {
             console.error('Erreur serveur:', serverError);
 
