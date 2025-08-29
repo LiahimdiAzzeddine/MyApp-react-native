@@ -88,8 +88,10 @@ const RecipeDetails = ({ recipe = {}, custom = false }: RecipeDetailsProps) => {
     checkFavorite();
   }, [id]);
 let imageDemo=recipe.image_name??require("@/assets/images/recipes/recettefondblanc.png");
+  const { width: maxWidth } = Dimensions.get('window');
+
   return (
-    <SafeAreaView style={styles.container} edges={["bottom", "left", "right"]}>
+    <SafeAreaView style={[styles.container,{width:maxWidth}]} edges={["bottom", "left", "right"]}>
       {/* Contenu principal */}
 
       <ScrollView

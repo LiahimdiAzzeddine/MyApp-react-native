@@ -1,13 +1,16 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, Image, StyleSheet, Dimensions } from 'react-native';
 
 interface RecipeHeaderProps {
   goToPage: (page: string) => void;
 }
 
 const RecipesHeader: React.FC<RecipeHeaderProps> = ({ goToPage }) => {
+  const { width: maxWidth } = Dimensions.get('window');
+
   return (
-    <View style={styles.headerContainer}>
+       <View style={[styles.headerContainer, { width: maxWidth }]}>
+
       <TouchableOpacity onPress={() => goToPage("tabs")}>
         <Image source={require('@/assets/images/headers/fleche.png')} style={styles.icon} />
       </TouchableOpacity>
@@ -25,7 +28,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#fad4ce',
     paddingHorizontal:16,
-    width:'100%',
     paddingTop:20
   },
 

@@ -8,11 +8,9 @@ import {
   Alert,
   KeyboardAvoidingView,
   ActivityIndicator,
-  TouchableWithoutFeedback,
   Keyboard,
   Image,
   Modal,
-  StyleSheet,
   Platform,
   Dimensions,
 } from "react-native";
@@ -30,6 +28,8 @@ import RecipesHeader from "@/components/ui/recipeHeader";
 import FormInput from "@/components/form/FormInput";
 import ButtonGroup from "@/components/form/ButtonGroup";
 import styles from "./styles";
+import DraggableFlatList from "react-native-draggable-flatlist";
+import { renderItem } from "@/components/recipes/renderItem";
 
 // Mock images - replace with actual Pexels URLs
 
@@ -54,7 +54,7 @@ const SuggestRecipe: React.FC = () => {
   const [screenHeight, setScreenHeight] = useState(Dimensions.get('window').height);
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  
+
   // Add ref to track if we've already shown the error alert
   const errorAlertShown = useRef<boolean>(false);
   const lastErrorRef = useRef<any>(null);
@@ -78,6 +78,7 @@ const SuggestRecipe: React.FC = () => {
     quantity: "",
     unit: "",
   });
+
 
   // Enhanced keyboard handling for Android
   useEffect(() => {
@@ -334,21 +335,21 @@ const SuggestRecipe: React.FC = () => {
     // 3. The error object has actually changed
     if (error && Object.keys(error).length > 0) {
       const errorString = JSON.stringify(error);
-      
+
       if (!errorAlertShown.current || lastErrorRef.current !== errorString) {
         const serverErrorMessage = formatServerErrorsForAlert(error);
-        
+
         if (serverErrorMessage.trim() !== '') {
           errorAlertShown.current = true;
           lastErrorRef.current = errorString;
-          
+
           // Use setTimeout to ensure the error state is fully updated
           setTimeout(() => {
             Alert.alert(
               "Erreurs de validation du serveur",
               `Veuillez corriger les erreurs suivantes :\n\n${serverErrorMessage}`,
-              [{ 
-                text: "OK", 
+              [{
+                text: "OK",
                 style: "default",
                 onPress: () => {
                   // Reset the alert tracking when user dismisses
@@ -450,7 +451,10 @@ const SuggestRecipe: React.FC = () => {
 
   const removeStep = (indexToRemove: number) => {
     const stepToRemove = values.steps[indexToRemove];
-    const truncatedStep = stepToRemove.length > 50 ? stepToRemove.substring(0, 50) + "..." : stepToRemove;
+    const truncatedStep =
+      stepToRemove.length > 50
+        ? stepToRemove.substring(0, 50) + "..."
+        : stepToRemove;
 
     Alert.alert(
       "Supprimer l'étape",
@@ -551,6 +555,7 @@ const SuggestRecipe: React.FC = () => {
   const containerHeight = Platform.OS === 'android' && keyboardHeight > 0
     ? screenHeight - keyboardHeight
     : screenHeight;
+  const { width: maxWidth, height: maxHight } = Dimensions.get('window');
 
   return (
     <SafeAreaView style={[styles.outerContainer, { height: containerHeight }]} edges={['bottom']}>
@@ -773,19 +778,28 @@ const SuggestRecipe: React.FC = () => {
                   <Text style={styles.addButtonText}>+ Ajouter une étape</Text>
                 </TouchableOpacity>
 
-                <View style={styles.tagsContainer}>
-                  {values.steps.map((step, index) => (
-                    <View key={index} style={styles.stepTag}>
-                      <Text style={styles.stepNumber}>Étape {index + 1}</Text>
-                      <Text style={styles.stepText}>{step}</Text>
-                      <TouchableOpacity
-                        onPress={() => removeStep(index)}
-                        style={styles.removeTagButtonStep}
-                      >
-                        <Text style={styles.removeTagButtonText}>×</Text>
-                      </TouchableOpacity>
-                    </View>
-                  ))}
+                <View style={styles.stepsContainer}>
+                  {!modalVisible && (
+                    <DraggableFlatList
+                      data={values.steps}
+                      keyExtractor={(item, index) => `step-${index}-${item.substring(0, 10)}`}
+                      onDragEnd={({ data }) => {
+                        setValues((prev) => ({
+                          ...prev,
+                          steps: data,
+                        }));
+                      }}
+                      renderItem={(params) => renderItem({ ...params, removeStep })}
+                      scrollEnabled={false}
+                      nestedScrollEnabled={false}
+                      containerStyle={styles.draggableContainer}
+                      contentContainerStyle={styles.draggableContent}
+                      dragItemOverflow={true}
+                      autoscrollThreshold={50}
+                      autoscrollSpeed={100}
+                    />
+                  )}
+
                 </View>
               </View>
 
@@ -868,7 +882,7 @@ const SuggestRecipe: React.FC = () => {
         {/* </TouchableWithoutFeedback> */}
       </KeyboardAvoidingView>
 
-      <Modal
+       <Modal
         animationType="fade"
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
@@ -880,6 +894,7 @@ const SuggestRecipe: React.FC = () => {
           </SafeAreaView>
         )}
       </Modal>
+
     </SafeAreaView>
   );
 };

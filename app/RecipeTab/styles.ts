@@ -144,25 +144,37 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 8,
   },
-  stepTag: {
-    backgroundColor: "#FFF",
-    borderWidth: 1,
-    borderColor: "#D32F2F",
-    borderRadius: 12,
+
+    stepTag: {
+    backgroundColor: '#f8f8f8',
     padding: 12,
-    marginBottom: 8,
-    width: '100%',
-    position:"relative"
+    borderRadius: 8,
+    marginVertical: 4,
+    borderWidth: 1,
+    borderColor: '#D32F2F',
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 10,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 1,
   },
   stepNumber: {
     color: "#D32F2F",
     fontWeight: 'bold',
     fontSize: 14,
-    marginBottom: 4,
+    minWidth: 60,
   },
-  stepText: {
-    color: "#333",
+
+    stepText: {
+    flex: 1,
     fontSize: 14,
+    color: '#333',
     lineHeight: 20,
   },
   tagText: {
@@ -179,16 +191,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-    removeTagButtonStep: {
-    backgroundColor: "#EF5350",
+
+   removeTagButtonStep: {
+    backgroundColor: '#EF5350',
+    borderRadius: 12,
     width: 24,
     height: 24,
-    borderRadius: 12,
-    justifyContent: "center",
-    alignItems: "center",
-    position:'absolute',
-    right:5,
-    top:5
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 8,
   },
   removeTagButtonText: {
     color: "white",
@@ -320,6 +331,16 @@ const styles = StyleSheet.create({
   modalContainer: {
     flex: 1,
     backgroundColor: "#fff",
+  },
+   stepsContainer: {
+    marginTop: 10,
+    minHeight: 50,
+  },
+    draggableContainer: {
+    flex: 2,
+  },
+    draggableContent: {
+    paddingVertical: 5,
   },
 });
 
