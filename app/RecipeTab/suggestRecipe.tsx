@@ -225,15 +225,6 @@ const SuggestRecipe: React.FC = () => {
   };
 
   const pickImage = async () => {
-    // const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    // if (status !== "granted") {
-    //   Alert.alert(
-    //     "Permission refusée",
-    //     "L'accès à la galerie est nécessaire pour choisir une photo."
-    //   );
-    //   return;
-    // }
-
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,

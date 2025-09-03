@@ -23,7 +23,7 @@
       }
     },
     "android": {
-      "versionCode": 9,
+      "versionCode": 12,
       "package": "com.tico.foodhea.tico",
       "googleServicesFile": "./google-services.json",
       "intentFilters": [
