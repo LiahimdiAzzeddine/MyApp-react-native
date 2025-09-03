@@ -208,7 +208,7 @@ const InfoSection: React.FC<Props> = ({ product }) => {
             <View style={styles.marker}>
               <View style={styles.highlight} />
               <Text style={styles.sectionTitle} className="text-custom-blue">
-                Degré de transformation
+              Naturalité des ingrédients
               </Text>
             </View>
 
