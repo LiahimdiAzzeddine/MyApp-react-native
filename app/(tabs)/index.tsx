@@ -7,6 +7,7 @@ import { useFocusEffect, useTheme } from '@react-navigation/native';
 import styles from "./style";
 import CustomButton from "@/components/ui/CustomButton";
 import { useBottomSheet } from "@/context/BottomSheetContext";
+import * as Haptics from 'expo-haptics';
 
 export default function Scanner() {
   const [permission, requestPermission] = useCameraPermissions();
@@ -19,7 +20,7 @@ export default function Scanner() {
 
   // Utiliser useFocusEffect pour détecter quand l'écran est activé/désactivé
   useFocusEffect(
-    
+
     useCallback(() => {
       // Quand l'écran reçoit le focus, activer la caméra
       setIsCameraActive(true);
@@ -43,10 +44,12 @@ export default function Scanner() {
   const toggleFlash = useCallback(() => {
     setFlashMode((prev) => (prev === "off" ? "on" : "off"));
   }, []);
-  
+
   const handleBarCodeScanned = useCallback(
     ({ type, data }: { type: string; data: string }) => {
       if (!isScanning) return;
+      // Add haptic feedback for iPhone
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
       setScannedBarcode(data);
       openBottomSheet();
     },
@@ -77,24 +80,24 @@ export default function Scanner() {
       </SafeAreaView>
     );
   }
-  
+
   return (
     <>
       <View className="flex-1 bg-white">
         <View style={styles.containerScan}>
           {/* CameraView sans enfants */}
           <CameraView
-           barcodeScannerSettings={{
-    barcodeTypes: ['ean13', 'ean8', 'upc_a', 'code128']
-  }}
-            ref={cameraRef} 
+            barcodeScannerSettings={{
+              barcodeTypes: ['ean13', 'ean8', 'upc_a', 'code128']
+            }}
+            ref={cameraRef}
             style={styles.camera}
             facing={"back"}
             flash={flashMode}
             enableTorch={flashMode === "on"}
-             onBarcodeScanned={isCameraActive && isScanning ? handleBarCodeScanned : undefined}
+            onBarcodeScanned={isCameraActive && isScanning ? handleBarCodeScanned : undefined}
           />
-          
+
           {/* Overlay positionné absolument au-dessus de la caméra */}
           <View style={styles.overlay2}>
             <View style={styles.overlay}>
@@ -113,7 +116,7 @@ export default function Scanner() {
               </Text>
             </View>
             <View style={styles.buttonContainer}>
-              <TouchableOpacity style={styles.iconButton}  onPress={toggleFlash}>
+              <TouchableOpacity style={styles.iconButton} onPress={toggleFlash}>
                 <Ionicons
                   name={flashMode === "on" ? "flash" : "flash-off"}
                   size={28}
@@ -124,7 +127,7 @@ export default function Scanner() {
           </View>
         </View>
       </View>
-      
+
     </>
   );
 }
