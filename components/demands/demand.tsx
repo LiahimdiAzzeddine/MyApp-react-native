@@ -87,13 +87,13 @@ const Demand = ({ demande, incrementInsistCount, press }: DemandeProps) => {
         </ImageBackground>
 
         <View style={{ flex: 1 }}>
-          <Text className="text-custom-green-text text-s ArchivoLight leading-archivo italic">
+          <Text className="text-custom-green-text text-sm ArchivoLight leading-archivo italic">
             {formatDate(demandeState.created_at)}
           </Text>
           <Text className="text-custom-green-text leading-archivo ArchivoExtraBold text-sm">
             {demandeState.titre}
           </Text>
-          <Text className="text-custom-green-text text-s ArchivoLight leading-archivo italic">
+          <Text className="text-custom-green-text text-sm ArchivoLight leading-archivo italic">
             {demandeState.marque}
           </Text>
         </View>
