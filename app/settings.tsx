@@ -12,6 +12,7 @@ import NetInfo from "@react-native-community/netinfo"; // 👈 Import pour la co
 import { AuthContext } from "@/context/AuthContext";
 import * as Notifications from "expo-notifications";
 import { Bell} from 'lucide-react-native';
+import QuizButton from "@/components/game/QuizButton";
 
 export default function SettingsPage() {
   const { userInfo, logout } = useContext(AuthContext);
@@ -159,6 +160,8 @@ export default function SettingsPage() {
         >
           <Text style={styles.buttonText}>Faire connaître TiCO</Text>
         </TouchableOpacity>
+              <QuizButton onPress={() => router.push("/game/HomeScreen")} />
+
       </View>
 
       <View style={[styles.section, styles.authSection]}>

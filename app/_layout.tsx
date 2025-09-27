@@ -103,6 +103,10 @@ export default function RootLayout() {
                     options={{ headerShown: false, animation: "fade" }}
                   />
                   <Stack.Screen
+                    name="game"
+                    options={{ headerShown: false, animation: "fade" }}
+                  />
+                  <Stack.Screen
                     name="fp/[gtin]"
                     options={{
                       animation: "fade",
